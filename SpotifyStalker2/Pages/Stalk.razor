@@ -2,8 +2,12 @@
 
 @using SpotifyStalker.Interface
 @using Spotify.Model
+@using Spotify.Object;
+@using SpotifyStalker.Model;
 @using SpotifyStalker2.ViewModel
+@using Microsoft.Extensions.Options;
 @inject IApiQueryService ApiQueryService
+@inject IOptions<SpotifyApiSettings> Options;
 
 <h1>Stalk</h1>
 
@@ -64,17 +68,24 @@
 
     public async Task QueryUserAsync()
     {
-        ViewModel.UserPlaylistsModel = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, 20);
+        ViewModel.ResetProcessedPlaylistCount();
 
-        if (!ViewModel.ShowPlayLists) return;
+        var (userPlaylistResult, usePlaylistModel) = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
+
+        ViewModel.UserPlaylistsModel = usePlaylistModel;
 
         StateHasChanged();
 
+        if (!ViewModel.ShowPlayLists) return;
+
         foreach (var playlist in ViewModel.UserPlaylistsModel.Playlists)
         {
-            var playListModel = await ApiQueryService.QueryAsync<PlaylistModel>(playlist.Id, 50);
-            playlist.FoundTracks = playListModel.Items.Select(x => x.Track).ToList();
-            ViewModel.ProcessedPlaylistCount++;
+            var (playlistResult, playlistModel) = await ApiQueryService.QueryAsync<PlaylistModel>(playlist.Id, Options.Value.Limits.PlaylistTrack);
+
+            if (playlistResult == RequestStatus.Success)
+                playlist.FoundTracks = playlistModel.Items.Select(x => x.Track).ToList();
+
+            ViewModel.IncrementProcessedPlaylistCount();
             StateHasChanged();
         }
 

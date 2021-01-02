@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Threading;
 using SpotifyStalker.Interface;
+using System.Net;
+using SpotifyStalker.Model;
 
 namespace SpotifyStalker.Service
 {
@@ -19,9 +21,10 @@ namespace SpotifyStalker.Service
             _httpClientFactory = httpClientFactory ?? throw new System.ArgumentNullException(nameof(httpClientFactory));
         }
 
-        public async Task<T> GetAsync<T>(string url)
+        public async Task<(RequestStatus RequestStatus, T)> GetAsync<T>(string url)
         {
             var keepTrying = true;
+            var requestStatus = RequestStatus.Default;
 
             while (keepTrying)
             {
@@ -29,9 +32,9 @@ namespace SpotifyStalker.Service
                 using var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
 
                 var apiResponse = await ExecuteRequestAsync(httpClient, httpRequest);
+                requestStatus = apiResponse.RequestStatus;
 
-                keepTrying = (!apiResponse.Success && apiResponse.Retry);
-                if (!apiResponse.Success)
+                if (requestStatus == RequestStatus.Retry)
                 {
                     Thread.Sleep((int)apiResponse.WaitMs);
                     continue;
@@ -41,16 +44,15 @@ namespace SpotifyStalker.Service
                 var stringResponse = await apiResponse.HttpResponseMessage.Content.ReadAsStringAsync();
                 var deserialized = JsonSerializer.Deserialize<T>(stringResponse);
 
-                return deserialized;
+                return (requestStatus, deserialized);
             }
 
-            return default;
+            return (requestStatus, default);
         }
 
         protected struct ApiResponse
         {
-            public bool Success;
-            public bool Retry;
+            public RequestStatus RequestStatus;
             public double WaitMs;
             public HttpResponseMessage HttpResponseMessage;
         }
@@ -62,8 +64,7 @@ namespace SpotifyStalker.Service
         {
             var apiResponse = new ApiResponse()
             {
-                Success = false,
-                Retry = false
+                RequestStatus = RequestStatus.Default
             };
 
             var response = await httpClient.SendAsync(httpRequest);
@@ -71,7 +72,7 @@ namespace SpotifyStalker.Service
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation("Success response received");
-                apiResponse.Success = true;
+                apiResponse.RequestStatus = RequestStatus.Success;
                 apiResponse.HttpResponseMessage = response;
                 return apiResponse;
             }
@@ -79,9 +80,12 @@ namespace SpotifyStalker.Service
             // failed response at this point
             switch (response.StatusCode)
             {
-                case System.Net.HttpStatusCode.TooManyRequests: // rate limit hit. Retry
-                case System.Net.HttpStatusCode.ServiceUnavailable:
-                    apiResponse.Retry = true;
+                case HttpStatusCode.NotFound:
+                    apiResponse.RequestStatus = RequestStatus.NotFound;
+                    return apiResponse;
+                case HttpStatusCode.TooManyRequests: // rate limit hit. Retry
+                case HttpStatusCode.ServiceUnavailable:
+                    apiResponse.RequestStatus = RequestStatus.Retry;
                     apiResponse.WaitMs = response.Headers?.RetryAfter?.Delta?.TotalMilliseconds ?? (double)5000;
                     _logger.LogInformation($"Rate limit hit. Retry in {apiResponse.WaitMs} milliseconds.");
                     return apiResponse;

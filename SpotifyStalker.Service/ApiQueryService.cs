@@ -1,5 +1,6 @@
 ﻿using Spotify.Interface;
 using SpotifyStalker.Interface;
+using SpotifyStalker.Model;
 using System;
 using System.Threading.Tasks;
 
@@ -20,13 +21,13 @@ namespace SpotifyStalker.Service
             _apiRequestService = apiRequestService ?? throw new ArgumentNullException(nameof(apiRequestService));
         }
 
-        public async Task<T> QueryAsync<T>(string id) where T : IApiRequestObject, new()
+        public async Task<(RequestStatus RequestStatus, T)> QueryAsync<T>(string id) where T : IApiRequestObject, new()
         {
             var url = _apiRequestUrlBuilder.Build<T>(id);
             return await _apiRequestService.GetAsync<T>(url);
         }
 
-        public async Task<T> QueryAsync<T>(string id, int limit) where T : IApiRequestObject, new()
+        public async Task<(RequestStatus RequestStatus, T)> QueryAsync<T>(string id, int limit) where T : IApiRequestObject, new()
         {
             var url = _apiRequestUrlBuilder.Build<T>(id, limit);
             return await _apiRequestService.GetAsync<T>(url);

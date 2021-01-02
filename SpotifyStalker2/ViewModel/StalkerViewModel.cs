@@ -3,12 +3,16 @@ using Spotify.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SpotifyStalker2.ViewModel
 {
     public class StalkerViewModel
     {
+        public StalkerViewModel() {
+        }
+
         public UserPlaylistsModel UserPlaylistsModel { get; set; }
 
         public List<Playlist> GetOrderedPlayLists() =>
@@ -22,7 +26,8 @@ namespace SpotifyStalker2.ViewModel
         public int PlaylistCount => 
             UserPlaylistsModel?.Playlists?.Count() ?? 0;
 
-        public int ProcessedPlaylistCount { get; set; }
+        public int ProcessedPlaylistCount => _processedPlaylistCount;
+        protected int _processedPlaylistCount = 0;
 
         public bool ShowPlayLists =>
             UserPlaylistsModel?.Playlists?.Any() ?? false;
@@ -30,5 +35,9 @@ namespace SpotifyStalker2.ViewModel
         public bool PlaylistsProcessing =>
             ProcessedPlaylistCount < PlaylistCount;
 
+        public void ResetProcessedPlaylistCount() => _processedPlaylistCount = 0;
+
+        public void IncrementProcessedPlaylistCount() => 
+            Interlocked.Increment(ref _processedPlaylistCount);
     }
 }

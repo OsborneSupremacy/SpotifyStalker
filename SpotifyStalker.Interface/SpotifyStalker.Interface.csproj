@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Spotify.Model\Spotify.Model.csproj" />
     <ProjectReference Include="..\Spotify.Object\Spotify.Object.csproj" />
+    <ProjectReference Include="..\SpotifyStalker.Model\SpotifyStalker.Model.csproj" />
   </ItemGroup>
 
 </Project>

@@ -17,6 +17,23 @@ namespace Spotify.Object
 
         [JsonPropertyName("apikeys")]
         public ApiKeys ApiKeys { get; set; }
+
+        [JsonPropertyName("limits")]
+        [Required]
+        public ApiLimits Limits { get; set; }
+    }
+
+    public class ApiLimits
+    {
+        [JsonPropertyName("userplaylist")]
+        [Required]
+        [Range(1, 50)]
+        public int UserPlaylist { get; set; }
+
+        [JsonPropertyName("playlisttrack")]
+        [Required]
+        [Range(1, 100)]
+        public int PlaylistTrack { get; set; }
     }
 
     public class ApiKeys
