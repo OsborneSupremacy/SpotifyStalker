@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Spotify.Interface\Spotify.Interface.csproj" />
+        <ProjectReference Include="..\Spotify.Object\Spotify.Object.csproj" />
+    </ItemGroup>
+
+</Project>

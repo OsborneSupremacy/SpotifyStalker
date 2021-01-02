@@ -1,0 +1,83 @@
+﻿@page "/stalk"
+
+@using SpotifyStalker.Interface
+@using Spotify.Model
+@using SpotifyStalker2.ViewModel
+@inject IApiQueryService ApiQueryService
+
+<h1>Stalk</h1>
+
+<div class="input-group mb-3" style="width: 500px;">
+    <input type="text" placeholder="Spotify Username" class="form-control" @bind-value="ViewModel.UserName" />
+    <div class="input-group-append">
+        <button @onclick="QueryUserAsync" class="btn btn-primary">
+            Search
+        </button>
+        <button class="btn btn-danger">
+            Stop
+        </button>
+    </div>
+</div>
+
+@if (ViewModel.ShowPlayLists)
+{
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                Playlists <span>(@ViewModel.ProcessedPlaylistCount / @ViewModel.PlaylistCount)</span>&nbsp;
+                @if (ViewModel.PlaylistsProcessing)
+                {
+                    <div class="spinner-border spinner-border-sm" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                }
+            </div>
+            <div class="card-body">
+                <div class="scroll">
+                    <table class='table table-striped' aria-labelledby="tableLabel">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Tracks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var playlist in ViewModel.GetOrderedPlayLists())
+                            {
+                                <tr>
+                                    <td>@playlist.Name</td>
+                                    <td>@(playlist?.FoundTracks?.Count() ?? 0) / @(playlist.Tracks?.Total ?? 0)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    StalkerViewModel ViewModel = new StalkerViewModel();
+
+    public async Task QueryUserAsync()
+    {
+        ViewModel.UserPlaylistsModel = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, 20);
+
+        if (!ViewModel.ShowPlayLists) return;
+
+        StateHasChanged();
+
+        foreach (var playlist in ViewModel.UserPlaylistsModel.Playlists)
+        {
+            var playListModel = await ApiQueryService.QueryAsync<PlaylistModel>(playlist.Id, 50);
+            playlist.FoundTracks = playListModel.Items.Select(x => x.Track).ToList();
+            ViewModel.ProcessedPlaylistCount++;
+            StateHasChanged();
+        }
+
+    }
+
+}
