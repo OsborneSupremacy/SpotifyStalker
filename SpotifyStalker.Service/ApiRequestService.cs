@@ -34,11 +34,15 @@ namespace SpotifyStalker.Service
                 var apiResponse = await ExecuteRequestAsync(httpClient, httpRequest);
                 requestStatus = apiResponse.RequestStatus;
 
-                if (requestStatus == RequestStatus.Retry)
+                keepTrying = (requestStatus == RequestStatus.Retry);
+
+                if (keepTrying)
                 {
                     Thread.Sleep((int)apiResponse.WaitMs);
                     continue;
                 };
+
+                if (requestStatus != RequestStatus.Success) continue;
 
                 // success -- read response body
                 var stringResponse = await apiResponse.HttpResponseMessage.Content.ReadAsStringAsync();
@@ -86,7 +90,7 @@ namespace SpotifyStalker.Service
                 case HttpStatusCode.TooManyRequests: // rate limit hit. Retry
                 case HttpStatusCode.ServiceUnavailable:
                     apiResponse.RequestStatus = RequestStatus.Retry;
-                    apiResponse.WaitMs = response.Headers?.RetryAfter?.Delta?.TotalMilliseconds ?? (double)5000;
+                    apiResponse.WaitMs = response.Headers?.RetryAfter?.Delta?.TotalMilliseconds ?? 5000;
                     _logger.LogInformation($"Rate limit hit. Retry in {apiResponse.WaitMs} milliseconds.");
                     return apiResponse;
             }

@@ -1,5 +1,6 @@
 ﻿using Spotify.Model;
 using Spotify.Object;
+using SpotifyStalker.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace SpotifyStalker2.ViewModel
     {
         public StalkerViewModel() {
         }
+
+        public RequestStatus UserPlaylistResult { get; set; }
 
         public UserPlaylistsModel UserPlaylistsModel { get; set; }
 

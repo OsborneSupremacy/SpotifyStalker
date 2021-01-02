@@ -23,6 +23,20 @@
     </div>
 </div>
 
+@if (ViewModel.UserPlaylistResult == RequestStatus.NotFound)
+{
+    <h5 class="alert alert-danger" role="alert">
+        User @ViewModel.UserName not found!
+    </h5>
+}
+
+@if (ViewModel.UserPlaylistResult == RequestStatus.Success && !ViewModel.ShowPlayLists)
+{
+    <h5 class="alert alert-warning" role="alert">
+        User @ViewModel.UserName exists, but has no public playlists.
+    </h5>
+}
+
 @if (ViewModel.ShowPlayLists)
 {
     <div class="row">
@@ -72,6 +86,7 @@
 
         var (userPlaylistResult, usePlaylistModel) = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
 
+        ViewModel.UserPlaylistResult = userPlaylistResult;
         ViewModel.UserPlaylistsModel = usePlaylistModel;
 
         StateHasChanged();
