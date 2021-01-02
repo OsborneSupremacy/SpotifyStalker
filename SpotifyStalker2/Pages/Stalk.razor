@@ -39,40 +39,49 @@
 
 @if (ViewModel.ShowPlayLists)
 {
+    <!--begin - row 1 -->
     <div class="row">
-        <div class="card">
-            <div class="card-header">
-                Playlists <span>(@ViewModel.ProcessedPlaylistCount / @ViewModel.PlaylistCount)</span>&nbsp;
-                @if (ViewModel.PlaylistsProcessing)
-                {
-                    <div class="spinner-border spinner-border-sm" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                }
-            </div>
-            <div class="card-body">
-                <div class="scroll">
-                    <table class='table table-striped' aria-labelledby="tableLabel">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Tracks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var playlist in ViewModel.GetOrderedPlayLists())
-                            {
+
+        <!--begin - playlists-->
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    Playlists <span>(@ViewModel.ProcessedPlaylistCount / @ViewModel.PlaylistCount)</span>&nbsp;
+                    @if (ViewModel.PlaylistsProcessing)
+                    {
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="scroll">
+                        <table class='table table-striped' aria-labelledby="tableLabel">
+                            <thead>
                                 <tr>
-                                    <td>@playlist.Name</td>
-                                    <td>@(playlist?.FoundTracks?.Count() ?? 0) / @(playlist.Tracks?.Total ?? 0)</td>
+                                    <th>Name</th>
+                                    <th>Tracks</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var playlist in ViewModel.GetOrderedPlayLists())
+                                {
+                                    <tr>
+                                        <td>@playlist.Name</td>
+                                        <td>@(playlist?.FoundTracks?.Count() ?? 0) / @(playlist.Tracks?.Total ?? 0)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+        <!--end - playlists-->
+
+
     </div>
+    <!--end - row 1 -->
 }
 
 
