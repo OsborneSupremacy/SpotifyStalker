@@ -4,9 +4,10 @@
 @using Spotify.Model
 @using Spotify.Object;
 @using SpotifyStalker.Model;
-@using SpotifyStalker2.ViewModel
+@using SpotifyStalker.Service
 @using Microsoft.Extensions.Options;
 @inject IApiQueryService ApiQueryService
+@inject IStalkModelTransformer StalkModelTransformer;
 @inject IOptions<SpotifyApiSettings> Options;
 
 <h1>Stalk</h1>
@@ -79,6 +80,43 @@
         </div>
         <!--end - playlists-->
 
+        <!--begin - artists-->
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    Artists <span>({{ processedArtists }} / {{ artists.length }})</span>&nbsp;
+                    @if (ViewModel.ArtistsProcessing)
+                    {
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="scroll">
+                        <table class='table table-striped' aria-labelledby="tableLabel">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Tracks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var artist in ViewModel.GetOrderedArtists())
+                                {
+                                    <tr>
+                                        <td>@artist.Name</td>
+                                        <td>@(artist.Tracks?.Count() ?? 0)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end - artists-->
+
 
     </div>
     <!--end - row 1 -->
@@ -87,11 +125,11 @@
 
 @code {
 
-    StalkerViewModel ViewModel = new StalkerViewModel();
+    StalkModel ViewModel = new StalkModel();
 
     public async Task QueryUserAsync()
     {
-        ViewModel.ResetProcessedPlaylistCount();
+        ViewModel = StalkModelTransformer.Reset(ViewModel);
 
         var (userPlaylistResult, usePlaylistModel) = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
 
@@ -107,12 +145,30 @@
             var (playlistResult, playlistModel) = await ApiQueryService.QueryAsync<PlaylistModel>(playlist.Id, Options.Value.Limits.PlaylistTrack);
 
             if (playlistResult == RequestStatus.Success)
-                playlist.FoundTracks = playlistModel.Items.Select(x => x.Track).ToList();
+            {
+                ViewModel = StalkModelTransformer.BeginProcessing<Track>(ViewModel);
+                ViewModel = StalkModelTransformer.BeginProcessing<Artist>(ViewModel);
 
-            ViewModel.IncrementProcessedPlaylistCount();
+                StateHasChanged();
+
+                var foundTracks = new List<Track>();
+                playlist.FoundTracks = foundTracks;
+
+                foreach (var item in playlistModel.Items)
+                {
+                    foundTracks.Add(item.Track);
+                    ViewModel = StalkModelTransformer.RegisterTrack(ViewModel, item.Track);
+                }
+
+                playlist.FoundTracks = playlistModel.Items.Select(x => x.Track).ToList();
+                ViewModel = StalkModelTransformer.EndProcessing<Track>(ViewModel);
+                ViewModel = StalkModelTransformer.EndProcessing<Artist>(ViewModel);
+
+            }
+
+            ViewModel = StalkModelTransformer.IncrementProcessedPlaylistCount(ViewModel);
             StateHasChanged();
         }
-
     }
 
 }

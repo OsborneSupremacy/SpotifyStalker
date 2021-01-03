@@ -13,8 +13,5 @@ namespace Spotify.Object
 
         [JsonPropertyName("genres")]
         public IEnumerable<string> Genres { get; set; }
-
-        [JsonPropertyName("tracks")]
-        public IEnumerable<Track> Tracks { get; set; }
     }
 }

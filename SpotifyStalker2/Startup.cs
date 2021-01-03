@@ -8,6 +8,7 @@ using Spotify.Object;
 using Serilog;
 using SpotifyStalker.Interface;
 using SpotifyStalker.Service;
+using AutoMapper;
 
 namespace SpotifyStalker2
 {
@@ -24,6 +25,8 @@ namespace SpotifyStalker2
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
+
             services.Configure<SpotifyApiSettings>(Configuration.GetSection("SpotifyApi"));
 
             services.AddRazorPages();
@@ -37,6 +40,8 @@ namespace SpotifyStalker2
             services.AddSingleton<IApiRequestUrlBuilder, ApiRequestUrlBuilder>();
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IApiQueryService, ApiQueryService>();
+
+            services.AddSingleton<IStalkModelTransformer, StalkModelTransformer>();
 
             services.AddHttpClient();
             services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
