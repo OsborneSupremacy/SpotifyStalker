@@ -1,4 +1,5 @@
-﻿using Spotify.Object;
+﻿using Spotify.Model;
+using Spotify.Object;
 using SpotifyStalker.Model;
 
 namespace SpotifyStalker.Interface
@@ -8,6 +9,8 @@ namespace SpotifyStalker.Interface
         StalkModel IncrementProcessedPlaylistCount(StalkModel stalkModel);
 
         StalkModel RegisterTrack(StalkModel stalkModel, Track track);
+
+        StalkModel RegisterGenre(StalkModel stalkModel, ArtistModel artist);
 
         StalkModel Reset(StalkModel stalkModel);
 

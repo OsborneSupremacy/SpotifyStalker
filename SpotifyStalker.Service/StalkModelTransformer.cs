@@ -20,7 +20,7 @@ namespace SpotifyStalker.Service
             IMapper mapper
         )
         {
-            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -30,35 +30,27 @@ namespace SpotifyStalker.Service
 
             stalkModel.Artists = new ConcurrentDictionary<string, ArtistModel>();
             stalkModel.Tracks = new ConcurrentDictionary<string, Track>();
+            stalkModel.Genres = new ConcurrentDictionary<string, GenreModel>();
 
             stalkModel.UserPlaylistsModel = null;
             stalkModel.UserPlaylistResult = RequestStatus.Default;
 
             stalkModel.TracksProcessing = false;
             stalkModel.ArtistsProcessing = false;
+            stalkModel.GenresProcessing = false;
 
             return stalkModel;
         }
 
-        public StalkModel BeginProcessing<T>(StalkModel stalkModel)
+        public StalkModel BeginProcessing<T>(StalkModel stalkModel) => UpdateProcessing<T>(stalkModel, true);
+
+        public StalkModel EndProcessing<T>(StalkModel stalkModel) => UpdateProcessing<T>(stalkModel, false);
+
+        protected StalkModel UpdateProcessing<T>(StalkModel stalkModel, bool processing)
         {
-            if(typeof(T) == typeof(Track))
-                stalkModel.TracksProcessing = true;
-
-            if (typeof(T) == typeof(Artist))
-                stalkModel.ArtistsProcessing = true;
-
-            return stalkModel;
-        }
-
-        public StalkModel EndProcessing<T>(StalkModel stalkModel)
-        {
-            if (typeof(T) == typeof(Track))
-                stalkModel.TracksProcessing = false;
-
-            if (typeof(T) == typeof(Artist))
-                stalkModel.ArtistsProcessing = false;
-
+            if (typeof(T) == typeof(Track)) stalkModel.TracksProcessing = processing;
+            if (typeof(T) == typeof(Artist)) stalkModel.ArtistsProcessing = processing;
+            if (typeof(T) == typeof(GenreModel)) stalkModel.GenresProcessing = processing;
             return stalkModel;
         }
 
@@ -83,11 +75,32 @@ namespace SpotifyStalker.Service
 
                 if (stalkModel.Artists.TryAdd(artistId, _mapper.Map<ArtistModel>(artist)))
                 {
-                    // if artists was just added now, instantiate their track list and
+                    // if artists was just added now, instantiate their track list
                     stalkModel.Artists[artistId].Tracks = new ConcurrentDictionary<string, Track>();
                 };
 
                 stalkModel.Artists[artistId].Tracks.TryAdd(trackId, track);
+            }
+            return stalkModel;
+        }
+
+        public StalkModel RegisterGenre(StalkModel stalkModel, ArtistModel artist)
+        {
+            foreach(var genre in artist.Genres)
+            {
+                if (stalkModel.Genres.TryAdd(genre, new GenreModel() { Name = genre }))
+                {
+                    // if genre ws just add now, instantiate their lists
+                    stalkModel.Genres[genre].Artists = new ConcurrentDictionary<string, ArtistModel>();
+                    stalkModel.Genres[genre].Tracks = new ConcurrentDictionary<string, Track>();
+                }
+
+                stalkModel.Genres[genre].Artists.TryAdd(artist.Id, artist);
+
+                if (artist.Tracks == null) continue;
+
+                foreach(var track in artist.Tracks)
+                    stalkModel.Genres[genre].Tracks.TryAdd(track.Key, track.Value);
             }
             return stalkModel;
         }
@@ -99,6 +112,5 @@ namespace SpotifyStalker.Service
             stalkModel.ProcessedPlaylistCount++;
             return stalkModel;
         }
-
     }
 }
