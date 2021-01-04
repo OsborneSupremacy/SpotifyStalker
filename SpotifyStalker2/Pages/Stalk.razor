@@ -118,7 +118,7 @@
     <div class="col-sm-4">
         <div class="card">
             <div class="card-header">
-                Genres
+                Genres <span>(@ViewModel.ProcessedGenreCount / @ViewModel.GenreCount)</span>&nbsp;
                 @if (ViewModel.GenresProcessing)
                 {
                     <div class="spinner-border spinner-border-sm" role="status">
@@ -207,9 +207,15 @@
         // get artist genres
         foreach (var artist in ViewModel.GetOrderedArtists())
         {
-            var artistInfo = await ApiQueryService.QueryAsync<ArtistModel>(artist.Id);
-            if(artistInfo.RequestStatus == RequestStatus.Success)
-                ViewModel = StalkModelTransformer.RegisterGenre(ViewModel, artistInfo.Data);
+            // we have the artist name, ID, and track collection. we just need genres.
+            // not going to replace the artist object with the one we query, because we would lose
+            // the track list
+            var artistGenres = await ApiQueryService.QueryAsync<ArtistModel>(artist.Id);
+            if (artistGenres.RequestStatus == RequestStatus.Success) {
+                // just copy the genres
+                artist.Genres = artistGenres.Data.Genres;
+                ViewModel = StalkModelTransformer.RegisterGenre(ViewModel, artist);
+            };            
 
             StateHasChanged();
         }

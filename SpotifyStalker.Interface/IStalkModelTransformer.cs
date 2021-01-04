@@ -8,6 +8,8 @@ namespace SpotifyStalker.Interface
     {
         StalkModel IncrementProcessedPlaylistCount(StalkModel stalkModel);
 
+        StalkModel IncrementProcessedGenreCount(StalkModel stalkModel);
+
         StalkModel RegisterTrack(StalkModel stalkModel, Track track);
 
         StalkModel RegisterGenre(StalkModel stalkModel, ArtistModel artist);

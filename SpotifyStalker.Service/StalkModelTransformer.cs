@@ -27,6 +27,7 @@ namespace SpotifyStalker.Service
         public StalkModel Reset(StalkModel stalkModel)
         {
             stalkModel.ProcessedPlaylistCount = 0;
+            stalkModel.ProcessedGenreCount = 0;
 
             stalkModel.Artists = new ConcurrentDictionary<string, ArtistModel>();
             stalkModel.Tracks = new ConcurrentDictionary<string, Track>();
@@ -75,7 +76,7 @@ namespace SpotifyStalker.Service
 
                 if (stalkModel.Artists.TryAdd(artistId, _mapper.Map<ArtistModel>(artist)))
                 {
-                    // if artists was just added now, instantiate their track list
+                    // if artist was just added now, instantiate their track list
                     stalkModel.Artists[artistId].Tracks = new ConcurrentDictionary<string, Track>();
                 };
 
@@ -90,9 +91,10 @@ namespace SpotifyStalker.Service
             {
                 if (stalkModel.Genres.TryAdd(genre, new GenreModel() { Name = genre }))
                 {
-                    // if genre ws just add now, instantiate their lists
+                    // if genre was just added now, instantiate its lists
                     stalkModel.Genres[genre].Artists = new ConcurrentDictionary<string, ArtistModel>();
                     stalkModel.Genres[genre].Tracks = new ConcurrentDictionary<string, Track>();
+                    stalkModel.ProcessedGenreCount++;
                 }
 
                 stalkModel.Genres[genre].Artists.TryAdd(artist.Id, artist);
@@ -110,6 +112,12 @@ namespace SpotifyStalker.Service
             )
         {
             stalkModel.ProcessedPlaylistCount++;
+            return stalkModel;
+        }
+
+        public StalkModel IncrementProcessedGenreCount(StalkModel stalkModel)
+        {
+            stalkModel.ProcessedGenreCount++;
             return stalkModel;
         }
     }

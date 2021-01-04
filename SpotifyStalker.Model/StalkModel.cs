@@ -48,6 +48,10 @@ namespace SpotifyStalker.Model
         public int ArtistCount =>
             Artists?.Count() ?? 0;
 
+        public int GenreCount => Genres?.Count() ?? 0;
+
+        public int ProcessedGenreCount { get; set; }
+
         public List<ArtistModel> GetOrderedArtists() =>
             Artists
                 .OrderByDescending(x => x.Value?.Tracks.Count() ?? 0)
