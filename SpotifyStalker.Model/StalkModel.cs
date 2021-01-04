@@ -16,6 +16,10 @@ namespace SpotifyStalker.Model
 
         public ConcurrentDictionary<string, Track> Tracks;
 
+        public bool TracksProcessing;
+
+        public bool ArtistsProcessing;
+
         public List<Playlist> GetOrderedPlayLists() =>
             UserPlaylistsModel
                 .Playlists
@@ -25,7 +29,7 @@ namespace SpotifyStalker.Model
         public string UserName { get; set; }
 
         public int PlaylistCount =>
-                    UserPlaylistsModel?.Playlists?.Count() ?? 0;
+            UserPlaylistsModel?.Playlists?.Count() ?? 0;
 
         public int ProcessedPlaylistCount { get; set; }
 
@@ -37,9 +41,8 @@ namespace SpotifyStalker.Model
 
         public bool ShowArtists => Artists?.Any() ?? false;
 
-        public bool TracksProcessing;
-
-        public bool ArtistsProcessing;
+        public int ArtistCount =>
+            Artists?.Count() ?? 0;
 
         public List<ArtistModel> GetOrderedArtists() =>
             Artists

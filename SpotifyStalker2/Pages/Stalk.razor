@@ -4,7 +4,6 @@
 @using Spotify.Model
 @using Spotify.Object;
 @using SpotifyStalker.Model;
-@using SpotifyStalker.Service
 @using Microsoft.Extensions.Options;
 @inject IApiQueryService ApiQueryService
 @inject IStalkModelTransformer StalkModelTransformer;
@@ -84,7 +83,7 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    Artists <span>({{ processedArtists }} / {{ artists.length }})</span>&nbsp;
+                    Artists <span>({{ processedArtists }} / @ViewModel.ArtistCount)</span>&nbsp;
                     @if (ViewModel.ArtistsProcessing)
                     {
                         <div class="spinner-border spinner-border-sm" role="status">
@@ -140,15 +139,15 @@
 
         if (!ViewModel.ShowPlayLists) return;
 
+        ViewModel = StalkModelTransformer.BeginProcessing<Track>(ViewModel);
+        ViewModel = StalkModelTransformer.BeginProcessing<Artist>(ViewModel);
+
         foreach (var playlist in ViewModel.UserPlaylistsModel.Playlists)
         {
             var (playlistResult, playlistModel) = await ApiQueryService.QueryAsync<PlaylistModel>(playlist.Id, Options.Value.Limits.PlaylistTrack);
 
             if (playlistResult == RequestStatus.Success)
             {
-                ViewModel = StalkModelTransformer.BeginProcessing<Track>(ViewModel);
-                ViewModel = StalkModelTransformer.BeginProcessing<Artist>(ViewModel);
-
                 StateHasChanged();
 
                 var foundTracks = new List<Track>();
@@ -161,14 +160,16 @@
                 }
 
                 playlist.FoundTracks = playlistModel.Items.Select(x => x.Track).ToList();
-                ViewModel = StalkModelTransformer.EndProcessing<Track>(ViewModel);
-                ViewModel = StalkModelTransformer.EndProcessing<Artist>(ViewModel);
-
             }
 
             ViewModel = StalkModelTransformer.IncrementProcessedPlaylistCount(ViewModel);
             StateHasChanged();
         }
+
+        ViewModel = StalkModelTransformer.EndProcessing<Track>(ViewModel);
+        ViewModel = StalkModelTransformer.EndProcessing<Artist>(ViewModel);
+        StateHasChanged();
+
     }
 
 }

@@ -3,11 +3,9 @@ using Spotify.Object;
 using SpotifyStalker.Model;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using SpotifyStalker.Interface;
+using Microsoft.Extensions.Logging;
 
 namespace SpotifyStalker.Service
 {
@@ -15,8 +13,14 @@ namespace SpotifyStalker.Service
     {
         private readonly IMapper _mapper;
 
-        public StalkModelTransformer(IMapper mapper)
+        private readonly ILogger<IApiRequestService> _logger;
+
+        public StalkModelTransformer(
+            ILogger<IApiRequestService> logger,
+            IMapper mapper
+        )
         {
+            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -63,6 +67,11 @@ namespace SpotifyStalker.Service
             Track track
         )
         {
+            if(track == null) {
+                _logger.LogWarning("Track is null. Skipping");
+                return stalkModel;
+            }
+
             string trackId = track.Id ?? track.Name.ToLowerInvariant();
 
             if (!stalkModel.Tracks.TryAdd(trackId, track))
