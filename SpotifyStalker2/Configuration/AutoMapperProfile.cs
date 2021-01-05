@@ -9,6 +9,7 @@ namespace SpotifyStalker2.Configuration
         public AutoMapperProfile()
         {
             CreateMap<Artist, ArtistModel>();
+            CreateMap<Playlist, PlaylistModel>();
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Net.Http.Headers;
 using Spotify.Object;
+using Spotify.Model;
 using SpotifyStalker.Interface;
 
 namespace SpotifyStalker.Service

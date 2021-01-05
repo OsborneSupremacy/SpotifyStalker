@@ -1,9 +1,34 @@
-﻿using System;
+﻿using Spotify.Object;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
-namespace Spotify.Object
+namespace SpotifyStalker.Model
 {
+    public class Metric
+    {
+        public string Title { get; set; }
+
+        public string Content { get; set; }
+
+        public string ImageFile { get; set; }
+
+        public string Unit { get; set; }
+
+        public double? Min { get; set; }
+
+        public double? Max { get; set; }
+
+        public double? NominalMin { get; set; }
+
+        public double? NominalMax { get; set; }
+
+        public double? Value { get; set; }
+
+        public double? MarkerPercentage { get; set; }
+    }
+
     public class MetricEnvelope
     {
         public IEnumerable<Metric> GetAllMetrics() =>
@@ -19,7 +44,8 @@ namespace Spotify.Object
                 Tempo
             };
 
-        public MetricEnvelope() {
+        public MetricEnvelope()
+        {
 
             Populated = false;
 
@@ -29,7 +55,7 @@ namespace Spotify.Object
                 Content = "Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.A value of 0.0 is least danceable and 1.0 is most danceable.",
                 Unit = "",
                 Min = 0,
-                Max =  1,
+                Max = 1,
                 NominalMin = 0,
                 NominalMax = 1
             };
@@ -154,7 +180,7 @@ namespace Spotify.Object
 
         public Metric Tempo { get; set; }
 
-        public void Calculate(IEnumerable<AudioFeatures> audioFeatures) 
+        public void Calculate(IEnumerable<AudioFeatures> audioFeatures)
         {
             Populated = true;
             Danceability.Value = calculateAverage(x => x.Danceability);
@@ -169,7 +195,8 @@ namespace Spotify.Object
 
             var metrics = GetAllMetrics().ToList();
 
-            foreach(var metric in metrics) {
+            foreach (var metric in metrics)
+            {
                 var mp = metric.Value / (metric.Max = metric.Min);
                 if (mp < 0)
                     mp += 1.0;
@@ -186,4 +213,5 @@ namespace Spotify.Object
         }
 
     }
+
 }

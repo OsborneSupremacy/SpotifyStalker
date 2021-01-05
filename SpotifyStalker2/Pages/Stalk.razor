@@ -30,130 +30,130 @@
     </h5>
 }
 
-@if (ViewModel.UserPlaylistResult == RequestStatus.Success && !ViewModel.ShowPlayLists)
+@if (ViewModel.UserPlaylistResult == RequestStatus.Success && !ViewModel.Playlists.Display)
 {
     <h5 class="alert alert-warning" role="alert">
         User @ViewModel.UserName exists, but has no public playlists.
     </h5>
 }
 
-@if (ViewModel.ShowPlayLists)
+@if (ViewModel.Playlists.Display)
 {
-<!--begin - row 1 -->
-<div class="row">
+    <!--begin - row 1 -->
+    <div class="row">
 
-    <!--begin - playlists-->
-    <div class="col-sm-4">
-        <div class="card">
-            <div class="card-header">
-                Playlists <span>(@ViewModel.ProcessedPlaylistCount / @ViewModel.PlaylistCount)</span>&nbsp;
-                @if (ViewModel.PlaylistsProcessing)
-                {
-                    <div class="spinner-border spinner-border-sm" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                }
-            </div>
-            <div class="card-body">
-                <div class="scroll">
-                    <table class='table table-striped' aria-labelledby="tableLabel">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Tracks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var playlist in ViewModel.GetOrderedPlayLists())
-                            {
+        <!--begin - playlists-->
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    Playlists <span>(@ViewModel.Playlists.Processed / @ViewModel.Playlists.Total)</span>&nbsp;
+                    @if (ViewModel.Playlists.InProcess)
+                    {
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="scroll">
+                        <table class='table table-striped' aria-labelledby="tableLabel">
+                            <thead>
                                 <tr>
-                                    <td>@playlist.Name</td>
-                                    <td>@(playlist?.FoundTracks?.Count() ?? 0) / @(playlist.Tracks?.Total ?? 0)</td>
+                                    <th>Name</th>
+                                    <th>Tracks</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var playlist in StalkModelTransformer.GetOrderedItems<PlaylistModel>(ViewModel))
+                                {
+                                    <tr>
+                                        <td>@playlist.Name</td>
+                                        <td>@(playlist?.Items?.Count() ?? 0) / @(playlist.TrackInfo?.Total ?? 0)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!--end - playlists-->
-    <!--begin - artists-->
-    <div class="col-sm-4">
-        <div class="card">
-            <div class="card-header">
-                Artists <span>({{ processedArtists }} / @ViewModel.ArtistCount)</span>&nbsp;
-                @if (ViewModel.ArtistsProcessing)
-                {
-                    <div class="spinner-border spinner-border-sm" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                }
-            </div>
-            <div class="card-body">
-                <div class="scroll">
-                    <table class='table table-striped' aria-labelledby="tableLabel">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Tracks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var artist in ViewModel.GetOrderedArtists())
-                            {
+        <!--end - playlists-->
+        <!--begin - artists-->
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    Artists <span>(@ViewModel.Artists.Processed / @ViewModel.Artists.Total)</span>&nbsp;
+                    @if (ViewModel.Artists.InProcess)
+                    {
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="scroll">
+                        <table class='table table-striped' aria-labelledby="tableLabel">
+                            <thead>
                                 <tr>
-                                    <td>@artist.Name</td>
-                                    <td>@(artist.Tracks?.Count() ?? 0)</td>
+                                    <th>Name</th>
+                                    <th>Tracks</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var artist in StalkModelTransformer.GetOrderedItems<ArtistModel>(ViewModel))
+                                {
+                                    <tr>
+                                        <td>@artist.Name</td>
+                                        <td>@(artist.Tracks?.Count() ?? 0)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!--end - artists-->
-    <!--end - genres-->
-    <div class="col-sm-4">
-        <div class="card">
-            <div class="card-header">
-                Genres <span>(@ViewModel.ProcessedGenreCount / @ViewModel.GenreCount)</span>&nbsp;
-                @if (ViewModel.GenresProcessing)
-                {
-                    <div class="spinner-border spinner-border-sm" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                }
-            </div>
-            <div class="card-body">
-                <div class="scroll">
-                    <table class='table table-striped' aria-labelledby="tableLabel" >
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Tracks</th>
-                                <th>Artists</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var genre in ViewModel.GetOrderedGenres())
-                            {
+        <!--end - artists-->
+        <!--end - genres-->
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    Genres <span>(@ViewModel.Genres.Processed / @ViewModel.Genres.Total)</span>&nbsp;
+                    @if (ViewModel.Genres.InProcess)
+                    {
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="scroll">
+                        <table class='table table-striped' aria-labelledby="tableLabel">
+                            <thead>
                                 <tr>
-                                    <td>@genre.Name</td>
-                                    <td>@(genre?.Tracks.Count ?? 0)</td>
-                                    <td>@(genre?.Artists.Count ?? 0)</td>
+                                    <th>Name</th>
+                                    <th>Tracks</th>
+                                    <th>Artists</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var genre in StalkModelTransformer.GetOrderedItems<GenreModel>(ViewModel))
+                                {
+                                    <tr>
+                                        <td>@genre.Name</td>
+                                        <td>@(genre?.Tracks.Count ?? 0)</td>
+                                        <td>@(genre?.Artists.Count ?? 0)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+        <!--end - genres-->
     </div>
-    <!--end - genres-->
-</div>
-<!--end - row 1 -->
+    <!--end - row 1 -->
 }
 
 
@@ -165,66 +165,72 @@
     {
         ViewModel = StalkModelTransformer.Reset(ViewModel);
 
-        var (userPlaylistResult, usePlaylistModel) = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
+        var (userPlaylistResult, userPlaylistModel) = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
 
         ViewModel.UserPlaylistResult = userPlaylistResult;
-        ViewModel.UserPlaylistsModel = usePlaylistModel;
+
+        ViewModel = StalkModelTransformer.RegisterPlaylists(ViewModel, userPlaylistModel.Playlists);
 
         StateHasChanged();
 
-        if (!ViewModel.ShowPlayLists) return;
+        if (!ViewModel.Playlists.Display) return;
 
+        ViewModel = StalkModelTransformer.BeginProcessing<PlaylistModel>(ViewModel);
         ViewModel = StalkModelTransformer.BeginProcessing<Track>(ViewModel);
-        ViewModel = StalkModelTransformer.BeginProcessing<Artist>(ViewModel);
+        ViewModel = StalkModelTransformer.BeginProcessing<ArtistModel>(ViewModel);
 
-        foreach (var playlist in ViewModel.UserPlaylistsModel.Playlists)
+        StateHasChanged();
+
+        // at this point we only have playlist names and IDs.
+        // get the track list for each playlist
+        foreach (var playlist in ViewModel.Playlists.Items)
         {
-            var (playlistResult, playlistModel) = await ApiQueryService.QueryAsync<PlaylistModel>(playlist.Id, Options.Value.Limits.PlaylistTrack);
+            var (playlistResult, playlistResultModel) = await ApiQueryService.QueryAsync<PlaylistModel>(playlist.Value.Id, Options.Value.Limits.PlaylistTrack);
 
-            if (playlistResult == RequestStatus.Success)
+            // if playlist request failed or no tracks were found, continue to next
+            if (playlistResult != RequestStatus.Success
+                || (!playlistResultModel?.Items?.Any() ?? false)
+                )
             {
+                ViewModel = StalkModelTransformer.IncrementCount<PlaylistModel>(ViewModel);
                 StateHasChanged();
-
-                var foundTracks = new List<Track>();
-                playlist.FoundTracks = foundTracks;
-
-                foreach (var item in playlistModel.Items)
-                {
-                    foundTracks.Add(item.Track);
-                    ViewModel = StalkModelTransformer.RegisterTrack(ViewModel, item.Track);
-                }
-
-                playlist.FoundTracks = playlistModel.Items.Select(x => x.Track).ToList();
+                continue;
             }
 
-            ViewModel = StalkModelTransformer.IncrementProcessedPlaylistCount(ViewModel);
+            // add the tracks from the playlist api query to the list of all tracks
+            foreach (var playlistModelTrack in playlistResultModel.Items)
+                ViewModel = StalkModelTransformer.RegisterTrack(ViewModel, playlistModelTrack.Track);
+
+            ViewModel = StalkModelTransformer.IncrementCount<PlaylistModel>(ViewModel);
             StateHasChanged();
         }
 
+        ViewModel = StalkModelTransformer.EndProcessing<PlaylistModel>(ViewModel);
         ViewModel = StalkModelTransformer.BeginProcessing<GenreModel>(ViewModel);
         StateHasChanged();
 
         // get artist genres
-        foreach (var artist in ViewModel.GetOrderedArtists())
+        foreach (var artist in ViewModel.Artists.Items)
         {
             // we have the artist name, ID, and track collection. we just need genres.
             // not going to replace the artist object with the one we query, because we would lose
             // the track list
-            var artistGenres = await ApiQueryService.QueryAsync<ArtistModel>(artist.Id);
-            if (artistGenres.RequestStatus == RequestStatus.Success) {
+            var artistGenres = await ApiQueryService.QueryAsync<ArtistModel>(artist.Value.Id);
+            if (artistGenres.RequestStatus == RequestStatus.Success)
+            {
                 // just copy the genres
-                artist.Genres = artistGenres.Data.Genres;
-                ViewModel = StalkModelTransformer.RegisterGenre(ViewModel, artist);
-            };            
+                artist.Value.Genres = artistGenres.Data.Genres;
+                ViewModel = StalkModelTransformer.RegisterGenre(ViewModel, artist.Value);
+            };
 
+            ViewModel = StalkModelTransformer.IncrementCount<ArtistModel>(ViewModel);
             StateHasChanged();
         }
 
         ViewModel = StalkModelTransformer.EndProcessing<Track>(ViewModel);
-        ViewModel = StalkModelTransformer.EndProcessing<Artist>(ViewModel);
+        ViewModel = StalkModelTransformer.EndProcessing<ArtistModel>(ViewModel);
         ViewModel = StalkModelTransformer.EndProcessing<GenreModel>(ViewModel);
         StateHasChanged();
-
     }
 
 }

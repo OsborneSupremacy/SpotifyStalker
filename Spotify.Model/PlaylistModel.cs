@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Spotify.Model
 {
-    public class PlaylistModel : IApiRequestObject
+    public class PlaylistModel : Playlist, IApiRequestObject
     {
         [JsonPropertyName("items")]
         public IEnumerable<PlaylistModelTrack> Items { get; set; }

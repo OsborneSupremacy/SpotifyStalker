@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Spotify.Object
+namespace Spotify.Model
 {
     public class SpotifyApiSettings
     {

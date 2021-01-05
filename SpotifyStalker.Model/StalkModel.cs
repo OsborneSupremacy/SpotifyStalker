@@ -8,60 +8,37 @@ namespace SpotifyStalker.Model
 {
     public class StalkModel
     {
-        public RequestStatus UserPlaylistResult { get; set; }
-
-        public UserPlaylistsModel UserPlaylistsModel { get; set; }
-
-        public ConcurrentDictionary<string, ArtistModel> Artists;
-
-        public ConcurrentDictionary<string, Track> Tracks;
-
-        public ConcurrentDictionary<string, GenreModel> Genres;
-
-        public bool TracksProcessing;
-
-        public bool ArtistsProcessing;
-
-        public bool GenresProcessing;
-
-        public List<Playlist> GetOrderedPlayLists() =>
-            UserPlaylistsModel
-                .Playlists
-                .OrderByDescending(x => x?.Tracks?.Total ?? 0)
-                .ToList();
+        public StalkModel()
+        {
+            Playlists = new CategoryViewModel<PlaylistModel>();
+            Artists = new CategoryViewModel<ArtistModel>();
+            Genres = new CategoryViewModel<GenreModel>();
+            Tracks = new CategoryViewModel<Track>();
+        }
 
         public string UserName { get; set; }
 
-        public int PlaylistCount =>
-            UserPlaylistsModel?.Playlists?.Count() ?? 0;
+        public RequestStatus UserPlaylistResult { get; set; }
 
-        public int ProcessedPlaylistCount { get; set; }
+        public CategoryViewModel<PlaylistModel> Playlists { get; set; }
 
-        public bool ShowPlayLists =>
-            UserPlaylistsModel?.Playlists?.Any() ?? false;
+        public CategoryViewModel<ArtistModel> Artists { get; set; }
 
-        public bool PlaylistsProcessing =>
-            ProcessedPlaylistCount < PlaylistCount;
+        public CategoryViewModel<GenreModel> Genres { get; set; }
 
-        public bool ShowArtists => Artists?.Any() ?? false;
+        public CategoryViewModel<Track> Tracks { get; set; }
 
-        public int ArtistCount =>
-            Artists?.Count() ?? 0;
 
-        public int GenreCount => Genres?.Count() ?? 0;
+        //public List<ArtistModel> GetOrderedArtists() =>
+        //    Artists
+        //        .OrderByDescending(x => x.Value?.Tracks.Count() ?? 0)
+        //        .Select(x => x.Value)
+        //        .ToList();
 
-        public int ProcessedGenreCount { get; set; }
-
-        public List<ArtistModel> GetOrderedArtists() =>
-            Artists
-                .OrderByDescending(x => x.Value?.Tracks.Count() ?? 0)
-                .Select(x => x.Value)
-                .ToList();
-
-        public List<GenreModel> GetOrderedGenres() =>
-            Genres
-                .OrderByDescending(x => x.Value?.Tracks.Count() ?? 0)
-                .Select(x => x.Value)
-                .ToList();
+        //public List<GenreModel> GetOrderedGenres() =>
+        //    Genres
+        //        .OrderByDescending(x => x.Value?.Tracks.Count() ?? 0)
+        //        .Select(x => x.Value)
+        //        .ToList();
     }
 }

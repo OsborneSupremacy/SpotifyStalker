@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spotify.Interface;
-using Spotify.Object;
+using Spotify.Model;
 using SpotifyStalker.Interface;
 using System;
 using System.Collections.Generic;

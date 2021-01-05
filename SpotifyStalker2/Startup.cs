@@ -4,11 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SpotifyStalker2.Data;
-using Spotify.Object;
 using Serilog;
 using SpotifyStalker.Interface;
 using SpotifyStalker.Service;
 using AutoMapper;
+using Spotify.Model;
 
 namespace SpotifyStalker2
 {

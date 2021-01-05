@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Spotify.Interface;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Spotify.Object
 {
-    public class Artist
+    public class Artist : ISpotifyStandardObject
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }

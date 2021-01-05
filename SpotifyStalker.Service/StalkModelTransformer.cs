@@ -6,6 +6,9 @@ using System.Collections.Concurrent;
 using AutoMapper;
 using SpotifyStalker.Interface;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using Spotify.Interface;
 
 namespace SpotifyStalker.Service
 {
@@ -18,40 +21,63 @@ namespace SpotifyStalker.Service
         public StalkModelTransformer(
             ILogger<IApiRequestService> logger,
             IMapper mapper
-        )
-        {
+        ) {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public StalkModel Reset(StalkModel stalkModel)
         {
-            stalkModel.ProcessedPlaylistCount = 0;
-            stalkModel.ProcessedGenreCount = 0;
-
-            stalkModel.Artists = new ConcurrentDictionary<string, ArtistModel>();
-            stalkModel.Tracks = new ConcurrentDictionary<string, Track>();
-            stalkModel.Genres = new ConcurrentDictionary<string, GenreModel>();
-
-            stalkModel.UserPlaylistsModel = null;
             stalkModel.UserPlaylistResult = RequestStatus.Default;
 
-            stalkModel.TracksProcessing = false;
-            stalkModel.ArtistsProcessing = false;
-            stalkModel.GenresProcessing = false;
+            stalkModel.Playlists = new CategoryViewModel<PlaylistModel>();
+            stalkModel.Artists = new CategoryViewModel<ArtistModel>();
+            stalkModel.Genres = new CategoryViewModel<GenreModel>();
+            stalkModel.Tracks = new CategoryViewModel<Track>();
 
             return stalkModel;
         }
 
-        public StalkModel BeginProcessing<T>(StalkModel stalkModel) => UpdateProcessing<T>(stalkModel, true);
+        protected CategoryViewModel<T> GetCategoryViewModel<T>(StalkModel stalkModel) where T : ISpotifyStandardObject => 
+            typeof(T).Name switch
+            {
+                nameof(PlaylistModel) => stalkModel.Playlists as CategoryViewModel<T>,
+                nameof(ArtistModel) => stalkModel.Artists as CategoryViewModel<T>,
+                nameof(GenreModel) => stalkModel.Genres as CategoryViewModel<T>,
+                nameof(Track) => stalkModel.Tracks as CategoryViewModel<T>,
+                _ => throw new NotSupportedException($"Type `{typeof(T).Name}` not supported")
+            };
 
-        public StalkModel EndProcessing<T>(StalkModel stalkModel) => UpdateProcessing<T>(stalkModel, false);
-
-        protected StalkModel UpdateProcessing<T>(StalkModel stalkModel, bool processing)
+        public StalkModel IncrementCount<T>(StalkModel stalkModel) where T : ISpotifyStandardObject
         {
-            if (typeof(T) == typeof(Track)) stalkModel.TracksProcessing = processing;
-            if (typeof(T) == typeof(Artist)) stalkModel.ArtistsProcessing = processing;
-            if (typeof(T) == typeof(GenreModel)) stalkModel.GenresProcessing = processing;
+            var categoryViewModel = GetCategoryViewModel<T>(stalkModel);
+            categoryViewModel.Processed++;
+            return stalkModel;
+        }
+
+        public StalkModel BeginProcessing<T>(StalkModel stalkModel) where T : ISpotifyStandardObject =>
+            UpdateProcessing<T>(stalkModel, true);
+
+        public StalkModel EndProcessing<T>(StalkModel stalkModel) where T : ISpotifyStandardObject => 
+            UpdateProcessing<T>(stalkModel, false);
+
+        protected StalkModel UpdateProcessing<T>(StalkModel stalkModel, bool processing) where T : ISpotifyStandardObject
+        {
+            var categoryViewModel = GetCategoryViewModel<T>(stalkModel);
+            categoryViewModel.InProcess = processing;
+            return stalkModel;
+        }
+
+        public List<T> GetOrderedItems<T>(StalkModel stalkModel) where T : ISpotifyStandardObject =>
+            GetCategoryViewModel<T>(stalkModel).GetOrderedItems();
+
+        public StalkModel RegisterPlaylists(StalkModel stalkModel, IEnumerable<Playlist> playlists)
+        {
+            if (!playlists?.Any() ?? false) return stalkModel;
+
+            foreach(var playlist in playlists)
+                stalkModel.Playlists.TryAdd(playlist.Id, _mapper.Map<PlaylistModel>(playlist));
+
             return stalkModel;
         }
 
@@ -77,10 +103,10 @@ namespace SpotifyStalker.Service
                 if (stalkModel.Artists.TryAdd(artistId, _mapper.Map<ArtistModel>(artist)))
                 {
                     // if artist was just added now, instantiate their track list
-                    stalkModel.Artists[artistId].Tracks = new ConcurrentDictionary<string, Track>();
+                    stalkModel.Artists.Items[artistId].Tracks = new ConcurrentDictionary<string, Track>();
                 };
 
-                stalkModel.Artists[artistId].Tracks.TryAdd(trackId, track);
+                stalkModel.Artists.Items[artistId].Tracks.TryAdd(trackId, track);
             }
             return stalkModel;
         }
@@ -92,32 +118,18 @@ namespace SpotifyStalker.Service
                 if (stalkModel.Genres.TryAdd(genre, new GenreModel() { Name = genre }))
                 {
                     // if genre was just added now, instantiate its lists
-                    stalkModel.Genres[genre].Artists = new ConcurrentDictionary<string, ArtistModel>();
-                    stalkModel.Genres[genre].Tracks = new ConcurrentDictionary<string, Track>();
-                    stalkModel.ProcessedGenreCount++;
+                    stalkModel.Genres.Items[genre].Artists = new ConcurrentDictionary<string, ArtistModel>();
+                    stalkModel.Genres.Items[genre].Tracks = new ConcurrentDictionary<string, Track>();
+                    stalkModel.Genres.Processed++;
                 }
 
-                stalkModel.Genres[genre].Artists.TryAdd(artist.Id, artist);
+                stalkModel.Genres.Items[genre].Artists.TryAdd(artist.Id, artist);
 
                 if (artist.Tracks == null) continue;
 
                 foreach(var track in artist.Tracks)
-                    stalkModel.Genres[genre].Tracks.TryAdd(track.Key, track.Value);
+                    stalkModel.Genres.Items[genre].Tracks.TryAdd(track.Key, track.Value);
             }
-            return stalkModel;
-        }
-
-        public StalkModel IncrementProcessedPlaylistCount(
-            StalkModel stalkModel
-            )
-        {
-            stalkModel.ProcessedPlaylistCount++;
-            return stalkModel;
-        }
-
-        public StalkModel IncrementProcessedGenreCount(StalkModel stalkModel)
-        {
-            stalkModel.ProcessedGenreCount++;
             return stalkModel;
         }
     }
