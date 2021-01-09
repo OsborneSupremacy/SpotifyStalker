@@ -68,8 +68,8 @@ namespace SpotifyStalker.Service
             return stalkModel;
         }
 
-        public List<T> GetOrderedItems<T>(StalkModel stalkModel) where T : ISpotifyStandardObject =>
-            GetCategoryViewModel<T>(stalkModel).GetOrderedItems();
+        public List<T> GetItems<T>(StalkModel stalkModel) where T : ISpotifyStandardObject =>
+            GetCategoryViewModel<T>(stalkModel).GetItems();
 
         public StalkModel RegisterPlaylists(StalkModel stalkModel, IEnumerable<Playlist> playlists)
         {

@@ -20,7 +20,7 @@ namespace SpotifyStalker.Interface
 
         StalkModel IncrementCount<T>(StalkModel stalkModel) where T : ISpotifyStandardObject;
 
-        List<T> GetOrderedItems<T>(StalkModel stalkModel) where T : ISpotifyStandardObject;
+        List<T> GetItems<T>(StalkModel stalkModel) where T : ISpotifyStandardObject;
 
         StalkModel RegisterPlaylists(StalkModel stalkModel, IEnumerable<Playlist> playlists);
     }

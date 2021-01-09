@@ -16,7 +16,7 @@ namespace SpotifyStalker.Model
             Processed = 0;
         }
 
-        public List<T> GetOrderedItems() =>
+        public List<T> GetItems() =>
             Items.Values.ToList();
 
         public bool InProcess { get; set; }

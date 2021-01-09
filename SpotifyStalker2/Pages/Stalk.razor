@@ -3,6 +3,7 @@
 @using SpotifyStalker.Interface
 @using Spotify.Model
 @using Spotify.Object;
+@using Spotify.Interface
 @using SpotifyStalker.Model;
 @using Microsoft.Extensions.Options;
 @inject IApiQueryService ApiQueryService
@@ -22,6 +23,8 @@
         </button>
     </div>
 </div>
+
+@*Create an overall status indicator*@
 
 @if (ViewModel.UserPlaylistResult == RequestStatus.NotFound)
 {
@@ -64,7 +67,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var playlist in StalkModelTransformer.GetOrderedItems<PlaylistModel>(ViewModel))
+                                @foreach (var playlist in StalkModelTransformer
+                                   .GetItems<PlaylistModel>(ViewModel)
+                                   .OrderByDescending(x => x.TrackInfo.Total)
+                                   .ToList())
                                 {
                                     <tr>
                                         <td>@playlist.Name</td>
@@ -100,7 +106,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var artist in StalkModelTransformer.GetOrderedItems<ArtistModel>(ViewModel))
+                                @foreach (var artist in StalkModelTransformer
+                                   .GetItems<ArtistModel>(ViewModel)
+                                   .OrderByDescending(x => x.Tracks?.Count ?? 0))
                                 {
                                     <tr>
                                         <td>@artist.Name</td>
@@ -137,7 +145,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var genre in StalkModelTransformer.GetOrderedItems<GenreModel>(ViewModel))
+                                @foreach (var genre in StalkModelTransformer
+                                   .GetItems<GenreModel>(ViewModel)
+                                   .OrderByDescending(x => x.Tracks.Count).ToList())
                                 {
                                     <tr>
                                         <td>@genre.Name</td>
@@ -175,9 +185,9 @@
 
         if (!ViewModel.Playlists.Display) return;
 
-        ViewModel = StalkModelTransformer.BeginProcessing<PlaylistModel>(ViewModel);
-        ViewModel = StalkModelTransformer.BeginProcessing<Track>(ViewModel);
-        ViewModel = StalkModelTransformer.BeginProcessing<ArtistModel>(ViewModel);
+        BeginProcessing<PlaylistModel>();
+        BeginProcessing<Track>();
+        BeginProcessing<ArtistModel>();
 
         StateHasChanged();
 
@@ -192,8 +202,7 @@
                 || (!playlistResultModel?.Items?.Any() ?? false)
                 )
             {
-                ViewModel = StalkModelTransformer.IncrementCount<PlaylistModel>(ViewModel);
-                StateHasChanged();
+                IncrementCount<PlaylistModel>();
                 continue;
             }
 
@@ -201,20 +210,25 @@
             foreach (var playlistModelTrack in playlistResultModel.Items)
                 ViewModel = StalkModelTransformer.RegisterTrack(ViewModel, playlistModelTrack.Track);
 
-            ViewModel = StalkModelTransformer.IncrementCount<PlaylistModel>(ViewModel);
-            StateHasChanged();
+            IncrementCount<PlaylistModel>();
         }
 
-        ViewModel = StalkModelTransformer.EndProcessing<PlaylistModel>(ViewModel);
-        ViewModel = StalkModelTransformer.BeginProcessing<GenreModel>(ViewModel);
-        StateHasChanged();
+        EndProcessing<PlaylistModel>();
+        BeginProcessing<GenreModel>();
 
         // get artist genres
         foreach (var artist in ViewModel.Artists.Items)
         {
+            if (string.IsNullOrEmpty(artist.Value.Id))
+            {
+                IncrementCount<ArtistModel>();
+                continue;
+            }
+
             // we have the artist name, ID, and track collection. we just need genres.
             // not going to replace the artist object with the one we query, because we would lose
             // the track list
+            // IF THERE"S NO ARTIST ID, DON'T BOTHER MAKING REQUEST SINCE IT"S GOING TO FAIL
             var artistGenres = await ApiQueryService.QueryAsync<ArtistModel>(artist.Value.Id);
             if (artistGenres.RequestStatus == RequestStatus.Success)
             {
@@ -223,14 +237,29 @@
                 ViewModel = StalkModelTransformer.RegisterGenre(ViewModel, artist.Value);
             };
 
-            ViewModel = StalkModelTransformer.IncrementCount<ArtistModel>(ViewModel);
-            StateHasChanged();
+            IncrementCount<ArtistModel>();
         }
 
-        ViewModel = StalkModelTransformer.EndProcessing<Track>(ViewModel);
-        ViewModel = StalkModelTransformer.EndProcessing<ArtistModel>(ViewModel);
-        ViewModel = StalkModelTransformer.EndProcessing<GenreModel>(ViewModel);
+        EndProcessing<Track>();
+        EndProcessing<ArtistModel>();
+        EndProcessing<GenreModel>();
+    }
+
+    private void IncrementCount<T>() where T : ISpotifyStandardObject
+    {
+        ViewModel = StalkModelTransformer.IncrementCount<T>(ViewModel);
         StateHasChanged();
     }
 
+    private void BeginProcessing<T>() where T : ISpotifyStandardObject
+    {
+        ViewModel = StalkModelTransformer.EndProcessing<T>(ViewModel);
+        StateHasChanged();
+    }
+
+    private void EndProcessing<T>() where T : ISpotifyStandardObject
+    {
+        ViewModel = StalkModelTransformer.EndProcessing<T>(ViewModel);
+        StateHasChanged();
+    }
 }
