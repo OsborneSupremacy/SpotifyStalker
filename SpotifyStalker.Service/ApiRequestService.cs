@@ -101,7 +101,7 @@ namespace SpotifyStalker.Service
             // don't retry
             try
             {
-                response.EnsureSuccessStatusCode(); // do this an exception can be generated and logged
+                response.EnsureSuccessStatusCode(); // do this so an exception can be generated and logged
             }
             catch (HttpRequestException ex)
             {

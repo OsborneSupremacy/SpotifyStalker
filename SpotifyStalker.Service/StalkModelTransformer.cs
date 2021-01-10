@@ -83,6 +83,7 @@ namespace SpotifyStalker.Service
 
         public StalkModel RegisterTrack(
             StalkModel stalkModel,
+            PlaylistModel playlist,
             Track track
         )
         {
@@ -93,8 +94,10 @@ namespace SpotifyStalker.Service
 
             string trackId = track.Id ?? track.Name.ToLowerInvariant();
 
+            playlist.Tracks.TryAdd(trackId, track);
+
             if (!stalkModel.Tracks.TryAdd(trackId, track))
-                return stalkModel; // if track wasn't added now, it was already added, so don't need to do anything more.
+                return stalkModel; // if track wasn't added now, it was already added, so don't need to do anything more.            
 
             foreach (var artist in track.Artists)
             {

@@ -8,7 +8,7 @@ namespace SpotifyStalker.Interface
 {
     public interface IStalkModelTransformer
     {
-        StalkModel RegisterTrack(StalkModel stalkModel, Track track);
+        StalkModel RegisterTrack(StalkModel stalkModel, PlaylistModel playlistModel, Track track);
 
         StalkModel RegisterGenre(StalkModel stalkModel, ArtistModel artist);
 

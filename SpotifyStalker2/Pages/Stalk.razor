@@ -74,7 +74,7 @@
                                 {
                                     <tr>
                                         <td>@playlist.Name</td>
-                                        <td>@(playlist?.Items?.Count() ?? 0) / @(playlist.TrackInfo?.Total ?? 0)</td>
+                                        <td>@(playlist.Tracks.Count()) / @(playlist.TrackInfo?.Total ?? 0)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -208,7 +208,7 @@
 
             // add the tracks from the playlist api query to the list of all tracks
             foreach (var playlistModelTrack in playlistResultModel.Items)
-                ViewModel = StalkModelTransformer.RegisterTrack(ViewModel, playlistModelTrack.Track);
+                ViewModel = StalkModelTransformer.RegisterTrack(ViewModel, playlist.Value, playlistModelTrack.Track);
 
             IncrementCount<PlaylistModel>();
         }
@@ -219,7 +219,7 @@
         // get artist genres
         foreach (var artist in ViewModel.Artists.Items)
         {
-            if (string.IsNullOrEmpty(artist.Value.Id))
+            if (string.IsNullOrEmpty(artist.Value.Id)) // if artist has no id, request will fail. so don't bother.
             {
                 IncrementCount<ArtistModel>();
                 continue;
@@ -228,7 +228,6 @@
             // we have the artist name, ID, and track collection. we just need genres.
             // not going to replace the artist object with the one we query, because we would lose
             // the track list
-            // IF THERE"S NO ARTIST ID, DON'T BOTHER MAKING REQUEST SINCE IT"S GOING TO FAIL
             var artistGenres = await ApiQueryService.QueryAsync<ArtistModel>(artist.Value.Id);
             if (artistGenres.RequestStatus == RequestStatus.Success)
             {
