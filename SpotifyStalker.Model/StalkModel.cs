@@ -1,8 +1,5 @@
 ﻿using Spotify.Model;
 using Spotify.Object;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SpotifyStalker.Model
 {
@@ -14,6 +11,7 @@ namespace SpotifyStalker.Model
             Artists = new CategoryViewModel<ArtistModel>();
             Genres = new CategoryViewModel<GenreModel>();
             Tracks = new CategoryViewModel<Track>();
+            AudioFeatures = new CategoryViewModel<AudioFeaturesModel>();
         }
 
         public string UserName { get; set; }
@@ -28,17 +26,6 @@ namespace SpotifyStalker.Model
 
         public CategoryViewModel<Track> Tracks { get; set; }
 
-
-        //public List<ArtistModel> GetOrderedArtists() =>
-        //    Artists
-        //        .OrderByDescending(x => x.Value?.Tracks.Count() ?? 0)
-        //        .Select(x => x.Value)
-        //        .ToList();
-
-        //public List<GenreModel> GetOrderedGenres() =>
-        //    Genres
-        //        .OrderByDescending(x => x.Value?.Tracks.Count() ?? 0)
-        //        .Select(x => x.Value)
-        //        .ToList();
+        public CategoryViewModel<AudioFeaturesModel> AudioFeatures { get; set; }
     }
 }

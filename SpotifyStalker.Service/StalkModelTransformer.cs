@@ -34,6 +34,7 @@ namespace SpotifyStalker.Service
             stalkModel.Artists = new CategoryViewModel<ArtistModel>();
             stalkModel.Genres = new CategoryViewModel<GenreModel>();
             stalkModel.Tracks = new CategoryViewModel<Track>();
+            stalkModel.AudioFeatures = new CategoryViewModel<AudioFeaturesModel>();
 
             return stalkModel;
         }
@@ -45,6 +46,7 @@ namespace SpotifyStalker.Service
                 nameof(ArtistModel) => stalkModel.Artists as CategoryViewModel<T>,
                 nameof(GenreModel) => stalkModel.Genres as CategoryViewModel<T>,
                 nameof(Track) => stalkModel.Tracks as CategoryViewModel<T>,
+                nameof(AudioFeaturesModel) => stalkModel.AudioFeatures as CategoryViewModel<T>,
                 _ => throw new NotSupportedException($"Type `{typeof(T).Name}` not supported")
             };
 
@@ -97,7 +99,7 @@ namespace SpotifyStalker.Service
             playlist.Tracks.TryAdd(trackId, track);
 
             if (!stalkModel.Tracks.TryAdd(trackId, track))
-                return stalkModel; // if track wasn't added now, it was already added, so don't need to do anything more.            
+                return stalkModel; // if track wasn't added now, it was already added, so don't need to do anything more.
 
             foreach (var artist in track.Artists)
             {
@@ -133,6 +135,12 @@ namespace SpotifyStalker.Service
                 foreach(var track in artist.Tracks)
                     stalkModel.Genres.Items[genre].Tracks.TryAdd(track.Key, track.Value);
             }
+            return stalkModel;
+        }
+
+        public StalkModel RegisterAudioFeature(StalkModel stalkModel, AudioFeaturesModel audioFeatures)
+        {
+            stalkModel.AudioFeatures.TryAdd(audioFeatures.Id, audioFeatures);
             return stalkModel;
         }
     }

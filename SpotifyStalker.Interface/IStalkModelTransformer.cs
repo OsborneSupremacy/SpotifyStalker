@@ -12,6 +12,8 @@ namespace SpotifyStalker.Interface
 
         StalkModel RegisterGenre(StalkModel stalkModel, ArtistModel artist);
 
+        StalkModel RegisterAudioFeature(StalkModel stalk, AudioFeaturesModel audioFeatures);
+
         StalkModel Reset(StalkModel stalkModel);
 
         StalkModel BeginProcessing<T>(StalkModel stalkModel) where T : ISpotifyStandardObject;

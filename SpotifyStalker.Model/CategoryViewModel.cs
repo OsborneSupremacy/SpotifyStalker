@@ -25,6 +25,8 @@ namespace SpotifyStalker.Model
 
         public bool Display => Items.Any();
 
+        public string ProgressDisplay => $"{(Processed == 0 ? 0.0 : (Processed / (double)Total) * 100.0)}%";
+
         public int Processed { get; set; }
 
         public bool TryAdd(string id, T value) => Items.TryAdd(id, value);
