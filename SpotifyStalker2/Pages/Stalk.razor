@@ -248,7 +248,7 @@
 
     public async Task QueryUserAsync()
     {
-        ViewModel = StalkModelTransformer.Reset(ViewModel);
+        ViewModel = await StalkModelTransformer.ResetAsync(ViewModel);
 
         var (userPlaylistResult, userPlaylistModel) = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
 

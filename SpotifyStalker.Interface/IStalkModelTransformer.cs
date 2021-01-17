@@ -3,6 +3,7 @@ using Spotify.Model;
 using Spotify.Object;
 using SpotifyStalker.Model;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SpotifyStalker.Interface
 {
@@ -14,7 +15,7 @@ namespace SpotifyStalker.Interface
 
         StalkModel RegisterAudioFeature(StalkModel stalk, AudioFeaturesModel audioFeatures);
 
-        StalkModel Reset(StalkModel stalkModel);
+        Task<StalkModel> ResetAsync(StalkModel stalkModel);
 
         StalkModel BeginProcessing<T>(StalkModel stalkModel) where T : ISpotifyStandardObject;
 

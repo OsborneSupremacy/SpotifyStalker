@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using Spotify.Interface;
+using System.Threading.Tasks;
 
 namespace SpotifyStalker.Service
 {
@@ -18,15 +19,19 @@ namespace SpotifyStalker.Service
 
         private readonly ILogger<IApiRequestService> _logger;
 
+        private readonly IMetricProvider _metricProvider;
+
         public StalkModelTransformer(
             ILogger<IApiRequestService> logger,
+            IMetricProvider metricProvider,
             IMapper mapper
         ) {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _metricProvider = metricProvider ?? throw new ArgumentNullException(nameof(metricProvider));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public StalkModel Reset(StalkModel stalkModel)
+        public async Task<StalkModel> ResetAsync(StalkModel stalkModel)
         {
             stalkModel.UserPlaylistResult = RequestStatus.Default;
 
@@ -35,6 +40,14 @@ namespace SpotifyStalker.Service
             stalkModel.Genres = new CategoryViewModel<GenreModel>();
             stalkModel.Tracks = new CategoryViewModel<Track>();
             stalkModel.AudioFeatures = new CategoryViewModel<AudioFeaturesModel>();
+
+            stalkModel.Metrics = new CategoryViewModel<Metric>();
+
+            var metrics = (await _metricProvider.GetAllAsync()).ToList();
+
+            foreach(var metric in metrics) {
+                stalkModel.Metrics.TryAdd(metric.Id, metric);
+            }
 
             return stalkModel;
         }
@@ -141,6 +154,25 @@ namespace SpotifyStalker.Service
         public StalkModel RegisterAudioFeature(StalkModel stalkModel, AudioFeaturesModel audioFeatures)
         {
             stalkModel.AudioFeatures.TryAdd(audioFeatures.Id, audioFeatures);
+            return stalkModel;
+        }
+
+        public StalkModel CalculateMetric(StalkModel stalkModel, string name) 
+        {
+            var metric = stalkModel.Metrics.Items[name];
+
+            metric.Value = stalkModel.AudioFeatures.Items
+                .Select(x => x.Value)
+                .Select(metric.Field)
+                .Where(x => x.HasValue)
+                .Select(x => x.Value)
+                .Average();
+
+            var mp = metric.Value / (metric.Max - metric.Min);
+            if (mp < 0)
+                mp += 1.0;
+            metric.MarkerPercentage = mp * 100;
+
             return stalkModel;
         }
     }

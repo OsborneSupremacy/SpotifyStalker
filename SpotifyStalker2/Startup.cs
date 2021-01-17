@@ -41,6 +41,8 @@ namespace SpotifyStalker2
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IApiQueryService, ApiQueryService>();
 
+            services.AddSingleton<IMetricProvider, MetricProvider>();
+
             services.AddSingleton<IStalkModelTransformer, StalkModelTransformer>();
 
             services.AddHttpClient();

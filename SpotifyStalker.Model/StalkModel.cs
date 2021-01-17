@@ -12,6 +12,7 @@ namespace SpotifyStalker.Model
             Genres = new CategoryViewModel<GenreModel>();
             Tracks = new CategoryViewModel<Track>();
             AudioFeatures = new CategoryViewModel<AudioFeaturesModel>();
+            Metrics = new CategoryViewModel<Metric>();
         }
 
         public string UserName { get; set; }
@@ -27,5 +28,7 @@ namespace SpotifyStalker.Model
         public CategoryViewModel<Track> Tracks { get; set; }
 
         public CategoryViewModel<AudioFeaturesModel> AudioFeatures { get; set; }
+
+        public CategoryViewModel<Metric> Metrics { get; set; }
     }
 }
