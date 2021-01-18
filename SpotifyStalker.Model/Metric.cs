@@ -28,8 +28,12 @@ namespace SpotifyStalker.Model
 
         public double? Value { get; set; }
 
+        public string FormattedValue => (Value ?? 0).ToString(FormatString);
+
         public double? MarkerPercentage { get; set; }
 
         public Func<AudioFeatures, double?> Field { get; set; }
+
+        public string FormatString { get; set; }
     }
 }

@@ -23,7 +23,8 @@ namespace SpotifyStalker.Service
                         Max = 1,
                         NominalMin = 0,
                         NominalMax = 1,
-                        Field = (AudioFeatures x) => x.Danceability
+                        Field = (AudioFeatures x) => x.Danceability,
+                        FormatString = "0.0000"
                     },
 
                     new Metric()
@@ -35,7 +36,8 @@ namespace SpotifyStalker.Service
                         Max = 1,
                         NominalMin = 0,
                         NominalMax = 1,
-                        Field = (AudioFeatures x) => x.Energy
+                        Field = (AudioFeatures x) => x.Energy,
+                        FormatString = "0.0000"
                     },
 
                     new Metric()
@@ -47,7 +49,8 @@ namespace SpotifyStalker.Service
                         Max = 2,
                         NominalMin = -60,
                         NominalMax = 0,
-                        Field = (AudioFeatures x) => x.Loudness
+                        Field = (AudioFeatures x) => x.Loudness,
+                        FormatString = "0.0000 dB"
                     },
 
                     new Metric()
@@ -59,7 +62,8 @@ namespace SpotifyStalker.Service
                         Max = 1,
                         NominalMin = 0,
                         NominalMax = 1,
-                        Field = (AudioFeatures x) => x.Valence
+                        Field = (AudioFeatures x) => x.Valence,
+                        FormatString = "0.0000"
                     },
 
                     new Metric()
@@ -71,7 +75,8 @@ namespace SpotifyStalker.Service
                         Max = 1,
                         NominalMin = 0,
                         NominalMax = 1,
-                        Field = (AudioFeatures x) => x.Speechiness
+                        Field = (AudioFeatures x) => x.Speechiness,
+                        FormatString = "0.0000"
                     },
 
                     new Metric()
@@ -83,7 +88,8 @@ namespace SpotifyStalker.Service
                         Max = 1,
                         NominalMin = 0,
                         NominalMax = 1,
-                        Field = (AudioFeatures x) => x.Acousticness
+                        Field = (AudioFeatures x) => x.Acousticness,
+                        FormatString = "0.0000"
                     },
 
                     new Metric()
@@ -95,7 +101,8 @@ namespace SpotifyStalker.Service
                         Max = 1,
                         NominalMin = 0,
                         NominalMax = 1,
-                        Field = (AudioFeatures x) => x.Instrumentalness
+                        Field = (AudioFeatures x) => x.Instrumentalness,
+                        FormatString = "0.0000"
                     },
 
                     new Metric()
@@ -107,7 +114,8 @@ namespace SpotifyStalker.Service
                         Max = 1,
                         NominalMin = 0,
                         NominalMax = 1,
-                        Field = (AudioFeatures x) => x.Liveness
+                        Field = (AudioFeatures x) => x.Liveness,
+                        FormatString = "0.0000"
                     },
 
                     new Metric()
@@ -119,7 +127,8 @@ namespace SpotifyStalker.Service
                         Max = 250,
                         NominalMin = 0,
                         NominalMax = 250,
-                        Field = (AudioFeatures x) => x.Tempo
+                        Field = (AudioFeatures x) => x.Tempo,
+                        FormatString = "0.0000 BPM"
                     }
                 };
             });

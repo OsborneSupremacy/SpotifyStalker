@@ -60,6 +60,7 @@ namespace SpotifyStalker.Service
                 nameof(GenreModel) => stalkModel.Genres as CategoryViewModel<T>,
                 nameof(Track) => stalkModel.Tracks as CategoryViewModel<T>,
                 nameof(AudioFeaturesModel) => stalkModel.AudioFeatures as CategoryViewModel<T>,
+                nameof(Metric) => stalkModel.Metrics as CategoryViewModel<T>,
                 _ => throw new NotSupportedException($"Type `{typeof(T).Name}` not supported")
             };
 
@@ -154,13 +155,24 @@ namespace SpotifyStalker.Service
         public StalkModel RegisterAudioFeature(StalkModel stalkModel, AudioFeaturesModel audioFeatures)
         {
             stalkModel.AudioFeatures.TryAdd(audioFeatures.Id, audioFeatures);
+            CalculateAllMetricsAsync(stalkModel);
             return stalkModel;
         }
 
-        public StalkModel CalculateMetric(StalkModel stalkModel, string name) 
+        public StalkModel CalculateAllMetricsAsync(StalkModel stalkModel)
         {
-            var metric = stalkModel.Metrics.Items[name];
+            foreach(var metric in stalkModel.Metrics.Items)
+            {
+                stalkModel.Metrics.Items.TryUpdate(
+                    metric.Key,
+                    CalculateMetric(stalkModel,  metric.Value), 
+                    metric.Value);
+            }
+            return stalkModel;
+        }
 
+        protected Metric CalculateMetric(StalkModel stalkModel, Metric metric) 
+        {
             metric.Value = stalkModel.AudioFeatures.Items
                 .Select(x => x.Value)
                 .Select(metric.Field)
@@ -173,7 +185,7 @@ namespace SpotifyStalker.Service
                 mp += 1.0;
             metric.MarkerPercentage = mp * 100;
 
-            return stalkModel;
+            return metric;
         }
     }
 }
