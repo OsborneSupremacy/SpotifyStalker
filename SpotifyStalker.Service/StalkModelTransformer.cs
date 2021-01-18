@@ -155,11 +155,10 @@ namespace SpotifyStalker.Service
         public StalkModel RegisterAudioFeature(StalkModel stalkModel, AudioFeaturesModel audioFeatures)
         {
             stalkModel.AudioFeatures.TryAdd(audioFeatures.Id, audioFeatures);
-            CalculateAllMetricsAsync(stalkModel);
-            return stalkModel;
+            return CalculateAllMetrics(stalkModel);
         }
 
-        public StalkModel CalculateAllMetricsAsync(StalkModel stalkModel)
+        protected StalkModel CalculateAllMetrics(StalkModel stalkModel)
         {
             foreach(var metric in stalkModel.Metrics.Items)
             {
