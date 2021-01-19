@@ -40,8 +40,10 @@ namespace SpotifyStalker.Service
             stalkModel.Genres = new CategoryViewModel<GenreModel>();
             stalkModel.Tracks = new CategoryViewModel<Track>();
             stalkModel.AudioFeatures = new CategoryViewModel<AudioFeaturesModel>();
-
             stalkModel.Metrics = new CategoryViewModel<Metric>();
+
+            stalkModel.Losers = new ConcurrentDictionary<string, AudioFeaturesModel>();
+            stalkModel.Winners = new ConcurrentDictionary<string, AudioFeaturesModel>();
 
             var metrics = (await _metricProvider.GetAllAsync()).ToList();
 
@@ -155,36 +157,68 @@ namespace SpotifyStalker.Service
         public StalkModel RegisterAudioFeature(StalkModel stalkModel, AudioFeaturesModel audioFeatures)
         {
             stalkModel.AudioFeatures.TryAdd(audioFeatures.Id, audioFeatures);
-            return CalculateAllMetrics(stalkModel);
+            return CalculateAllMetrics(stalkModel, audioFeatures);
         }
 
-        protected StalkModel CalculateAllMetrics(StalkModel stalkModel)
+        protected StalkModel CalculateAllMetrics(StalkModel stalkModel, AudioFeaturesModel currentAudioFeaturesModel)
         {
             foreach(var metric in stalkModel.Metrics.Items)
             {
+                var (newMetric, isNewMin, isNewMax) = CalculateMetric(stalkModel, metric.Value, currentAudioFeaturesModel);
+
                 stalkModel.Metrics.Items.TryUpdate(
                     metric.Key,
-                    CalculateMetric(stalkModel,  metric.Value), 
+                    newMetric, 
                     metric.Value);
+
+                if (isNewMin)
+                {
+                    if (stalkModel.Losers.TryRemove(metric.Key, out _))
+                        stalkModel.Losers.TryAdd(metric.Key, currentAudioFeaturesModel);
+                }
+
+                if (isNewMax)
+                {
+                    if (stalkModel.Winners.TryRemove(metric.Key, out _))
+                        stalkModel.Winners.TryAdd(metric.Key, currentAudioFeaturesModel);
+                }
             }
             return stalkModel;
         }
 
-        protected Metric CalculateMetric(StalkModel stalkModel, Metric metric) 
+        protected (Metric newMetric, bool isNewMin, bool isNewMax) CalculateMetric(
+            StalkModel stalkModel, 
+            Metric metric, 
+            AudioFeaturesModel currentAudioFeaturesModel // sending this in so we can tell if it's the new min/max
+            )
         {
-            metric.Value = stalkModel.AudioFeatures.Items
+            bool isNewMin = false;
+            bool isNewMax = false;
+
+            var values = stalkModel.AudioFeatures.Items
                 .Select(x => x.Value)
                 .Select(metric.Field)
                 .Where(x => x.HasValue)
-                .Select(x => x.Value)
-                .Average();
+                .Select(x => x.Value);
 
-            var mp = metric.Value / (metric.Max - metric.Min);
+            var min = values.Min(); // compare to losers instead
+            metric.Average = values.Average();
+            var max = values.Max();
+
+            var thisValue = metric.Field(currentAudioFeaturesModel);
+
+            if(thisValue.HasValue) {
+                if (thisValue.Value < min) isNewMin = true;
+                if (thisValue.Value > max) isNewMax = true;
+            }
+
+            // calculate marker position for everage
+            var mp = metric.Average / (metric.Max - metric.Min);
             if (mp < 0)
                 mp += 1.0;
             metric.MarkerPercentage = mp * 100;
 
-            return metric;
+            return (metric, isNewMin, isNewMax);
         }
     }
 }

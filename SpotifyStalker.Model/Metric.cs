@@ -24,9 +24,9 @@ namespace SpotifyStalker.Model
 
         public double? NominalMax { get; set; }
 
-        public double? Value { get; set; }
+        public double? Average { get; set; }
 
-        public string FormattedValue => (Value ?? 0).ToString(FormatString);
+        public string FormattedAverage => (Average ?? 0).ToString(FormatString);
 
         public double? MarkerPercentage { get; set; }
 

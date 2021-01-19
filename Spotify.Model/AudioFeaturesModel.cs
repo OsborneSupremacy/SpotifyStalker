@@ -1,5 +1,6 @@
 ﻿using Spotify.Interface;
 using Spotify.Object;
+using System;
 
 namespace Spotify.Model
 {

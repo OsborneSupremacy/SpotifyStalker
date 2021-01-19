@@ -21,4 +21,8 @@
     <ProjectReference Include="..\SpotifyStalker.Service\SpotifyStalker.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\assests\images\" />
+  </ItemGroup>
+
 </Project>

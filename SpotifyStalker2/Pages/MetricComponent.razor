@@ -1,0 +1,26 @@
+﻿@using SpotifyStalker.Model
+
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">@Metric.Name</h1>
+        <p class="lead">@Metric.Content</p>
+
+        <p>Track with Most: (how much)</p>
+        <p>Track with Least: (how much)</p>
+
+        <div class="alert alert-primary">Average @Metric.Name: @Metric.FormattedAverage</div>
+
+        <img src="/assests/images/@Metric.ImageFile" />
+
+
+    </div>
+</div>
+
+
+@code {
+
+    public Guid Guid = Guid.NewGuid();
+
+    [Parameter]
+    public Metric Metric { get; set; }
+}

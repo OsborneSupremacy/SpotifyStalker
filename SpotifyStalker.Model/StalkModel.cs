@@ -1,5 +1,6 @@
 ﻿using Spotify.Model;
 using Spotify.Object;
+using System.Collections.Concurrent;
 
 namespace SpotifyStalker.Model
 {
@@ -13,6 +14,8 @@ namespace SpotifyStalker.Model
             Tracks = new CategoryViewModel<Track>();
             AudioFeatures = new CategoryViewModel<AudioFeaturesModel>();
             Metrics = new CategoryViewModel<Metric>();
+            Losers = new ConcurrentDictionary<string, AudioFeaturesModel>();
+            Winners = new ConcurrentDictionary<string, AudioFeaturesModel>();
         }
 
         public string UserName { get; set; }
@@ -28,6 +31,10 @@ namespace SpotifyStalker.Model
         public CategoryViewModel<Track> Tracks { get; set; }
 
         public CategoryViewModel<AudioFeaturesModel> AudioFeatures { get; set; }
+
+        public ConcurrentDictionary<string, AudioFeaturesModel> Losers { get; set; }
+
+        public ConcurrentDictionary<string, AudioFeaturesModel> Winners { get; set; }
 
         public CategoryViewModel<Metric> Metrics { get; set; }
     }
