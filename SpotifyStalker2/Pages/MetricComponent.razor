@@ -5,13 +5,12 @@
         <h1 class="display-4">@Metric.Name</h1>
         <p class="lead">@Metric.Content</p>
 
-        <p>Track with Most: (how much)</p>
-        <p>Track with Least: (how much)</p>
+        <p>Track with Most: @(Metric.Winner?.Track?.Name ?? string.Empty)</p>
+        <p>Track with Least: @(Metric.Loser?.Track?.Name ?? string.Empty)</p>
 
         <div class="alert alert-primary">Average @Metric.Name: @Metric.FormattedAverage</div>
 
         <img src="/assests/images/@Metric.ImageFile" />
-
 
     </div>
 </div>

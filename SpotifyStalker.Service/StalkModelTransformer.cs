@@ -42,9 +42,6 @@ namespace SpotifyStalker.Service
             stalkModel.AudioFeatures = new CategoryViewModel<AudioFeaturesModel>();
             stalkModel.Metrics = new CategoryViewModel<Metric>();
 
-            stalkModel.Losers = new ConcurrentDictionary<string, AudioFeaturesModel>();
-            stalkModel.Winners = new ConcurrentDictionary<string, AudioFeaturesModel>();
-
             var metrics = (await _metricProvider.GetAllAsync()).ToList();
 
             foreach(var metric in metrics) {
@@ -164,37 +161,22 @@ namespace SpotifyStalker.Service
         {
             foreach(var metric in stalkModel.Metrics.Items)
             {
-                var (newMetric, isNewMin, isNewMax) = CalculateMetric(stalkModel, metric.Value, currentAudioFeaturesModel);
+                var newMetric = CalculateMetric(stalkModel, metric.Value, currentAudioFeaturesModel);
 
                 stalkModel.Metrics.Items.TryUpdate(
                     metric.Key,
                     newMetric, 
                     metric.Value);
-
-                if (isNewMin)
-                {
-                    if (stalkModel.Losers.TryRemove(metric.Key, out _))
-                        stalkModel.Losers.TryAdd(metric.Key, currentAudioFeaturesModel);
-                }
-
-                if (isNewMax)
-                {
-                    if (stalkModel.Winners.TryRemove(metric.Key, out _))
-                        stalkModel.Winners.TryAdd(metric.Key, currentAudioFeaturesModel);
-                }
             }
             return stalkModel;
         }
 
-        protected (Metric newMetric, bool isNewMin, bool isNewMax) CalculateMetric(
+        protected Metric CalculateMetric(
             StalkModel stalkModel, 
             Metric metric, 
             AudioFeaturesModel currentAudioFeaturesModel // sending this in so we can tell if it's the new min/max
             )
         {
-            bool isNewMin = false;
-            bool isNewMax = false;
-
             var values = stalkModel.AudioFeatures.Items
                 .Select(x => x.Value)
                 .Select(metric.Field)
@@ -207,18 +189,22 @@ namespace SpotifyStalker.Service
 
             var thisValue = metric.Field(currentAudioFeaturesModel);
 
-            if(thisValue.HasValue) {
-                if (thisValue.Value < min) isNewMin = true;
-                if (thisValue.Value > max) isNewMax = true;
+            if(thisValue.HasValue)
+            {
+                if (!metric.Loser.HasValue || thisValue > metric.Winner.Value.MetricValue)
+                    metric.Winner = (thisValue.Value, stalkModel.Tracks.Items[currentAudioFeaturesModel.Id]);
+
+                if (!metric.Loser.HasValue || thisValue < metric.Loser.Value.MetricValue)
+                    metric.Loser = (thisValue.Value, stalkModel.Tracks.Items[currentAudioFeaturesModel.Id]);
             }
 
-            // calculate marker position for everage
+            // calculate marker position for average
             var mp = metric.Average / (metric.Max - metric.Min);
             if (mp < 0)
                 mp += 1.0;
             metric.MarkerPercentage = mp * 100;
 
-            return (metric, isNewMin, isNewMax);
+            return (metric);
         }
     }
 }

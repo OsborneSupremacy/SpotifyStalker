@@ -33,5 +33,9 @@ namespace SpotifyStalker.Model
         public Func<AudioFeatures, double?> Field { get; set; }
 
         public string FormatString { get; set; }
+
+        public (double MetricValue, Track Track)? Winner { get; set; }
+
+        public (double MetricValue, Track Track)? Loser { get; set; }
     }
 }
