@@ -1,14 +1,22 @@
 ﻿@using SpotifyStalker.Model
+@using Spotify.Object
 
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
         <h1 class="display-4">@Metric.Name</h1>
         <p class="lead">@Metric.Content</p>
 
-        <p>Track with Most: @(Metric.Winner?.Track?.Name ?? string.Empty)</p>
-        <p>Track with Least: @(Metric.Loser?.Track?.Name ?? string.Empty)</p>
+        <div class="alert alert-success">
+            Track with Highest @Metric.Name: @WriteTrackInfo(Metric.Winner)
+        </div>
 
-        <div class="alert alert-primary">Average @Metric.Name: @Metric.FormattedAverage</div>
+        <div class="alert alert-danger">
+            Track with Lowest @Metric.Name: @WriteTrackInfo(Metric.Loser)
+        </div>
+
+        <div class="alert alert-primary">
+            Average @Metric.Name: @Metric.FormattedAverage
+        </div>
 
         <img src="/assests/images/@Metric.ImageFile" />
 
@@ -22,4 +30,22 @@
 
     [Parameter]
     public Metric Metric { get; set; }
+
+    public string WriteTrackInfo((double MetricValue, Track Track)? input)
+    {
+        if (input == null) return "n/a";
+
+        var s = new System.Text.StringBuilder();
+        s.Append($"\"{input.Value.Track.Name}\", by ");
+
+        int artistCount = 0;
+        foreach(var artist in input.Value.Track.Artists) {
+            if (artistCount > 0) s.Append(", ");
+            s.Append(artist.Name);
+            artistCount++;
+        }
+
+        return s.ToString();
+    }
+
 }
