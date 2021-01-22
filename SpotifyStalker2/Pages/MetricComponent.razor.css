@@ -1,0 +1,25 @@
+﻿div.imageFrame {
+    background-size: contain;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    /* this is the width of Spotify's distribution images */
+    width: 1200px;
+    height: 500px;
+}
+
+    div.imageFrame > div {
+        /*border: solid 1px blue;*/
+        position: absolute;
+        /* this creates a box around the plot area of Spotify's distribution images */
+        width: 847px;
+        height: 386px;
+        left: 212px;
+        bottom: 112px;
+    }
+
+        div.imageFrame > div > div {
+            border-left: 2px solid orange;
+            position: absolute;
+            height: 384px;
+            font-size: 1px;
+        }

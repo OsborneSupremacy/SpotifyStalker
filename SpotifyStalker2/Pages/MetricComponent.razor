@@ -18,15 +18,18 @@
             Average @Metric.Name: @Metric.FormattedAverage
         </div>
 
-        <img src="/assests/images/@Metric.ImageFile" />
+        <div class="imageFrame" style="background-image: url('/assets/images/energy.png')">
+            <div>
+                <div style="left: 50%">&nbsp;</div>
+            </div>
+        </div>
+
 
     </div>
 </div>
 
 
 @code {
-
-    public Guid Guid = Guid.NewGuid();
 
     [Parameter]
     public Metric Metric { get; set; }
