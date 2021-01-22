@@ -1,4 +1,5 @@
-﻿div.imageFrame {
+﻿
+div.imageFrame {
     background-size: contain;
     background-position: bottom;
     background-repeat: no-repeat;
@@ -17,9 +18,9 @@
         bottom: 112px;
     }
 
-        div.imageFrame > div > div {
-            border-left: 2px solid orange;
-            position: absolute;
-            height: 384px;
-            font-size: 1px;
-        }
+div.imageMarker {
+    border-left: 2px solid orange;
+    position: absolute;
+    height: 384px;
+    font-size: 1px;
+}
