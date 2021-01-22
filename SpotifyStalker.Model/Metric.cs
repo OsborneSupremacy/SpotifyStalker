@@ -28,7 +28,7 @@ namespace SpotifyStalker.Model
 
         public string FormattedAverage => (Average ?? 0).ToString(FormatString);
 
-        public double? MarkerPercentage { get; set; }
+        public double? MarkerPosition { get; set; }
 
         public Func<AudioFeatures, double?> Field { get; set; }
 

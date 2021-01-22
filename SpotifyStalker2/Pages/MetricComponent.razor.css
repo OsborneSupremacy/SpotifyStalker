@@ -3,24 +3,19 @@ div.imageFrame {
     background-size: contain;
     background-position: bottom;
     background-repeat: no-repeat;
+    position: relative;
     /* this is the width of Spotify's distribution images */
     width: 1200px;
     height: 500px;
 }
 
-    div.imageFrame > div {
-        /*border: solid 1px blue;*/
+    div.imageFrame > svg {
+        /* border: solid 1px blue; */
         position: absolute;
         /* this creates a box around the plot area of Spotify's distribution images */
-        width: 847px;
+        width: 931px;
         height: 386px;
-        left: 212px;
-        bottom: 112px;
+        left: 150px;
+        bottom: 54px;
     }
 
-div.imageMarker {
-    border-left: 2px solid orange;
-    position: absolute;
-    height: 384px;
-    font-size: 1px;
-}

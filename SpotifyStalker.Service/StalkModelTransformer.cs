@@ -21,6 +21,8 @@ namespace SpotifyStalker.Service
 
         private readonly IMetricProvider _metricProvider;
 
+        private readonly double _plotAreaWidth = 931.0;
+
         public StalkModelTransformer(
             ILogger<IApiRequestService> logger,
             IMetricProvider metricProvider,
@@ -202,7 +204,7 @@ namespace SpotifyStalker.Service
             var mp = metric.Average / (metric.Max - metric.Min);
             if (mp < 0)
                 mp += 1.0;
-            metric.MarkerPercentage = mp * 100;
+            metric.MarkerPosition = _plotAreaWidth * mp;
 
             return (metric);
         }
