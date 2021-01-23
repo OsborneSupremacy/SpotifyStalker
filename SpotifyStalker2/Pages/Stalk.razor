@@ -51,12 +51,6 @@
             <div class="card">
                 <div class="card-header">
                     Playlists&nbsp;
-                    @if (ViewModel.Playlists.InProcess)
-                    {
-                        <div class="spinner-border spinner-border-sm" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    }
                     <CategoryProgress Processed="@ViewModel.Playlists.Processed" Style="bg-success" Total="@ViewModel.Playlists.Total" ProgressDisplay="@ViewModel.Playlists.ProgressDisplay" />
                 </div>
                 <div class="card-body">
@@ -91,12 +85,6 @@
             <div class="card">
                 <div class="card-header">
                     Artists&nbsp;
-                    @if (ViewModel.Artists.InProcess)
-                    {
-                        <div class="spinner-border spinner-border-sm" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    }
                     <CategoryProgress Processed="@ViewModel.Artists.Processed" Style="bg-info" Total="@ViewModel.Artists.Total" ProgressDisplay="@ViewModel.Artists.ProgressDisplay" />
                 </div>
                 <div class="card-body">
@@ -130,12 +118,6 @@
             <div class="card">
                 <div class="card-header">
                     Genres&nbsp;
-                    @if (ViewModel.Genres.InProcess)
-                    {
-                        <div class="spinner-border spinner-border-sm" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    }
                     <CategoryProgress Processed="@ViewModel.Genres.Processed" Style="bg-warning" Total="@ViewModel.Genres.Total" ProgressDisplay="@ViewModel.Genres.ProgressDisplay" />
                 </div>
                 <div class="card-body">
@@ -179,12 +161,6 @@
             <div class="card">
                 <div class="card-header">
                     Audio Features&nbsp;
-                    @if (ViewModel.Tracks.InProcess)
-                    {
-                        <div class="spinner-border spinner-border-sm" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    }
                     <CategoryProgress Processed="@ViewModel.Tracks.Processed" Style="bg-danger" Total="@ViewModel.Tracks.Total" ProgressDisplay="@ViewModel.Tracks.ProgressDisplay" />
                 </div>
                 <div class="card-body">
@@ -258,10 +234,6 @@
 
         if (!ViewModel.Playlists.Display) return;
 
-        BeginProcessing<PlaylistModel>();
-        BeginProcessing<Track>();
-        BeginProcessing<ArtistModel>();
-
         StateHasChanged();
 
         // at this point we only have playlist names and IDs.
@@ -286,9 +258,6 @@
             IncrementCount<PlaylistModel>();
         }
 
-        EndProcessing<PlaylistModel>();
-        BeginProcessing<GenreModel>();
-
         // get artist genres
         foreach (var artist in ViewModel.Artists.Items)
         {
@@ -312,11 +281,6 @@
             IncrementCount<ArtistModel>();
         }
 
-        EndProcessing<Track>();
-        EndProcessing<ArtistModel>();
-        EndProcessing<GenreModel>();
-
-        BeginProcessing<AudioFeaturesModel>();
         foreach (var track in ViewModel.Tracks.Items)
         {
             if (string.IsNullOrEmpty(track.Value.Id))
@@ -332,7 +296,6 @@
             IncrementCount<Track>();
         }
 
-        EndProcessing<AudioFeaturesModel>();
     }
 
     private void IncrementCount<T>() where T : ISpotifyStandardObject
@@ -341,15 +304,4 @@
         StateHasChanged();
     }
 
-    private void BeginProcessing<T>() where T : ISpotifyStandardObject
-    {
-        ViewModel = StalkModelTransformer.EndProcessing<T>(ViewModel);
-        StateHasChanged();
-    }
-
-    private void EndProcessing<T>() where T : ISpotifyStandardObject
-    {
-        ViewModel = StalkModelTransformer.EndProcessing<T>(ViewModel);
-        StateHasChanged();
-    }
 }

@@ -17,9 +17,6 @@ namespace SpotifyStalker.Interface
 
         Task<StalkModel> ResetAsync(StalkModel stalkModel);
 
-        StalkModel BeginProcessing<T>(StalkModel stalkModel) where T : ISpotifyStandardObject;
-
-        StalkModel EndProcessing<T>(StalkModel stalkModel) where T : ISpotifyStandardObject;
 
         StalkModel IncrementCount<T>(StalkModel stalkModel) where T : ISpotifyStandardObject;
 

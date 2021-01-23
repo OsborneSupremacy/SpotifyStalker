@@ -72,12 +72,6 @@ namespace SpotifyStalker.Service
             return stalkModel;
         }
 
-        public StalkModel BeginProcessing<T>(StalkModel stalkModel) where T : ISpotifyStandardObject =>
-            UpdateProcessing<T>(stalkModel, true);
-
-        public StalkModel EndProcessing<T>(StalkModel stalkModel) where T : ISpotifyStandardObject => 
-            UpdateProcessing<T>(stalkModel, false);
-
         protected StalkModel UpdateProcessing<T>(StalkModel stalkModel, bool processing) where T : ISpotifyStandardObject
         {
             var categoryViewModel = GetCategoryViewModel<T>(stalkModel);
