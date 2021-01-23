@@ -41,27 +41,6 @@
     </h5>
 }
 
-<div class="container">
-
-    <div class="progress">
-        <div class="progress-bar bg-success" role="progressbar" style="width: @(ViewModel.Playlists.ProgressDisplay);">Playlists</div>
-    </div>
-
-    <div class="progress">
-        <div class="progress-bar bg-info" role="progressbar" style="width: @(ViewModel.Artists.ProgressDisplay);">Artists</div>
-    </div>
-
-    <div class="progress">
-        <div class="progress-bar bg-warning" role="progressbar" style="width: @(ViewModel.Genres.ProgressDisplay);">Genres</div>
-    </div>
-
-    <div class="progress">
-        <div class="progress-bar bg-danger" role="progressbar" style="width: @(ViewModel.Tracks.ProgressDisplay);">Audio Features</div>
-    </div>
-
-</div>
-
-
 @if (ViewModel.Playlists.Display)
 {
     <!--begin - row 1 -->
@@ -71,13 +50,16 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    Playlists <span>(@ViewModel.Playlists.Processed / @ViewModel.Playlists.Total)</span>&nbsp;
+                    Playlists&nbsp;
                     @if (ViewModel.Playlists.InProcess)
                     {
                         <div class="spinner-border spinner-border-sm" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
                     }
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @(ViewModel.Playlists.ProgressDisplay);">(@ViewModel.Playlists.Processed / @ViewModel.Playlists.Total</div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="scroll">
@@ -110,13 +92,16 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    Artists <span>(@ViewModel.Artists.Processed / @ViewModel.Artists.Total)</span>&nbsp;
+                    Artists&nbsp;
                     @if (ViewModel.Artists.InProcess)
                     {
                         <div class="spinner-border spinner-border-sm" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
                     }
+                    <div class="progress">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: @(ViewModel.Artists.ProgressDisplay);">@ViewModel.Artists.Processed / @ViewModel.Artists.Total</div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="scroll">
@@ -148,13 +133,16 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    Genres <span>(@ViewModel.Genres.Processed / @ViewModel.Genres.Total)</span>&nbsp;
+                    Genres&nbsp;
                     @if (ViewModel.Genres.InProcess)
                     {
                         <div class="spinner-border spinner-border-sm" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
                     }
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: @(ViewModel.Genres.ProgressDisplay);">@ViewModel.Genres.Processed / @ViewModel.Genres.Total</div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="scroll">
@@ -196,13 +184,16 @@
         <div class="col-sm-8">
             <div class="card">
                 <div class="card-header">
-                    Audio Features <span>(@ViewModel.Tracks.Processed / @ViewModel.Tracks.Total)</span>&nbsp;
+                    Audio Features&nbsp;
                     @if (ViewModel.Tracks.InProcess)
                     {
                         <div class="spinner-border spinner-border-sm" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
                     }
+                    <div class="progress">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: @(ViewModel.Tracks.ProgressDisplay);">@ViewModel.Tracks.Processed / @ViewModel.Tracks.Total</div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div>
