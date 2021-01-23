@@ -57,9 +57,7 @@
                             <span class="sr-only">Loading...</span>
                         </div>
                     }
-                    <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: @(ViewModel.Playlists.ProgressDisplay);">(@ViewModel.Playlists.Processed / @ViewModel.Playlists.Total</div>
-                    </div>
+                    <CategoryProgress Processed="@ViewModel.Playlists.Processed" Style="bg-success" Total="@ViewModel.Playlists.Total" ProgressDisplay="@ViewModel.Playlists.ProgressDisplay" />
                 </div>
                 <div class="card-body">
                     <div class="scroll">
@@ -99,9 +97,7 @@
                             <span class="sr-only">Loading...</span>
                         </div>
                     }
-                    <div class="progress">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: @(ViewModel.Artists.ProgressDisplay);">@ViewModel.Artists.Processed / @ViewModel.Artists.Total</div>
-                    </div>
+                    <CategoryProgress Processed="@ViewModel.Artists.Processed" Style="bg-info" Total="@ViewModel.Artists.Total" ProgressDisplay="@ViewModel.Artists.ProgressDisplay" />
                 </div>
                 <div class="card-body">
                     <div class="scroll">
@@ -140,9 +136,7 @@
                             <span class="sr-only">Loading...</span>
                         </div>
                     }
-                    <div class="progress">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: @(ViewModel.Genres.ProgressDisplay);">@ViewModel.Genres.Processed / @ViewModel.Genres.Total</div>
-                    </div>
+                    <CategoryProgress Processed="@ViewModel.Genres.Processed" Style="bg-warning" Total="@ViewModel.Genres.Total" ProgressDisplay="@ViewModel.Genres.ProgressDisplay" />
                 </div>
                 <div class="card-body">
                     <div class="scroll">
@@ -191,9 +185,7 @@
                             <span class="sr-only">Loading...</span>
                         </div>
                     }
-                    <div class="progress">
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: @(ViewModel.Tracks.ProgressDisplay);">@ViewModel.Tracks.Processed / @ViewModel.Tracks.Total</div>
-                    </div>
+                    <CategoryProgress Processed="@ViewModel.Tracks.Processed" Style="bg-danger" Total="@ViewModel.Tracks.Total" ProgressDisplay="@ViewModel.Tracks.ProgressDisplay" />
                 </div>
                 <div class="card-body">
                     <div>

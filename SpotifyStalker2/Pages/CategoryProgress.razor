@@ -1,0 +1,19 @@
+﻿
+<div class="progress">
+    <div class="progress-bar @Style" role="progressbar" style="width: @ProgressDisplay;">@Processed / @Total</div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string ProgressDisplay { get; set; }
+
+    [Parameter]
+    public int Processed { get; set; }
+
+    [Parameter]
+    public int Total { get; set; }
+
+    [Parameter]
+    public string Style { get; set; }
+}
