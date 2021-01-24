@@ -8,7 +8,8 @@ namespace Spotify.Model
 {
     public class PlaylistModel : Playlist, IApiRequestObject
     {
-        public PlaylistModel() {
+        public PlaylistModel()
+        {
             Tracks = new ConcurrentDictionary<string, Track>();
         }
 

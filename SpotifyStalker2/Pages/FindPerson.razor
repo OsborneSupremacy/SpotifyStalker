@@ -1,0 +1,44 @@
+﻿@page "/findperson"
+
+@using SpotifyStalker.Interface
+@using SpotifyStalker.Model
+@using Spotify.Model
+@using Microsoft.Extensions.Options;
+
+@inject IApiQueryService ApiQueryService
+@inject IOptions<SpotifyApiSettings> Options;
+
+<h3>Find Someone To Stalk</h3>
+
+<p>Find a Spotify user by searching public playlists. Provide a keyword to search playlists with.</p>
+
+<div class="input-group mb-3" style="width: 500px;">
+    <input @bind-value="ViewModel.Keyword" type="text" placeholder="Enter a Keyword" class="form-control" />
+    <div class="input-group-append">
+        <button @onclick="QueryPlaylistsAsync" class="btn btn-primary">
+            Search
+        </button>
+    </div>
+</div>
+
+<p>&nbsp;</p>
+
+@code {
+
+    FindPersonModel ViewModel = new FindPersonModel();
+
+
+    public async Task QueryPlaylistsAsync()
+    {
+
+        var (searchResult, searchResultModel) = await ApiQueryService.QueryAsync<SearchResultModel>(ViewModel.Keyword);
+
+
+
+
+
+
+
+    }
+
+}
