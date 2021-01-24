@@ -47,6 +47,8 @@
             artistCount++;
         }
 
+        s.Append($" ({input.Value.MetricValue})");
+
         return s.ToString();
     }
 
