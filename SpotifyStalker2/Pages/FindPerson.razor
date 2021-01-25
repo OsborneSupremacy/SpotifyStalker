@@ -8,15 +8,18 @@
 @inject IApiQueryService ApiQueryService
 @inject IOptions<SpotifyApiSettings> Options;
 
-<h3>Find Someone To Stalk</h3>
+<h1>Find Someone To Stalk</h1>
 
-<p>Spotify doesn't let you search for users, for good reason. So how can you find a random user to "stalk"*.?</p>
+<div class="container-fluid">
 
-<p>The answer is, public playlists. You can search public playlists by keyword, and then view the username of the owner.</p>
+    <p>Spotify doesn't let you search for users, for good reason. So how can you find a random user to "stalk"*.?</p>
 
-<p>From there, you can view all of that user's public playlists.</p>
+    <p>The answer is, public playlists. You can search public playlists by keyword, and then view the username of the owner.</p>
 
-<p>Can't think of a good keyword? Try the name of any band, person, genre, or place.</p>
+    <p>From there, you can view all of that user's public playlists.</p>
+
+    <p>Can't think of a good keyword? Try the name of any band, person, genre, or place.</p>
+</div>
 
 <div class="input-group mb-3" style="width: 500px;">
     <input @bind-value="ViewModel.Keyword" @onblur="QueryPlaylistsAsync" type="text" placeholder="Enter a Keyword" class="form-control" />
@@ -69,13 +72,13 @@
                                             @(playlist?.TrackInfo?.Total ?? 0)
                                         </td>
                                         <td>
-                                            @(playlist?.Owner?.DisplayName ?? "No owner? How, Spotify?")
+                                            @(playlist?.Owner?.DisplayName ?? "spotify")
                                         </td>
                                         <td>
-                                            <button class="btn btn-primary btn-sm">
-                                                Select
-                                            </button>
-                                            @(playlist.Owner.Id ?? string.Empty)
+                                            <a class="btn btn-primary btn-sm" href="/stalk/@(playlist?.Owner?.Id ?? "spotify")">
+                                                Stalk
+                                            </a>
+                                            @(playlist?.Owner?.Id ?? "spotify")
                                         </td>
                                     </tr>
                                 }

@@ -7,11 +7,11 @@
         <p class="lead">@Metric.Content</p>
 
         <div class="alert alert-success">
-            Track with Highest @Metric.Name: @WriteTrackInfo(Metric.Winner)
+            Track with Highest @Metric.Name: @WriteTrackInfo(Metric.Winner) <span class="badge badge-success">@(Metric?.Winner?.MetricValue ?? 0)</span>
         </div>
 
         <div class="alert alert-danger">
-            Track with Lowest @Metric.Name: @WriteTrackInfo(Metric.Loser)
+            Track with Lowest @Metric.Name: @WriteTrackInfo(Metric.Loser) <span class="badge badge-danger">@(Metric?.Loser?.MetricValue ?? 0)</span>
         </div>
 
         <div class="alert alert-primary">
@@ -46,8 +46,6 @@
             s.Append(artist.Name);
             artistCount++;
         }
-
-        s.Append($" ({input.Value.MetricValue})");
 
         return s.ToString();
     }

@@ -1,4 +1,5 @@
 ﻿@page "/stalk"
+@page "/stalk/{username}"
 
 @using SpotifyStalker.Interface
 @using Spotify.Model
@@ -60,9 +61,9 @@
                             </thead>
                             <tbody>
                                 @foreach (var playlist in StalkModelTransformer
-                             .GetItems<PlaylistModel>(ViewModel)
-                             .OrderByDescending(x => x.TrackInfo.Total)
-                             .ToList())
+                            .GetItems<PlaylistModel>(ViewModel)
+                            .OrderByDescending(x => x.TrackInfo.Total)
+                            .ToList())
                                 {
                                     <tr>
                                         <td>@playlist.Name</td>
@@ -94,8 +95,8 @@
                             </thead>
                             <tbody>
                                 @foreach (var artist in StalkModelTransformer
-                             .GetItems<ArtistModel>(ViewModel)
-                             .OrderByDescending(x => x.Tracks?.Count ?? 0))
+                            .GetItems<ArtistModel>(ViewModel)
+                            .OrderByDescending(x => x.Tracks?.Count ?? 0))
                                 {
                                     <tr>
                                         <td>@artist.Name</td>
@@ -128,8 +129,8 @@
                             </thead>
                             <tbody>
                                 @foreach (var genre in StalkModelTransformer
-                             .GetItems<GenreModel>(ViewModel)
-                             .OrderByDescending(x => x.Tracks.Count).ToList())
+                            .GetItems<GenreModel>(ViewModel)
+                            .OrderByDescending(x => x.Tracks.Count).ToList())
                                 {
                                     <tr>
                                         <td>@genre.Name</td>
@@ -171,7 +172,7 @@
                             </thead>
                             <tbody>
                                 @foreach (var metric in StalkModelTransformer
-                           .GetItems<Metric>(ViewModel).ToList())
+                          .GetItems<Metric>(ViewModel).ToList())
                                 {
                                     <tr>
                                         <td>
@@ -206,9 +207,19 @@
 
 @code {
 
+    [Parameter]
+    public string Username { get; set; }
+
     private MetricComponent MetricComponent { get; set; }
 
-    StalkModel ViewModel = new StalkModel();
+    StalkModel ViewModel;
+
+    protected override void OnInitialized()
+    {
+        ViewModel = new StalkModel();
+        if (!string.IsNullOrWhiteSpace(Username))
+            ViewModel.UserName = Username;
+    }
 
     public async Task QueryUserAsync()
     {
