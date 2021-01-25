@@ -10,10 +10,16 @@
 
 <h3>Find Someone To Stalk</h3>
 
-<p>Find a Spotify user by searching public playlists. Provide a keyword to search playlists with.</p>
+<p>Spotify doesn't let you search for users, for good reason. So how can you find a random user to "stalk"*.?</p>
+
+<p>The answer is, public playlists. You can search public playlists by keyword, and then view the username of the owner.</p>
+
+<p>From there, you can view all of that user's public playlists.</p>
+
+<p>Can't think of a good keyword? Try the name of any band, person, genre, or place.</p>
 
 <div class="input-group mb-3" style="width: 500px;">
-    <input @bind-value="ViewModel.Keyword" type="text" placeholder="Enter a Keyword" class="form-control" />
+    <input @bind-value="ViewModel.Keyword" @onblur="QueryPlaylistsAsync" type="text" placeholder="Enter a Keyword" class="form-control" />
     <div class="input-group-append">
         <button @onclick="QueryPlaylistsAsync" class="btn btn-primary">
             Search
@@ -23,19 +29,87 @@
 
 <p>&nbsp;</p>
 
+@if (ViewModel.SearchStatus == RequestStatus.NotFound 
+|| (ViewModel.SearchStatus == RequestStatus.Success && !(ViewModel.Playlists?.Any() ?? false)))
+{
+    <h5 class="alert alert-danger" role="alert">
+        No playlists found with a keyword of `@ViewModel.Keyword`.
+    </h5>
+}
+
+@if (ViewModel.Playlists?.Any() ?? false) 
+{
+    <div class="row">
+
+        <div class="col-sm-12">
+
+            <div class="card">
+                <div class="card-header">
+                    Playlist Results for Keyword `@ViewModel.Keyword`
+                </div>
+                <div class="card-body">
+                    <div>
+                        <table class='table table-striped' aria-labelledby="tableLabel" >
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Track Count</th>
+                                    <th>Owner Display Name</th>
+                                    <th>Owner Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var playlist in ViewModel.Playlists)
+                                {
+                                    <tr>
+                                        <td>
+                                            @playlist.Name
+                                        </td>
+                                        <td>
+                                            @(playlist?.TrackInfo?.Total ?? 0)
+                                        </td>
+                                        <td>
+                                            @(playlist?.Owner?.DisplayName ?? "No owner? How, Spotify?")
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm">
+                                                Select
+                                            </button>
+                                            @(playlist.Owner.Id ?? string.Empty)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+
+<p>&nbsp;</p>
+
+
 @code {
 
     FindPersonModel ViewModel = new FindPersonModel();
 
-
     public async Task QueryPlaylistsAsync()
     {
+        var (searchStatus, searchResultModel) = await ApiQueryService.QueryAsync<SearchResultModel>(ViewModel.Keyword);
 
-        var (searchResult, searchResultModel) = await ApiQueryService.QueryAsync<SearchResultModel>(ViewModel.Keyword);
+        ViewModel.SearchStatus = searchStatus;
 
+        if(searchStatus != RequestStatus.Success) 
+        {
+            StateHasChanged();
+            return;
+        }
 
-
-
+        ViewModel.Playlists = searchResultModel.Playlists.Items.ToList();
 
 
 
