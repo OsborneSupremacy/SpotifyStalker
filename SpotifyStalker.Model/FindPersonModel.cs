@@ -1,6 +1,6 @@
-﻿using Spotify.Model;
-using Spotify.Object;
+﻿using Spotify.Object;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpotifyStalker.Model
 {
@@ -12,7 +12,7 @@ namespace SpotifyStalker.Model
 
         public List<Playlist> Playlists { get; set; }
 
-
-
+        public bool ShowPlaylists =>
+            SearchStatus == RequestStatus.Success && !(Playlists?.Any() ?? false);
     }
 }

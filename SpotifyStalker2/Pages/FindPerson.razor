@@ -7,6 +7,8 @@
 
 @inject IApiQueryService ApiQueryService
 @inject IOptions<SpotifyApiSettings> Options;
+@inject IRandomProvider RandomProvider;
+@inject NavigationManager NavigationManager;
 
 <h1>Find Someone To Stalk</h1>
 
@@ -18,7 +20,7 @@
 
     <p>From there, you can view all of that user's public playlists.</p>
 
-    <p>Can't think of a good keyword? Try the name of any band, person, genre, or place.</p>
+    <p>Can't think of a good keyword? Try the name of any band, person, genre, or <button @onclick="FindRandomLocation" type="button" class="btn btn-secondary btn-sm">place</button>, or let us <button @onclick="JustPickSomeoneAsync" type="button" class="btn btn-secondary btn-sm">just pick someone</button>.</p>
 </div>
 
 <div class="input-group mb-3" style="width: 500px;">
@@ -32,8 +34,7 @@
 
 <p>&nbsp;</p>
 
-@if (ViewModel.SearchStatus == RequestStatus.NotFound 
-|| (ViewModel.SearchStatus == RequestStatus.Success && !(ViewModel.Playlists?.Any() ?? false)))
+@if (ViewModel.ShowPlaylists)
 {
     <h5 class="alert alert-danger" role="alert">
         No playlists found with a keyword of `@ViewModel.Keyword`.
@@ -106,7 +107,7 @@
 
         ViewModel.SearchStatus = searchStatus;
 
-        if(searchStatus != RequestStatus.Success) 
+        if(searchStatus != RequestStatus.Success)
         {
             StateHasChanged();
             return;
@@ -114,8 +115,26 @@
 
         ViewModel.Playlists = searchResultModel.Playlists.Items.ToList();
 
+    }
 
+    public async Task FindRandomLocation()
+    {
+        ViewModel.Keyword = RandomProvider.GetLocation();
 
+        await QueryPlaylistsAsync();
+    }
+
+    public async Task JustPickSomeoneAsync()
+    {
+        ViewModel.Keyword = RandomProvider.GetWord();
+
+        await QueryPlaylistsAsync();
+
+        if (!(ViewModel.Playlists?.Any() ?? false)) return;
+
+        var playlist = RandomProvider.PickRandom(ViewModel.Playlists);
+
+        NavigationManager.NavigateTo($"/stalk/{playlist.Owner.Id}");
     }
 
 }

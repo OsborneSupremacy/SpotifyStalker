@@ -35,6 +35,8 @@ namespace SpotifyStalker2
             services.AddSingleton<WeatherForecastService>();
 
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+            services.AddSingleton<IRandomProvider, RandomProvider>();
+
             services.AddSingleton<IHttpFormPostService, HttpFormPostService>();
             services.AddSingleton<IApiRequestService, ApiRequestService>();
             services.AddSingleton<IApiRequestUrlBuilder, ApiRequestUrlBuilder>();
