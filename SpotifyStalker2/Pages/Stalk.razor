@@ -27,14 +27,14 @@
 @if (ViewModel.UserPlaylistResult == RequestStatus.NotFound)
 {
     <h5 class="alert alert-danger" role="alert">
-        User @ViewModel.UserName not found!
+        User <span class="badge badge-danger">@ViewModel.UserName</span> not found!
     </h5>
 }
 
 @if (ViewModel.UserPlaylistResult == RequestStatus.Success && !ViewModel.Playlists.Display)
 {
     <h5 class="alert alert-warning" role="alert">
-        User @ViewModel.UserName exists, but has no public playlists.
+        User <span class="badge badge-warning">@ViewModel.UserName exists</span>, but has no public playlists.
     </h5>
 }
 
@@ -212,13 +212,18 @@
 
     private MetricComponent MetricComponent { get; set; }
 
-    StalkModel ViewModel;
+    StalkModel ViewModel = new StalkModel();
 
-    protected override void OnInitialized()
+    protected override Task OnInitializedAsync()
     {
-        ViewModel = new StalkModel();
         if (!string.IsNullOrWhiteSpace(Username))
+        {
             ViewModel.UserName = Username;
+            return QueryUserAsync();
+        } else
+        {
+            return Task.CompletedTask;
+        }
     }
 
     public async Task QueryUserAsync()
