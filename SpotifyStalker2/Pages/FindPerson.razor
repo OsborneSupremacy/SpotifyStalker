@@ -123,32 +123,21 @@
 
     }
 
-    public async Task FindRandomPerson()
+    public async Task FindRandomPerson() => await SearchForKeyWord(RandomProvider.GetPersonName());
+
+    public async Task FindRandomLocation() => await SearchForKeyWord(RandomProvider.GetLocation());
+
+    public async Task FindRandomGenre() => await SearchForKeyWord(RandomProvider.GetGenre());
+
+    protected async Task SearchForKeyWord(string keyword)
     {
-        ViewModel.Keyword = RandomProvider.GetPersonName();
-
-        await QueryPlaylistsAsync();
-    }
-
-    public async Task FindRandomLocation()
-    {
-        ViewModel.Keyword = RandomProvider.GetLocation();
-
-        await QueryPlaylistsAsync();
-    }
-
-    public async Task FindRandomGenre()
-    {
-        ViewModel.Keyword = RandomProvider.GetGenre();
-
+        ViewModel.Keyword = keyword;
         await QueryPlaylistsAsync();
     }
 
     public async Task JustPickSomeoneAsync()
     {
-        ViewModel.Keyword = RandomProvider.GetWord();
-
-        await QueryPlaylistsAsync();
+        await SearchForKeyWord(RandomProvider.GetWord());
 
         if (!(ViewModel.Playlists?.Any() ?? false)) return;
 
