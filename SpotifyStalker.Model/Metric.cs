@@ -8,7 +8,7 @@ namespace SpotifyStalker.Model
     {
         public string Name { get; set; }
 
-        public string Id  => Name;
+        public string Id => Name;
 
         public string Content { get; set; }
 

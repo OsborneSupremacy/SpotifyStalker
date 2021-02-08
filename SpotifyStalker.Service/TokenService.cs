@@ -50,7 +50,7 @@ namespace SpotifyStalker.Service
         {
             if (_token != null && _token.ExpirationDate > _dateTimeProvider.GetCurrentDateTime())
             {
-                _logger.LogInformation("Valid token found");
+                _logger.LogDebug("Valid token found");
                 return _token;
             }
 

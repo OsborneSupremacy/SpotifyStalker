@@ -78,7 +78,7 @@ namespace SpotifyStalker.Service
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Success response received");
+                _logger.LogDebug("Success response received");
                 apiResponse.RequestStatus = RequestStatus.Success;
                 apiResponse.HttpResponseMessage = response;
                 return apiResponse;
@@ -94,7 +94,7 @@ namespace SpotifyStalker.Service
                 case HttpStatusCode.ServiceUnavailable:
                     apiResponse.RequestStatus = RequestStatus.Retry;
                     apiResponse.WaitMs = response.Headers?.RetryAfter?.Delta?.TotalMilliseconds ?? 5000;
-                    _logger.LogInformation($"Rate limit hit. Retry in {apiResponse.WaitMs} milliseconds.");
+                    _logger.LogDebug($"Rate limit hit. Retry in {apiResponse.WaitMs} milliseconds.");
                     return apiResponse;
             }
 

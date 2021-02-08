@@ -16,7 +16,7 @@ namespace Spotify.Model
     public class AudioFeaturesModelCollection : IApiBatchRequestObject
     {
         [JsonIgnore]
-        public string UrlBatch => "audio-features?ids=";
+        public string UrlBase => "audio-features?ids=";
 
         [JsonPropertyName("audio_features")]
         public IEnumerable<AudioFeaturesModel> AudioFeaturesList { get; set; }

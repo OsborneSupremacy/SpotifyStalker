@@ -17,7 +17,7 @@ namespace Spotify.Model
     public class ArtistModelCollection : IApiBatchRequestObject
     {
         [JsonIgnore]
-        public string UrlBatch => "artists?ids=";
+        public string UrlBase => "artists?ids=";
 
         [JsonPropertyName("artists")]
         public IEnumerable<ArtistModel> Artists { get; set; }

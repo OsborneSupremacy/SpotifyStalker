@@ -53,7 +53,7 @@ namespace SpotifyStalker.Service
         public string BuildBatch<T>(IEnumerable<string> ids) where T : IApiBatchRequestObject, new()
         {
             var u = new StringBuilder(_spotifyApiSettings.SpotifyBaseUrl);
-            u.Append($"/{new T().UrlBatch}{string.Join(",",ids)}");
+            u.Append($"/{new T().UrlBase}{string.Join(",",ids)}");
 
             var url = u.ToString();
             return url;
