@@ -1,6 +1,5 @@
 ﻿using Spotify.Interface;
 using SpotifyStalker.Model;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SpotifyStalker.Interface

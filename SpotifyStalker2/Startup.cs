@@ -51,6 +51,7 @@ namespace SpotifyStalker2
             services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
 
             services.AddScoped<IApiBatchQueryService<ArtistModelCollection>, ApiBatchQueryService<ArtistModelCollection>>();
+            services.AddScoped<IApiBatchQueryService<AudioFeaturesModelCollection>, ApiBatchQueryService<AudioFeaturesModelCollection>>();
 
         }
 

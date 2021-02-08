@@ -8,8 +8,8 @@ namespace Spotify.Model
 {
     public class ArtistModel : Artist, IApiRequestObject
     {
+        [JsonIgnore]
         public string UrlTemplate => "artists/{Id}";
-
 
         public ConcurrentDictionary<string, Track>? Tracks { get; set; }
     }
