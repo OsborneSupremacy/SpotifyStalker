@@ -98,29 +98,31 @@ namespace SpotifyStalker.Service
             Track track
         )
         {
-            if(track == null) {
-                _logger.LogWarning("Track is null. Skipping");
+            // if a track has a null / empty ID, we can't use it for anything.
+            if(track == null || string.IsNullOrEmpty(track?.Id)) {
+                _logger.LogWarning("Track is null or has a null ID. Skipping");
                 return stalkModel;
             }
 
-            string trackId = track.Id ?? track.Name.ToLowerInvariant();
+            playlist.Tracks.TryAdd(track.Id, track);
 
-            playlist.Tracks.TryAdd(trackId, track);
-
-            if (!stalkModel.Tracks.TryAdd(trackId, track))
+            if (!stalkModel.Tracks.TryAdd(track.Id, track))
                 return stalkModel; // if track wasn't added now, it was already added, so don't need to do anything more.
 
             foreach (var artist in track.Artists)
             {
-                var artistId = artist.Id ?? artist.Name.ToLowerInvariant();
-
-                if (stalkModel.Artists.TryAdd(artistId, _mapper.Map<ArtistModel>(artist)))
-                {
-                    // if artist was just added now, instantiate their track list
-                    stalkModel.Artists.Items[artistId].Tracks = new ConcurrentDictionary<string, Track>();
+                if(string.IsNullOrEmpty(artist.Id)) {
+                    _logger.LogWarning("Artist has a null ID. Skipping");
+                    continue;
                 };
 
-                stalkModel.Artists.Items[artistId].Tracks.TryAdd(trackId, track);
+                if (stalkModel.Artists.TryAdd(artist.Id, _mapper.Map<ArtistModel>(artist)))
+                {
+                    // if artist was just added now, instantiate their track list
+                    stalkModel.Artists.Items[artist.Id].Tracks = new ConcurrentDictionary<string, Track>();
+                };
+
+                stalkModel.Artists.Items[artist.Id].Tracks.TryAdd(track.Id, track);
             }
             return stalkModel;
         }

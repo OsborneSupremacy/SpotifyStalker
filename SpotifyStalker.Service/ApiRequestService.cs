@@ -24,7 +24,7 @@ namespace SpotifyStalker.Service
             _httpClientFactory = httpClientFactory ?? throw new System.ArgumentNullException(nameof(httpClientFactory));
         }
 
-        public async Task<(RequestStatus RequestStatus, T)> GetAsync<T>(string url)
+        public async Task<(RequestStatus RequestStatus, T Result)> GetAsync<T>(string url)
         {
             var keepTrying = true;
             var requestStatus = RequestStatus.Default;

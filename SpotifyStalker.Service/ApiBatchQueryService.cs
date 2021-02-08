@@ -55,7 +55,7 @@ namespace SpotifyStalker.Service
                 }
             }
 
-            _logger.LogDebug($"Batch is ready to send. Items count {b}");
+            _logger.LogDebug($"Batch is ready to send. Item count {b}");
             var url = _apiRequestUrlBuilder.BuildBatch<T>(ids);
 
             var result = await _apiRequestService.GetAsync<T>(url);
