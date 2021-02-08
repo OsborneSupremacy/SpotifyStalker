@@ -10,6 +10,7 @@
 @inject IApiQueryService ApiQueryService
 @inject IStalkModelTransformer StalkModelTransformer;
 @inject IOptions<SpotifyApiSettings> Options;
+@inject IApiBatchQueryService<ArtistModelCollection> ArtistBatchQueryService;
 
 <h1>Stalk</h1>
 
@@ -270,28 +271,30 @@
             IncrementCount<PlaylistModel>();
         }
 
-        // get artist genres
-        foreach (var artist in ViewModel.Artists.Items)
+        // add all artists to batch query service
+        foreach(var artist in ViewModel.Artists.Items)
+            ArtistBatchQueryService.AddToQueue(artist.Key);
+
+        while(!ArtistBatchQueryService.QueueIsEmpty())
         {
-            if (string.IsNullOrEmpty(artist.Value.Id)) // if artist has no id, request will fail. so don't bother.
+            var (countOfItemsQueried, requestStatus, results) = await ArtistBatchQueryService.QueryAsync();
+            IncrementCount<ArtistModel>(countOfItemsQueried);
+            if (requestStatus != RequestStatus.Success) continue;
+
+            // loop through results, assigning artist genres to artists
+            foreach(var result in results.Artists)
             {
-                IncrementCount<ArtistModel>();
-                continue;
+                // if result is null, that's odd, need to look into that
+                if (string.IsNullOrEmpty(result?.Id)) continue;
+                var artist = ViewModel.Artists.Items[result.Id];
+                if (artist == null) continue;
+
+                artist.Genres = result.Genres;
+                StalkModelTransformer.RegisterGenre(ViewModel, artist);
             }
-
-            // we have the artist name, ID, and track collection. we just need genres.
-            // not going to replace the artist object with the one we query, because we would lose
-            // the track list
-            var artistGenres = await ApiQueryService.QueryAsync<ArtistModel>(artist.Value.Id);
-            if (artistGenres.RequestStatus == RequestStatus.Success)
-            {
-                // just copy the genres
-                artist.Value.Genres = artistGenres.Data.Genres;
-                ViewModel = StalkModelTransformer.RegisterGenre(ViewModel, artist.Value);
-            };
-
-            IncrementCount<ArtistModel>();
         }
+
+
 
         foreach (var track in ViewModel.Tracks.Items)
         {
@@ -310,9 +313,10 @@
 
     }
 
-    private void IncrementCount<T>() where T : ISpotifyStandardObject
+    private void IncrementCount<T>(int incrementBy = 1) where T : ISpotifyStandardObject
     {
-        ViewModel = StalkModelTransformer.IncrementCount<T>(ViewModel);
+        for(int x = 0; x <= incrementBy; x++)
+            ViewModel = StalkModelTransformer.IncrementCount<T>(ViewModel);
         StateHasChanged();
     }
 

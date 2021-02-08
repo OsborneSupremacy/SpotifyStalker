@@ -49,6 +49,9 @@ namespace SpotifyStalker2
 
             services.AddHttpClient();
             services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
+
+            services.AddScoped<IApiBatchQueryService<ArtistModelCollection>, ApiBatchQueryService<ArtistModelCollection>>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -34,6 +34,11 @@ namespace Spotify.Model
         [Required]
         [Range(1, 100)]
         public int PlaylistTrack { get; set; }
+
+        [JsonPropertyName("batchsize")]
+        [Required]
+        [Range(1, 50)]
+        public int BatchSize { get; set; }
     }
 
     public class ApiKeys

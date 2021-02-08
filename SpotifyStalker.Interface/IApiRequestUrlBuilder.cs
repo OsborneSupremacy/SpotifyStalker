@@ -11,5 +11,7 @@ namespace SpotifyStalker.Interface
 
         string Build<T>(
             params KeyValuePair<string, string>[] substitutions) where T : IApiRequestObject, new();
+
+        string BuildBatch<T>(IEnumerable<string> ids) where T : IApiBatchRequestObject, new();
     }
 }
