@@ -24,5 +24,7 @@
     [Parameter]
     public string Style { get; set; }
 
-    public bool Processing => Total > Processed;
+    public bool Processing => 
+        (Processed > 0) 
+        && (Total > Processed);
 }
