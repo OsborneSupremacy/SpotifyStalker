@@ -42,6 +42,14 @@
 
 @if (ViewModel.Playlists.Display)
 {
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <p class="lead">You are stalking:</p>
+            <h1>@ViewModel.Playlists.Items.FirstOrDefault().Value.Owner.DisplayName</h1>
+            <h2><span class="badge badge-success">Spotify ID</span> @ViewModel.Playlists.Items.FirstOrDefault().Value.Owner.Id</h2>
+        </div>
+    </div>
+
     <!--begin - row 1 -->
     <div class="row">
 
@@ -63,9 +71,9 @@
                             </thead>
                             <tbody>
                                 @foreach (var playlist in StalkModelTransformer
-                           .GetItems<PlaylistModel>(ViewModel)
-                           .OrderByDescending(x => x.TrackInfo.Total)
-                           .ToList())
+                          .GetItems<PlaylistModel>(ViewModel)
+                          .OrderByDescending(x => x.TrackInfo.Total)
+                          .ToList())
                                 {
                                     <tr>
                                         <td>@playlist.Name</td>
@@ -97,8 +105,8 @@
                             </thead>
                             <tbody>
                                 @foreach (var artist in StalkModelTransformer
-                           .GetItems<ArtistModel>(ViewModel)
-                           .OrderByDescending(x => x.Tracks?.Count ?? 0))
+                          .GetItems<ArtistModel>(ViewModel)
+                          .OrderByDescending(x => x.Tracks?.Count ?? 0))
                                 {
                                     <tr>
                                         <td>@artist.Name</td>
@@ -131,8 +139,8 @@
                             </thead>
                             <tbody>
                                 @foreach (var genre in StalkModelTransformer
-                           .GetItems<GenreModel>(ViewModel)
-                           .OrderByDescending(x => x.Tracks.Count).ToList())
+                          .GetItems<GenreModel>(ViewModel)
+                          .OrderByDescending(x => x.Tracks.Count).ToList())
                                 {
                                     <tr>
                                         <td>@genre.Name</td>
@@ -174,7 +182,7 @@
                             </thead>
                             <tbody>
                                 @foreach (var metric in StalkModelTransformer
-                         .GetItems<Metric>(ViewModel).ToList())
+                        .GetItems<Metric>(ViewModel).ToList())
                                 {
                                     <tr>
                                         <td>
@@ -204,15 +212,15 @@
     {
         <MetricComponent @ref="MetricComponent" Metric="@metric"></MetricComponent>
     }
-}
+    }
 
 
-@code {
+    @code {
 
-    [Parameter]
-    public string Username { get; set; }
+        [Parameter]
+        public string Username { get; set; }
 
-    private MetricComponent MetricComponent { get; set; }
+private MetricComponent MetricComponent { get; set; }
 
     StalkModel ViewModel = new StalkModel();
 
@@ -314,7 +322,7 @@
                 AudioFeaturesQueryService.AddToQueue(track.Value.Id);
         }
 
-        while(!AudioFeaturesQueryService.QueueIsEmpty())
+        while (!AudioFeaturesQueryService.QueueIsEmpty())
         {
             var (countOfItemsQueried, requestStatus, results) = await AudioFeaturesQueryService.QueryAsync();
 
@@ -325,7 +333,7 @@
             }
 
             // loop through results
-            foreach(var result in results.AudioFeaturesList)
+            foreach (var result in results.AudioFeaturesList)
             {
                 IncrementCount<Track>();
                 ViewModel = StalkModelTransformer.RegisterAudioFeature(ViewModel, result);
@@ -341,4 +349,4 @@
         StateHasChanged();
     }
 
-}
+    }
