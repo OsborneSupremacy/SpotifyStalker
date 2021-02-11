@@ -207,7 +207,7 @@
 
     @foreach (var metric in StalkModelTransformer.GetItems<Metric>(ViewModel).ToList())
     {
-        <MetricComponent @ref="MetricComponent" Metric="@metric"></MetricComponent>
+        <MetricComponent Metric="@metric"></MetricComponent>
     }
 }
 
@@ -216,8 +216,6 @@
 
     [Parameter]
     public string Username { get; set; }
-
-    private MetricComponent MetricComponent { get; set; }
 
     StalkModel ViewModel = new StalkModel();
 
