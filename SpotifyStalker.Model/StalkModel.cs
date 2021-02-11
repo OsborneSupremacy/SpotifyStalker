@@ -15,6 +15,8 @@ namespace SpotifyStalker.Model
             Metrics = new CategoryViewModel<Metric>();
         }
 
+        public (bool InProcess, string Stage) Processing { get; set; }
+
         public string UserName { get; set; }
 
         public RequestStatus UserPlaylistResult { get; set; }

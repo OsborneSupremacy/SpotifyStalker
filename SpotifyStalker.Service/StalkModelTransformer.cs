@@ -44,11 +44,12 @@ namespace SpotifyStalker.Service
             stalkModel.AudioFeatures = new CategoryViewModel<AudioFeaturesModel>();
             stalkModel.Metrics = new CategoryViewModel<Metric>();
 
+            stalkModel.Processing = (false, default);
+
             var metrics = (await _metricProvider.GetAllAsync()).ToList();
 
-            foreach(var metric in metrics) {
+            foreach(var metric in metrics)
                 stalkModel.Metrics.TryAdd(metric.Id, metric);
-            }
 
             return stalkModel;
         }
@@ -151,6 +152,7 @@ namespace SpotifyStalker.Service
 
         public StalkModel RegisterAudioFeature(StalkModel stalkModel, AudioFeaturesModel audioFeatures)
         {
+            if (audioFeatures == null) return stalkModel;
             stalkModel.AudioFeatures.TryAdd(audioFeatures.Id, audioFeatures);
             return CalculateAllMetrics(stalkModel, audioFeatures);
         }

@@ -1,0 +1,25 @@
+﻿<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <p class="lead">You are stalking:</p>
+        <h1>@DisplayName</h1>
+        <h2><span class="badge badge-success">Spotify ID</span> @OwnerId</h2>
+        @if (Processing.InProcess)
+        {
+            <div class="spinner-border spinner-border-sm" role="status">
+                <span class="sr-only"></span>
+            </div><div> @Processing.Stage</div> 
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string OwnerId { get; set; }
+
+    [Parameter]
+    public string DisplayName { get; set; }
+
+    [Parameter]
+    public (bool InProcess, string Stage) Processing { get; set; }
+}

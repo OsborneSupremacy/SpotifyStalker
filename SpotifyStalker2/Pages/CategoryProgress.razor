@@ -7,7 +7,7 @@
 }
 
 <div class="progress">
-    <div class="progress-bar @Style" role="progressbar" style="width: @ProgressDisplay;">@Processed / @Total</div>
+    <div class="progress-bar @ProgressBarStyle" role="progressbar" style="width: @ProgressDisplay;">@Processed / @Total</div>
 </div>
 
 @code {
@@ -22,7 +22,7 @@
     public int Total { get; set; }
 
     [Parameter]
-    public string Style { get; set; }
+    public string ProgressBarStyle { get; set; }
 
     public bool Processing => 
         (Processed > 0) 
