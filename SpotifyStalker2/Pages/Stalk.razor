@@ -237,7 +237,7 @@
     public async Task QueryUserAsync()
     {
         ViewModel = await StalkModelTransformer.ResetAsync(ViewModel);
-        ViewModel.Processing = (true, "Looking up playlists");
+        setProcessingMessage("Looking up playlists");
 
         var (userPlaylistResult, userPlaylistModel) = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
 
@@ -245,24 +245,21 @@
 
         if (userPlaylistResult != RequestStatus.Success)
         {
-            ViewModel.Processing = (false, default);
-            StateHasChanged();
+            clearProcessingMessage();
             return;
         }
 
-        ViewModel.Processing = (true, "Registering playlists");
+        setProcessingMessage("Registering playlists");
         ViewModel = StalkModelTransformer.RegisterPlaylists(ViewModel, userPlaylistModel.Playlists);
 
         StateHasChanged();
 
-        if (!ViewModel.Playlists.Display)
-        {
-            ViewModel.Processing = (false, default);
-            StateHasChanged();
+        if (!ViewModel.Playlists.Display) {
+            clearProcessingMessage();
             return;
         }
 
-        ViewModel.Processing = (true, "Getting playlist tracks");
+        setProcessingMessage("Getting playlist tracks");
 
         // at this point we only have playlist names and IDs.
         // get the track list for each playlist
@@ -284,7 +281,7 @@
 
         }
 
-        ViewModel.Processing = (true, "Looking up artists");
+        setProcessingMessage("Looking up artists");
 
         // add all artists to batch query service
         foreach (var artist in ViewModel.Artists.Items)
@@ -313,7 +310,7 @@
         }
 
 
-        ViewModel.Processing = (true, "Looking up audio features");
+        setProcessingMessage("Looking up audio features");
 
         foreach (var track in ViewModel.Tracks.Items)
         {
@@ -339,9 +336,11 @@
             }
         }
 
-        ViewModel.Processing = (false, default);
+        clearProcessingMessage();
 
-
+        void setProcessingMessage(string message) => ViewModel.Processing = (true, message);
+        
+        void clearProcessingMessage() => ViewModel.Processing = (false, default);
     }
 
     private void IncrementCount<T>(int incrementBy = 1) where T : ISpotifyStandardObject
