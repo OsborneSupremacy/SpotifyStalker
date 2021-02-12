@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SpotifyStalker2.Data;
 using Serilog;
 using SpotifyStalker.Interface;
 using SpotifyStalker.Service;
@@ -31,8 +30,6 @@ namespace SpotifyStalker2
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-
-            services.AddSingleton<WeatherForecastService>();
 
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
             services.AddSingleton<IRandomProvider, RandomProvider>();
