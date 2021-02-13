@@ -233,3 +233,12 @@ a.stalker-background-primary, button.stalker-background-primary {
         @include stalker-button-primary-active()
     }
 }
+
+a.fa-spotify {
+    color: $spotify-green-dark;
+
+    &:hover {
+        text-decoration: none;
+        color: $spotify-green;
+    }
+}

@@ -147,3 +147,9 @@ a.stalker-background-primary, button.stalker-background-primary {
     background-color: #373737;
     border-color: #373737;
     color: white; }
+
+a.fa-spotify {
+  color: #0d7933; }
+  a.fa-spotify:hover {
+    text-decoration: none;
+    color: #1ed760; }

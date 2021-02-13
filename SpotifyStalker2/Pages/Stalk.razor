@@ -83,8 +83,7 @@
                                 {
                                     <tr>
                                         <td>
-                                            @playlist.Name
-                                            <a href="https://open.spotify.com/playlist/@playlist.Id" target="_blank" class="badge badge-success" >Open</a>
+                                            <SpotifyLink Name="@playlist.Name" Type="playlist" Id="@playlist.Id" />
                                         </td>
                                         <td>@(playlist.Tracks.Count()) / @(playlist.TrackInfo?.Total ?? 0)</td>
                                     </tr>
@@ -119,8 +118,7 @@
                                 {
                                     <tr>
                                         <td>
-                                            @artist.Name
-                                            <a href="https://open.spotify.com/artist/@artist.Id" target="_blank" class="badge badge-success">Open</a>
+                                            <SpotifyLink Name="@artist.Name" Type="artist" Id="@artist.Id" />
                                         </td>
                                         <td>@(artist.Tracks?.Count() ?? 0)</td>
                                     </tr>

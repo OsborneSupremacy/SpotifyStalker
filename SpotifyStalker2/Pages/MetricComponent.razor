@@ -6,13 +6,21 @@
         <h1 class="display-4">@Metric.Name</h1>
         <p class="lead">@Metric.Content</p>
 
-        <div class="alert alert-success">
-            Track with Highest @Metric.Name: @WriteTrackInfo(Metric.Winner) <span class="badge badge-success">@(Metric?.Winner?.MetricValue ?? 0)</span>
-        </div>
+        @if (Metric.Winner != null)
+        {
+            <div class="alert alert-success">
+                Track with Highest @Metric.Name <span class="badge badge-success">@(Metric?.Winner?.MetricValue ?? 0)</span>: @WriteTrackInfo(Metric.Winner) 
+                <SpotifyLink Name="@Metric.Winner.Value.Track.Name" Id="@Metric.Winner.Value.Track.Id" Type="track" />
+            </div>
+        }
 
-        <div class="alert alert-danger">
-            Track with Lowest @Metric.Name: @WriteTrackInfo(Metric.Loser) <span class="badge badge-danger">@(Metric?.Loser?.MetricValue ?? 0)</span>
-        </div>
+        @if (Metric.Loser != null)
+        {
+            <div class="alert alert-danger">
+                Track with Lowest @Metric.Name <span class="badge badge-danger">@(Metric?.Loser?.MetricValue ?? 0)</span>: @WriteTrackInfo(Metric.Loser) 
+                <SpotifyLink Name="@Metric.Loser.Value.Track.Name" Id="@Metric.Loser.Value.Track.Id" Type="track" />
+            </div>
+        }
 
         <div class="alert alert-primary">
             Average @Metric.Name: @Metric.FormattedAverage
@@ -35,8 +43,6 @@
 
     public string WriteTrackInfo((double MetricValue, Track Track)? input)
     {
-        if (input == null) return "n/a";
-
         var s = new System.Text.StringBuilder();
         s.Append($"\"{input.Value.Track.Name}\", by ");
 
