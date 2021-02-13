@@ -23,10 +23,11 @@
 
         <p>
             Can't think of a good keyword? Try the name of any band,
-            <span style="cursor: pointer" @onclick="FindRandomPerson" class="badge badge-success">person</span>, or
-            <span style="cursor: pointer" @onclick="FindRandomGenre" class="badge badge-primary">genre</span>, or
-            <span style="cursor: pointer" @onclick="FindRandomLocation" class="badge badge-info">place</span>, or let us
-            <span style="cursor: pointer" @onclick="JustPickSomeoneAsync" class="badge badge-warning">just pick someone</span>.
+            <span style="cursor: pointer" @onclick="FindRandomPerson" class="badge badge-success">person</span>,
+            <span style="cursor: pointer" @onclick="FindRandomGenre" class="badge badge-primary">genre</span>,
+            <span style="cursor: pointer" @onclick="FindRandomLocation" class="badge badge-info">place</span>,
+            <span style="cursor: pointer" @onclick="FindRandomWord" class="badge badge-secondary">word</span>,
+            or let us <span style="cursor: pointer" @onclick="JustPickSomeoneAsync" class="badge badge-warning">just pick someone</span>.
         </p>
 
         <div class="input-group mb-3" style="width: 500px;">
@@ -130,6 +131,8 @@
     public async Task FindRandomLocation() => await SearchForKeyWord(RandomProvider.GetLocation());
 
     public async Task FindRandomGenre() => await SearchForKeyWord(RandomProvider.GetGenre());
+
+    public async Task FindRandomWord() => await SearchForKeyWord(RandomProvider.GetWord());
 
     protected async Task SearchForKeyWord(string keyword)
     {
