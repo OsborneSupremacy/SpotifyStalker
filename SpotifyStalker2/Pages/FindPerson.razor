@@ -38,17 +38,17 @@
             </div>
         </div>
 
+        @if (ViewModel.NoPlayListsFound)
+        {
+            <h5 class="alert alert-danger" role="alert">
+                No playlists found with a keyword of <span class="badge badge-danger">@ViewModel.Keyword</span>
+            </h5>
+        }
+
     </div>
 
 </div>
 
-
-@if (ViewModel.ShowPlaylists)
-{
-    <h5 class="alert alert-danger" role="alert">
-        No playlists found with a keyword of <span class="badge badge-danger">@ViewModel.Keyword</span>
-    </h5>
-}
 
 @if (ViewModel.Playlists?.Any() ?? false) 
 {
@@ -65,10 +65,10 @@
                         <table class='table table-striped' aria-labelledby="tableLabel" >
                             <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th></th>
+                                    <th>Owner</th>
+                                    <th>Playlist</th>
                                     <th>Track Count</th>
-                                    <th>Owner Display Name</th>
-                                    <th>Owner Username</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,19 +76,18 @@
                                 {
                                     <tr>
                                         <td>
-                                            @(playlist.Name ?? "Untitled")
+                                            <a class="btn btn-sm spotify-background-primary" href="/stalk/@(playlist?.Owner?.Id ?? "spotify")">
+                                                Stalk
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <SpotifyLink Name="@playlist.Owner.DisplayName" Id="@playlist.Owner.Id" Type="user" />
+                                        </td>
+                                        <td>
+                                            <SpotifyLink Name="@playlist.Name" Id="@playlist.Id" Type="playlist" />
                                         </td>
                                         <td>
                                             @(playlist?.TrackInfo?.Total ?? 0)
-                                        </td>
-                                        <td>
-                                            @(playlist?.Owner?.DisplayName ?? "spotify")
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-primary btn-sm" href="/stalk/@(playlist?.Owner?.Id ?? "spotify")">
-                                                Stalk
-                                            </a>
-                                            @(playlist?.Owner?.Id ?? "spotify")
                                         </td>
                                     </tr>
                                 }

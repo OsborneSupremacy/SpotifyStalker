@@ -199,6 +199,7 @@ $stalker-gray-dark: #373737;
     background-color: $backgroundcolor;
     border-color: $backgroundcolor;
     color: $fontcolor;
+    font-weight: bold;
 }
 
 @mixin spotify-button-primary() {

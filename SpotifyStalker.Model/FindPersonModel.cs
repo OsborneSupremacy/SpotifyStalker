@@ -12,7 +12,7 @@ namespace SpotifyStalker.Model
 
         public List<Playlist> Playlists { get; set; }
 
-        public bool ShowPlaylists =>
+        public bool NoPlayListsFound =>
             SearchStatus == RequestStatus.Success && !(Playlists?.Any() ?? false);
     }
 }

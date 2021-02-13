@@ -133,20 +133,24 @@ app {
 a.spotify-background-primary, button.spotify-background-primary {
   background-color: #1ed760;
   border-color: #1ed760;
-  color: black; }
+  color: black;
+  font-weight: bold; }
   a.spotify-background-primary:hover, button.spotify-background-primary:hover {
     background-color: #0d7933;
     border-color: #0d7933;
-    color: white; }
+    color: white;
+    font-weight: bold; }
 
 a.stalker-background-primary, button.stalker-background-primary {
   background-color: #868686;
   border-color: #868686;
-  color: black; }
+  color: black;
+  font-weight: bold; }
   a.stalker-background-primary:hover, button.stalker-background-primary:hover {
     background-color: #373737;
     border-color: #373737;
-    color: white; }
+    color: white;
+    font-weight: bold; }
 
 a.fa-spotify {
   color: #0d7933; }
