@@ -98,7 +98,6 @@ app {
 }
 
 
-
 .content {
     padding-top: 1.1rem;
 }
@@ -184,8 +183,24 @@ app {
     }
 }
 
+/* Beginning of my custom styles */
 
 .scroll {
     max-height: 500px;
     overflow-y: auto;
+}
+
+$spotify-green : #1ed760;
+$spotify-green-dark: #0d7933;
+@mixin spotify-button() {
+    background-color: $spotify-green;
+    border-color: $spotify-green;
+    color: black;
+}
+
+a.spotify-background-primary {
+    @include spotify-button();
+    &:hover {
+        background-color: $spotify-green-dark;
+    }
 }
