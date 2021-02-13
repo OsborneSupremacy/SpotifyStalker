@@ -87,7 +87,11 @@ namespace SpotifyStalker.Service
         {
             if (!playlists?.Any() ?? false) return stalkModel;
 
-            foreach(var playlist in playlists)
+            foreach(var playlist in 
+            playlists
+                // not every list is owned by the username (don't know why), so filter it here
+                .Where(x => x.Owner.Id.Equals(stalkModel.UserName, StringComparison.OrdinalIgnoreCase)).ToList())
+
                 stalkModel.Playlists.TryAdd(playlist.Id, _mapper.Map<PlaylistModel>(playlist));
 
             return stalkModel;
