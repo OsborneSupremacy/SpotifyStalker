@@ -218,7 +218,7 @@ $stalker-gray-dark: #373737;
 }
 
 
-a.spotify-background-primary {
+a.spotify-background-primary, button.spotify-background-primary {
     @include spotify-button-primary();
 
     &:hover {
@@ -226,7 +226,7 @@ a.spotify-background-primary {
     }
 }
 
-a.stalker-background-primary {
+a.stalker-background-primary, button.stalker-background-primary {
     @include stalker-button-primary();
 
     &:hover {

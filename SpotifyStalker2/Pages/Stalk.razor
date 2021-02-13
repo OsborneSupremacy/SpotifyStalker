@@ -13,40 +13,49 @@
 @inject IApiBatchQueryService<ArtistModelCollection> ArtistBatchQueryService;
 @inject IApiBatchQueryService<AudioFeaturesModelCollection> AudioFeaturesQueryService;
 
-<h1>Stalk</h1>
+<div class="container">
 
-<div class="input-group mb-3" style="width: 500px;">
-    <input type="text" placeholder="Spotify Username" class="form-control" @bind-value="ViewModel.UserName" />
-    <div class="input-group-append">
-        <button @onclick="QueryUserAsync" class="btn btn-primary">
-            Search
-        </button>
+    <div class="jumbotron">
+        <h1>Stalk</h1>
+
+        <p class="lead text-muted">Need some text here.</p>
+
+        <div class="input-group mb-3" style="width: 500px;">
+            <input type="text" placeholder="Spotify Username" class="form-control" @bind-value="ViewModel.UserName" />
+            <div class="input-group-append">
+                <button @onclick="QueryUserAsync" class="btn spotify-background-primary">
+                    Stalk
+                </button>
+            </div>
+        </div>
+
+        @if (ViewModel.UserPlaylistResult == RequestStatus.NotFound)
+        {
+            <h5 class="alert alert-danger" role="alert">
+                User <span class="badge badge-danger">@ViewModel.UserName</span> not found! I thought you said you knew the username?
+            </h5>
+        }
+
+        @if (ViewModel.UserPlaylistResult == RequestStatus.Success && !ViewModel.Playlists.Display)
+        {
+            <h5 class="alert alert-warning" role="alert">
+                User <span class="badge badge-warning">@ViewModel.UserName exists</span>, but has no public playlists. They must think they're too precious to be stalked by random Internet strangers 🙄.
+            </h5>
+        }
+
+        @if (ViewModel.Playlists.Display)
+        {
+            <StalkTarget OwnerId="@ViewModel.Playlists.Items.FirstOrDefault().Value.Owner.Id"
+                         DisplayName="@ViewModel.Playlists.Items.FirstOrDefault().Value.Owner.DisplayName"
+                         Processing="@ViewModel.Processing" />
+        }
+
     </div>
+
 </div>
-
-@*Create an overall status indicator*@
-
-@if (ViewModel.UserPlaylistResult == RequestStatus.NotFound)
-{
-    <h5 class="alert alert-danger" role="alert">
-        User <span class="badge badge-danger">@ViewModel.UserName</span> not found! I thought you said you knew the username of the person you wanted to Stalk?
-    </h5>
-}
-
-@if (ViewModel.UserPlaylistResult == RequestStatus.Success && !ViewModel.Playlists.Display)
-{
-    <h5 class="alert alert-warning" role="alert">
-        User <span class="badge badge-warning">@ViewModel.UserName exists</span>, but has no public playlists.
-    </h5>
-}
 
 @if (ViewModel.Playlists.Display)
 {
-    <StalkTarget 
-        OwnerId="@ViewModel.Playlists.Items.FirstOrDefault().Value.Owner.Id" 
-        DisplayName="@ViewModel.Playlists.Items.FirstOrDefault().Value.Owner.DisplayName" 
-        Processing="@ViewModel.Processing" />
-
     <!--begin - row 1 -->
     <div class="row">
 
@@ -73,7 +82,10 @@
                          .ToList())
                                 {
                                     <tr>
-                                        <td>@playlist.Name</td>
+                                        <td>
+                                            @playlist.Name
+                                            <a href="https://open.spotify.com/playlist/@playlist.Id" target="_blank" class="badge badge-success" >Open</a>
+                                        </td>
                                         <td>@(playlist.Tracks.Count()) / @(playlist.TrackInfo?.Total ?? 0)</td>
                                     </tr>
                                 }
@@ -106,7 +118,10 @@
                          .OrderByDescending(x => x.Tracks?.Count ?? 0))
                                 {
                                     <tr>
-                                        <td>@artist.Name</td>
+                                        <td>
+                                            @artist.Name
+                                            <a href="https://open.spotify.com/artist/@artist.Id" target="_blank" class="badge badge-success">Open</a>
+                                        </td>
                                         <td>@(artist.Tracks?.Count() ?? 0)</td>
                                     </tr>
                                 }

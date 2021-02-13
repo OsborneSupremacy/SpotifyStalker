@@ -76,7 +76,7 @@
                                 {
                                     <tr>
                                         <td>
-                                            @playlist.Name
+                                            @(playlist.Name ?? "Untitled")
                                         </td>
                                         <td>
                                             @(playlist?.TrackInfo?.Total ?? 0)
@@ -144,7 +144,12 @@
 
         if (!(ViewModel.Playlists?.Any() ?? false)) return;
 
-        var playlist = RandomProvider.PickRandom(ViewModel.Playlists);
+        var playlist = RandomProvider.PickRandom(
+            ViewModel.Playlists
+                .Where(x => !(x.Owner.Id.Equals("spotify", StringComparison.OrdinalIgnoreCase)))
+        );
+
+        if (playlist == null) return;
 
         NavigationManager.NavigateTo($"/stalk/{playlist.Owner.Id}");
     }

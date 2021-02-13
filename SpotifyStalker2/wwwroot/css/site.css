@@ -130,20 +130,20 @@ app {
   max-height: 500px;
   overflow-y: auto; }
 
-a.spotify-background-primary {
+a.spotify-background-primary, button.spotify-background-primary {
   background-color: #1ed760;
   border-color: #1ed760;
   color: black; }
-  a.spotify-background-primary:hover {
+  a.spotify-background-primary:hover, button.spotify-background-primary:hover {
     background-color: #0d7933;
     border-color: #0d7933;
     color: white; }
 
-a.stalker-background-primary {
+a.stalker-background-primary, button.stalker-background-primary {
   background-color: #868686;
   border-color: #868686;
   color: black; }
-  a.stalker-background-primary:hover {
+  a.stalker-background-primary:hover, button.stalker-background-primary:hover {
     background-color: #373737;
     border-color: #373737;
     color: white; }
