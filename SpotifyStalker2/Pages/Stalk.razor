@@ -29,7 +29,7 @@
 @if (ViewModel.UserPlaylistResult == RequestStatus.NotFound)
 {
     <h5 class="alert alert-danger" role="alert">
-        User <span class="badge badge-danger">@ViewModel.UserName</span> not found!
+        User <span class="badge badge-danger">@ViewModel.UserName</span> not found! I thought you said you knew the username of the person you wanted to Stalk?
     </h5>
 }
 
@@ -179,7 +179,7 @@
                             </thead>
                             <tbody>
                                 @foreach (var metric in StalkModelTransformer
-                       .GetItems<Metric>(ViewModel).ToList())
+                       .GetItems<Metric>(ViewModel).OrderBy(x => x.Priority).ToList())
                                 {
                                     <tr>
                                         <td>
@@ -205,7 +205,7 @@
     </div>
     <!--end - row 2 -->
 
-    @foreach (var metric in StalkModelTransformer.GetItems<Metric>(ViewModel).ToList())
+    @foreach (var metric in StalkModelTransformer.GetItems<Metric>(ViewModel).OrderBy(x => x.Priority).ToList())
     {
         <MetricComponent Metric="@metric"></MetricComponent>
     }

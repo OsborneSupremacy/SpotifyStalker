@@ -135,4 +135,15 @@ a.spotify-background-primary {
   border-color: #1ed760;
   color: black; }
   a.spotify-background-primary:hover {
-    background-color: #0d7933; }
+    background-color: #0d7933;
+    border-color: #0d7933;
+    color: white; }
+
+a.stalker-background-primary {
+  background-color: #868686;
+  border-color: #868686;
+  color: black; }
+  a.stalker-background-primary:hover {
+    background-color: #373737;
+    border-color: #373737;
+    color: white; }

@@ -10,6 +10,8 @@ namespace SpotifyStalker.Model
 
         public string Id => Name;
 
+        public int Priority;
+
         public string Content { get; set; }
 
         public string ImageFile { get; set; }

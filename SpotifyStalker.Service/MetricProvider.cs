@@ -25,7 +25,8 @@ namespace SpotifyStalker.Service
                         NominalMax = 1,
                         Field = (AudioFeatures x) => x.Danceability,
                         FormatString = "0.0000",
-                        ImageFile = "danceability.png"
+                        ImageFile = "danceability.png",
+                        Priority = 40
                     },
 
                     new Metric()
@@ -39,7 +40,8 @@ namespace SpotifyStalker.Service
                         NominalMax = 1,
                         Field = (AudioFeatures x) => x.Energy,
                         FormatString = "0.0000",
-                        ImageFile = "energy.png"
+                        ImageFile = "energy.png",
+                        Priority = 30
                     },
 
                     new Metric()
@@ -53,7 +55,8 @@ namespace SpotifyStalker.Service
                         NominalMax = 0,
                         Field = (AudioFeatures x) => x.Loudness,
                         FormatString = "0.0000 dB",
-                        ImageFile = "loudness.png"
+                        ImageFile = "loudness.png",
+                        Priority = 10
                     },
 
                     new Metric()
@@ -67,7 +70,8 @@ namespace SpotifyStalker.Service
                         NominalMax = 1,
                         Field = (AudioFeatures x) => x.Valence,
                         FormatString = "0.0000",
-                        ImageFile = "valence.png"
+                        ImageFile = "valence.png",
+                        Priority = 20
                     },
 
                     new Metric()
@@ -81,7 +85,8 @@ namespace SpotifyStalker.Service
                         NominalMax = 1,
                         Field = (AudioFeatures x) => x.Speechiness,
                         FormatString = "0.0000",
-                        ImageFile = "speechiness.png"
+                        ImageFile = "speechiness.png",
+                        Priority = 90
                     },
 
                     new Metric()
@@ -95,7 +100,8 @@ namespace SpotifyStalker.Service
                         NominalMax = 1,
                         Field = (AudioFeatures x) => x.Acousticness,
                         FormatString = "0.0000",
-                        ImageFile = "acousticness.png"
+                        ImageFile = "acousticness.png",
+                        Priority = 80
                     },
 
                     new Metric()
@@ -109,7 +115,8 @@ namespace SpotifyStalker.Service
                         NominalMax = 1,
                         Field = (AudioFeatures x) => x.Instrumentalness,
                         FormatString = "0.0000",
-                        ImageFile = "instrumentalness.png"
+                        ImageFile = "instrumentalness.png",
+                        Priority = 60
                     },
 
                     new Metric()
@@ -123,7 +130,8 @@ namespace SpotifyStalker.Service
                         NominalMax = 1,
                         Field = (AudioFeatures x) => x.Liveness,
                         FormatString = "0.0000",
-                        ImageFile = "liveness.png"
+                        ImageFile = "liveness.png",
+                        Priority = 70
                     },
 
                     new Metric()
@@ -137,7 +145,8 @@ namespace SpotifyStalker.Service
                         NominalMax = 250,
                         Field = (AudioFeatures x) => x.Tempo,
                         FormatString = "0.0000 BPM",
-                        ImageFile = "tempo.png"
+                        ImageFile = "tempo.png",
+                        Priority = 50
                     }
                 };
             });

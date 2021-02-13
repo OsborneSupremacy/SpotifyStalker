@@ -192,15 +192,44 @@ app {
 
 $spotify-green : #1ed760;
 $spotify-green-dark: #0d7933;
-@mixin spotify-button() {
-    background-color: $spotify-green;
-    border-color: $spotify-green;
-    color: black;
+$stalker-gray: #868686;
+$stalker-gray-dark: #373737;
+
+@mixin button-standard($backgroundcolor, $fontcolor) {
+    background-color: $backgroundcolor;
+    border-color: $backgroundcolor;
+    color: $fontcolor;
 }
 
+@mixin spotify-button-primary() {
+    @include button-standard($spotify-green, black);
+}
+
+@mixin spotify-button-primary-active() {
+    @include button-standard($spotify-green-dark, white);
+}
+
+@mixin stalker-button-primary() {
+    @include button-standard($stalker-gray, black);
+}
+
+@mixin stalker-button-primary-active() {
+    @include button-standard($stalker-gray-dark, white);
+}
+
+
 a.spotify-background-primary {
-    @include spotify-button();
+    @include spotify-button-primary();
+
     &:hover {
-        background-color: $spotify-green-dark;
+        @include spotify-button-primary-active;
+    }
+}
+
+a.stalker-background-primary {
+    @include stalker-button-primary();
+
+    &:hover {
+        @include stalker-button-primary-active()
     }
 }

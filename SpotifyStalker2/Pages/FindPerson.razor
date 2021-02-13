@@ -10,35 +10,38 @@
 @inject IRandomProvider RandomProvider;
 @inject NavigationManager NavigationManager;
 
-<h1>Find Someone To Stalk</h1>
-
 <div class="container-fluid">
 
-    <p>Spotify doesn't let you search for users, for good reason. So how can you find a random user to "stalk"*.?</p>
+    <div class="jumbotron">
+        <h1>Find Someone To Stalk</h1>
 
-    <p>The answer is, public playlists. You can search public playlists by keyword, and then view the username of the owner.</p>
+        <p>Spotify doesn't let you search for users, for good reason. So how can you find a random user to "stalk"*.?</p>
 
-    <p>From there, you can view all of that user's public playlists.</p>
+        <p>The answer is, public playlists. You can search public playlists by keyword, and then view the username of the owner.</p>
 
-    <p>
-        Can't think of a good keyword? Try the name of any band, 
-        <span style="cursor: pointer" @onclick="FindRandomPerson" class="badge badge-success">person</span>, or
-        <span style="cursor: pointer" @onclick="FindRandomGenre" class="badge badge-primary">genre</span>, or
-        <span style="cursor: pointer" @onclick="FindRandomLocation" class="badge badge-info">place</span>, or let us
-        <span style="cursor: pointer" @onclick="JustPickSomeoneAsync" class="badge badge-warning">just pick someone</span>.
-    </p>
-</div>
+        <p>From there, you can view all of that user's public playlists.</p>
 
-<div class="input-group mb-3" style="width: 500px;">
-    <input @bind-value="ViewModel.Keyword" @onblur="QueryPlaylistsAsync" type="text" placeholder="Enter a Keyword" class="form-control" />
-    <div class="input-group-append">
-        <button @onclick="QueryPlaylistsAsync" class="btn btn-primary">
-            Search
-        </button>
+        <p>
+            Can't think of a good keyword? Try the name of any band,
+            <span style="cursor: pointer" @onclick="FindRandomPerson" class="badge badge-success">person</span>, or
+            <span style="cursor: pointer" @onclick="FindRandomGenre" class="badge badge-primary">genre</span>, or
+            <span style="cursor: pointer" @onclick="FindRandomLocation" class="badge badge-info">place</span>, or let us
+            <span style="cursor: pointer" @onclick="JustPickSomeoneAsync" class="badge badge-warning">just pick someone</span>.
+        </p>
+
+        <div class="input-group mb-3" style="width: 500px;">
+            <input @bind-value="ViewModel.Keyword" @onblur="QueryPlaylistsAsync" type="text" placeholder="Enter a Keyword" class="form-control" />
+            <div class="input-group-append">
+                <button @onclick="QueryPlaylistsAsync" class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+        </div>
+
     </div>
+
 </div>
 
-<p>&nbsp;</p>
 
 @if (ViewModel.ShowPlaylists)
 {
