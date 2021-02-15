@@ -42,11 +42,10 @@ namespace SpotifyStalker2
 
             services.AddSingleton<IMetricProvider, MetricProvider>();
 
-            services.AddSingleton<IStalkModelTransformer, StalkModelTransformer>();
-
             services.AddHttpClient();
             services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
 
+            services.AddScoped<IStalkModelTransformer, StalkModelTransformer>();
             services.AddScoped<IApiBatchQueryService<ArtistModelCollection>, ApiBatchQueryService<ArtistModelCollection>>();
             services.AddScoped<IApiBatchQueryService<AudioFeaturesModelCollection>, ApiBatchQueryService<AudioFeaturesModelCollection>>();
 
