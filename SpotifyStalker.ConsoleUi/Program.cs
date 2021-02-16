@@ -1,60 +1,83 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SpotifyStalker.ConsoleUi
 {
     class Program
     {
-        private readonly static Dictionary<int, string> _operations = 
-            new() {
-                { 1, "Query Artists" },
-                { 0, "Exit" }
-            };
-
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var selectedOperation = SelectOperation();
+            await Host.CreateDefaultBuilder(args)
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<ConsoleHostedService>();
 
-            while (selectedOperation != 0)
-            {
-                Console.WriteLine($"Selected operation: {selectedOperation.Value}");
-                Console.WriteLine();
-                selectedOperation = SelectOperation();
-            };
-
-            Environment.Exit(0);
+                    services.AddSingleton<UserPromptService>();
+                    services.AddSingleton<ArtistQueryService>();
+                })
+                .RunConsoleAsync();
         }
 
-        public static int? SelectOperation()
-        {
-            StringBuilder s = new();
-            s.AppendLine("SELECT AN OPERATION:");
 
-            foreach (var op in _operations) {
-                if(op.Key == 0) {
-                    s.AppendLine($"Any Other Key: {op.Value}");
-                    continue;
-                }
-                s.AppendLine($"{op.Key}. {op.Value}");
+        class ConsoleHostedService : IHostedService
+        {
+            private readonly ILogger<ConsoleHostedService> _logger;
+
+            private readonly IHostApplicationLifetime _appLifetime;
+
+            private readonly UserPromptService _userPromptService;
+
+            public ConsoleHostedService(
+                ILogger<ConsoleHostedService> logger,
+                IHostApplicationLifetime appLifetime,
+                UserPromptService userPromptService
+                )
+            {
+                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+                _appLifetime = appLifetime ?? throw new ArgumentNullException(nameof(userPromptService));
+                _userPromptService = userPromptService ?? throw new ArgumentNullException(nameof(userPromptService));
+;            }
+
+            public Task StartAsync(CancellationToken cancellationToken)
+            {
+                _logger.LogDebug($"Starting with arguments: {string.Join(" ", Environment.GetCommandLineArgs())}");
+
+                _appLifetime.ApplicationStarted.Register(async () =>
+                {
+                    try
+                    {
+                        bool processing = true;
+                        while(processing)
+                        {
+                            processing = await _userPromptService.PromptUserAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Unhandled exception");
+                    }
+                    finally
+                    {
+                        _appLifetime.StopApplication();
+                    }
+                });
+
+                return Task.CompletedTask;
             }
 
-            Console.Write(s.ToString());
-
-            var i = Console.ReadKey();
-            Console.WriteLine();
-
-            i.KeyChar.ToString();
-
-            if (!int.TryParse(i.KeyChar.ToString(), out var input)) return 0;
-            if (!_operations.TryGetValue(input, out _)) return 0;
-
-            return input;
+            public Task StopAsync(CancellationToken cancellationToken)
+            {
+                return Task.CompletedTask;
+            }
         }
     }
 }
