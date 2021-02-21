@@ -15,9 +15,12 @@ namespace SpotifyStalker.ConsoleUi
     {
         static async Task Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
-                .Build();
+                // this is only going to be run on a development machine, so we can add user secrets unconditionally
+                .AddUserSecrets<Program>();
+
+            var configuration = builder.Build();
 
             await Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
