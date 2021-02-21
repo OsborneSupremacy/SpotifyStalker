@@ -9,38 +9,35 @@ namespace SpotifyStalker.ConsoleUi
     {
         private readonly ArtistQueryService _artistQueryService;
 
-        private readonly static Dictionary<int, string> _operations =
-            new()
-            {
-                { 1, "Query Artists" },
-                { 0, "Exit" }
-            };
+        private Dictionary<int, (string name, Func<Task> operation)> _operations;
 
         public UserPromptService(
             ArtistQueryService artistQueryService
         )
         {
             _artistQueryService = artistQueryService ?? throw new ArgumentNullException(nameof(artistQueryService));
+            _operations =
+                new()
+                {
+                    { 1, new ("Query Artists", () => { return _artistQueryService.ExecuteAsync(); }) },
+                    { 0, ("Exit", null) }
+                };
         }
 
         public async Task<bool> PromptUserAsync()
         {
-            var selectedOperation = SelectOperation();
-            if (selectedOperation == 0) return false;
+            var (isValid, name, operation) = SelectOperation();
+            if (!isValid) return false;
 
-            Console.WriteLine($"Selected operation: {_operations[selectedOperation.Value]}");
+            Console.WriteLine($"Selected operation: {name}");
             Console.WriteLine();
 
-            switch(selectedOperation) {
-                case 1:
-                    await _artistQueryService.ExecuteAsync();
-                    break;
-            }
+            await operation.Invoke();
 
-            return true; // since we're turning true, the host will run this again
+            return true; // since we're returning true, the host will run this again
         }
 
-        public static int? SelectOperation()
+        public (bool isValid, string name, Func<Task> operation) SelectOperation()
         {
             StringBuilder s = new();
             s.AppendLine();
@@ -50,10 +47,10 @@ namespace SpotifyStalker.ConsoleUi
             {
                 if (op.Key == 0)
                 {
-                    s.AppendLine($"Any Other Key: {op.Value}");
+                    s.AppendLine($"0. (Or Any Other Key) {op.Value.name}");
                     continue;
                 }
-                s.AppendLine($"{op.Key}. {op.Value}");
+                s.AppendLine($"{op.Key}. {op.Value.name}");
             }
 
             Console.Write(s.ToString());
@@ -63,10 +60,14 @@ namespace SpotifyStalker.ConsoleUi
 
             i.KeyChar.ToString();
 
-            if (!int.TryParse(i.KeyChar.ToString(), out var input)) return 0;
-            if (!_operations.TryGetValue(input, out _)) return 0;
+            if (!int.TryParse(i.KeyChar.ToString(), out var input)) return inValid();
 
-            return input;
+            if (_operations.TryGetValue(input, out var foundOp)) 
+                return (true, foundOp.name, foundOp.operation);
+
+            return inValid();
+
+            static (bool, string, Func<Task>) inValid() => (false, null, null);
         }
     }
 }

@@ -1,15 +1,19 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Spotify.Model;
+using SpotifyStalker.Interface;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SpotifyStalker.ConsoleUi
 {
     public class ArtistQueryService
     {
-        private readonly IConfiguration _configuration;
+        private readonly ILogger<ArtistQueryService> _logger;
+
+        private readonly IApiQueryService _apiQueryService;
+
+        private readonly SpotifyApiSettings _spotifyApiSettings;
 
         private readonly string[] _searchCharacters =
         {
@@ -67,43 +71,24 @@ namespace SpotifyStalker.ConsoleUi
         };
 
         public ArtistQueryService(
-            IConfiguration configuration
+            ILogger<ArtistQueryService> logger,
+            IOptions<SpotifyApiSettings> settings,
+            IApiQueryService apiQueryService
         )
         {
-            _configuration = configuration ?? throw new ArgumentException(nameof(configuration));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _spotifyApiSettings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
+            _apiQueryService = apiQueryService ?? throw new ArgumentNullException(nameof(apiQueryService));
         }
 
-        public Task ExecuteAsync()
+        public async Task ExecuteAsync()
         {
-            Console.WriteLine("Doing something");
+            _logger.LogDebug("Querying Artists");
 
-            var permutations = GetSearchTermPermutations();
+            var (userPlaylistResult, userPlaylistModel) = await _apiQueryService.QueryAsync<UserPlaylistsModel>("visionsfugitive", _spotifyApiSettings.Limits.UserPlaylist);
 
-            foreach(var p in permutations)
-                Console.WriteLine(p);
 
-            return Task.CompletedTask;
-        }
-
-        protected HashSet<string> GetSearchTermPermutations()
-        {
-            var permutations1 = new List<string>();
-            permutations1.AddRange(_searchCharacters);
-
-            var permutations2 = new List<string>();
-
-            foreach(var p in permutations1)
-                permutations2.AddRange(_searchCharacters.Select(x => $"{p}{x}"));
-
-            var permutations3 = new List<string>();
-
-            foreach (var p in permutations2)
-                permutations3.AddRange(_searchCharacters.Select(x => $"{p}{x}"));
-
-            return permutations1
-                .Union(permutations2)
-                .Union(permutations3)
-                .ToHashSet();
+            return;
         }
 
     }

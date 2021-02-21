@@ -12,12 +12,12 @@ namespace SpotifyStalker.Service
 {
     public class ApiRequestUrlBuilder : IApiRequestUrlBuilder
     {
-        private readonly ILogger<IApiRequestService> _logger;
+        private readonly ILogger<ApiRequestUrlBuilder> _logger;
 
         private readonly SpotifyApiSettings _spotifyApiSettings;
 
         public ApiRequestUrlBuilder(
-            ILogger<IApiRequestService> logger,
+            ILogger<ApiRequestUrlBuilder> logger,
             IOptions<SpotifyApiSettings> settings
             )
         {

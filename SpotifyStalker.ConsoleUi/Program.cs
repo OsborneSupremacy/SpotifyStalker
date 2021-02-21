@@ -2,6 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Spotify.Model;
+using SpotifyStalker.Interface;
+using SpotifyStalker.Service;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +23,21 @@ namespace SpotifyStalker.ConsoleUi
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<ConsoleHostedService>();
+
+                    services.AddAutoMapper(typeof(Program));
+
+                    services.Configure<SpotifyApiSettings>(configuration.GetSection("SpotifyApi"));
+
+                    services.AddHttpClient();
+                    services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+                    services.AddSingleton<ITokenService, TokenService>();
+                    services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
+
+                    services.AddSingleton<IHttpFormPostService, HttpFormPostService>();
+
+                    services.AddSingleton<IApiRequestUrlBuilder, ApiRequestUrlBuilder>();
+                    services.AddSingleton<IApiRequestService, ApiRequestService>();
+                    services.AddSingleton<IApiQueryService, ApiQueryService>();
 
                     services.AddSingleton<UserPromptService>();
                     services.AddSingleton<ArtistQueryService>();
