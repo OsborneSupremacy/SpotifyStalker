@@ -85,7 +85,12 @@ namespace SpotifyStalker.ConsoleUi
         {
             _logger.LogDebug("Querying Artists");
 
-            var (userPlaylistResult, userPlaylistModel) = await _apiQueryService.QueryAsync<UserPlaylistsModel>("visionsfugitive", _spotifyApiSettings.Limits.UserPlaylist);
+            var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>("a", _spotifyApiSettings.Limits.Search);
+
+            foreach(var artist in resultModel.Artists.Items)
+            {
+                Console.WriteLine(artist.Name);
+            }
 
 
             return;
