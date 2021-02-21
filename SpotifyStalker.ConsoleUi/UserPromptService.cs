@@ -27,7 +27,7 @@ namespace SpotifyStalker.ConsoleUi
         public async Task<bool> PromptUserAsync()
         {
             var (isValid, name, operation) = SelectOperation();
-            if (!isValid) return false;
+            if (!isValid || operation == null) return false;
 
             Console.WriteLine($"Selected operation: {name}");
             Console.WriteLine();
