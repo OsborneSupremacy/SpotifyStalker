@@ -32,5 +32,11 @@ namespace SpotifyStalker.Service
             var url = _apiRequestUrlBuilder.Build<T>(id, limit);
             return await _apiRequestService.GetAsync<T>(url);
         }
+
+        public async Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(string id, int limit, int offset) where T : IApiRequestObject, new()
+        {
+            var url = _apiRequestUrlBuilder.Build<T>(id, limit, offset);
+            return await _apiRequestService.GetAsync<T>(url);
+        }
     }
 }

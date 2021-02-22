@@ -34,6 +34,13 @@ namespace SpotifyStalker.Service
                 new KeyValuePair<string, string>("Limit", limit.ToString())
             );
 
+        public string Build<T>(string id, int limit, int offset) where T : IApiRequestObject, new() =>
+            Build<T>(
+                new KeyValuePair<string, string>("Id", id),
+                new KeyValuePair<string, string>("Limit", limit.ToString()),
+                new KeyValuePair<string, string>("Offset", offset.ToString())
+            );
+
         public string Build<T>(params KeyValuePair<string, string>[] substitutions) where T : IApiRequestObject, new()
         {
             var u = new StringBuilder(_spotifyApiSettings.SpotifyBaseUrl);

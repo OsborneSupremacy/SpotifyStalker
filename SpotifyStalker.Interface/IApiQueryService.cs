@@ -9,5 +9,7 @@ namespace SpotifyStalker.Interface
         Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(string userName) where T : IApiRequestObject, new();
 
         Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(string id, int limit) where T : IApiRequestObject, new();
+
+        Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(string id, int limit, int offset) where T : IApiRequestObject, new();
     }
 }
