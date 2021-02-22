@@ -96,8 +96,8 @@ namespace SpotifyStalker.ConsoleUi
 
             while (itemsQueried < totalItems)
             {
-                var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>("a", _spotifyApiSettings.Limits.Search, itemsQueried);
-                itemsQueried += _spotifyApiSettings.Limits.Search;
+                var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>("a", _spotifyApiSettings.Limits.Search.Limit, itemsQueried);
+                itemsQueried += _spotifyApiSettings.Limits.Search.Limit;
 
                 if (result != Model.RequestStatus.Success)
                     break;
@@ -105,6 +105,8 @@ namespace SpotifyStalker.ConsoleUi
                 if(firstIteration)
                 {
                     totalItems = resultModel.Artists.Total;
+                    if (totalItems > _spotifyApiSettings.Limits.Search.MaximumOffset)
+                        totalItems = _spotifyApiSettings.Limits.Search.MaximumOffset;
                     _logger.LogDebug($"Total Items: {totalItems}");
                     firstIteration = false;
                 }
