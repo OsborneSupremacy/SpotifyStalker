@@ -11,12 +11,12 @@ namespace SpotifyStalker.Service
 {
     public class ApiRequestService : IApiRequestService
     {
-        private readonly ILogger<IApiRequestService> _logger;
+        private readonly ILogger<ApiRequestService> _logger;
 
         private readonly IAuthorizedHttpClientFactory _httpClientFactory;
 
         public ApiRequestService(
-            ILogger<IApiRequestService> logger, 
+            ILogger<ApiRequestService> logger, 
             IAuthorizedHttpClientFactory httpClientFactory
         )
         {

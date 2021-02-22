@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spotify.Model;
+using Spotify.Object;
 using SpotifyStalker.Interface;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SpotifyStalker.ConsoleUi
@@ -85,16 +88,32 @@ namespace SpotifyStalker.ConsoleUi
         {
             _logger.LogDebug("Querying Artists");
 
-            var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>("a", _spotifyApiSettings.Limits.Search, 0);
+            var artists = new List<Artist>();
 
-            foreach(var artist in resultModel.Artists.Items)
+            var itemsQueried = 0;
+            var totalItems = 1;
+            bool firstIteration = true;
+
+            while (itemsQueried < totalItems)
             {
-                Console.WriteLine(artist.Name);
+                var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>("a", _spotifyApiSettings.Limits.Search, itemsQueried);
+                itemsQueried += _spotifyApiSettings.Limits.Search;
+
+                if (result != Model.RequestStatus.Success)
+                    break;
+
+                if(firstIteration)
+                {
+                    totalItems = resultModel.Artists.Total;
+                    _logger.LogDebug($"Total Items: {totalItems}");
+                    firstIteration = false;
+                }
+
+                artists.AddRange(resultModel.Artists.Items);
             }
 
-
-            return;
+            foreach (var artist in artists.OrderBy(x => x.Name).ToHashSet())
+                Console.WriteLine(artist.Name);
         }
-
     }
 }
