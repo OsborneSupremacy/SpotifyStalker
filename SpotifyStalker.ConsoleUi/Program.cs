@@ -8,6 +8,10 @@ using SpotifyStalker.Service;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Configuration;
+using Serilog.Context;
+using Serilog.Core;
 
 namespace SpotifyStalker.ConsoleUi
 {
@@ -21,6 +25,10 @@ namespace SpotifyStalker.ConsoleUi
                 .AddUserSecrets<Program>();
 
             var configuration = builder.Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
 
             await Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
@@ -43,8 +51,10 @@ namespace SpotifyStalker.ConsoleUi
                     services.AddSingleton<IApiQueryService, ApiQueryService>();
 
                     services.AddSingleton<UserPromptService>();
-                    services.AddSingleton<ArtistQueryService>();
+                    services.AddSingleton<ArtistQueryService>();   
+
                 })
+                .UseSerilog()
                 .RunConsoleAsync();
         }
 
