@@ -51,7 +51,8 @@ namespace SpotifyStalker.ConsoleUi
                     services.AddSingleton<IApiQueryService, ApiQueryService>();
 
                     services.AddSingleton<UserPromptService>();
-                    services.AddSingleton<ArtistQueryService>();   
+                    services.AddSingleton<ArtistQueryService>();
+                    services.AddSingleton<SearchTermBuilderService>();
 
                 })
                 .UseSerilog()

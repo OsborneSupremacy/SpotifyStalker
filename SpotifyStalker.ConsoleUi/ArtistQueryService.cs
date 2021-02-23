@@ -18,70 +18,19 @@ namespace SpotifyStalker.ConsoleUi
 
         private readonly SpotifyApiSettings _spotifyApiSettings;
 
-        private readonly string[] _searchCharacters =
-        {
-            "a",
-            "b",
-            "c",
-            "d",
-            "e",
-            "f",
-            "g",
-            "h",
-            "i",
-            "j",
-            "k",
-            "l",
-            "m",
-            "n",
-            "o",
-            "p",
-            "q",
-            "r",
-            "s",
-            "t",
-            "u",
-            "v",
-            "w",
-            "x",
-            "y",
-            "z",
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0",
-            "!",
-            "@",
-            "#",
-            "$",
-            "%",
-            "^",
-            "&",
-            "*",
-            "(",
-            ")",
-            "+",
-            "=",
-            "?",
-            " "
-        };
+        private readonly SearchTermBuilderService _searchTermBuilderService;
 
         public ArtistQueryService(
             ILogger<ArtistQueryService> logger,
             IOptions<SpotifyApiSettings> settings,
-            IApiQueryService apiQueryService
+            IApiQueryService apiQueryService,
+            SearchTermBuilderService searchTermBuilderService
         )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _spotifyApiSettings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
             _apiQueryService = apiQueryService ?? throw new ArgumentNullException(nameof(apiQueryService));
+            _searchTermBuilderService = searchTermBuilderService ?? throw new ArgumentNullException(nameof(searchTermBuilderService));
         }
 
         public async Task ExecuteAsync()
@@ -90,16 +39,18 @@ namespace SpotifyStalker.ConsoleUi
 
             var artists = new Dictionary<string, Artist>();
 
-            foreach(var searchTerm in _searchCharacters)
+            var searchTerms = _searchTermBuilderService.GenerateSearchTerms();
+
+            foreach (var searchTerm in searchTerms)
                 artists = await QueryArtistsUsingSearchTermsAsync(searchTerm, artists);
 
             foreach (var artist in artists.OrderBy(x => x.Value.Name))
                 Console.WriteLine($"{artist.Key} - {artist.Value.Name}");
         }
 
-        public async Task<Dictionary<string, Artist>> QueryArtistsUsingSearchTermsAsync(string searchTerms, Dictionary<string, Artist> artists)
+        public async Task<Dictionary<string, Artist>> QueryArtistsUsingSearchTermsAsync(string searchTerm, Dictionary<string, Artist> artists)
         {
-            _logger.LogDebug("Querying Artists with {searchTerms}", searchTerms);
+            _logger.LogDebug("Querying Artists with {searchTerm}", searchTerm);
 
             var itemsQueried = 0;
             var totalItems = 1;
@@ -107,7 +58,7 @@ namespace SpotifyStalker.ConsoleUi
 
             while (itemsQueried < totalItems)
             {
-                var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>(searchTerms, _spotifyApiSettings.Limits.Search.Limit, itemsQueried);
+                var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>(searchTerm, _spotifyApiSettings.Limits.Search.Limit, itemsQueried);
                 itemsQueried += _spotifyApiSettings.Limits.Search.Limit;
 
                 if (result != Model.RequestStatus.Success)
