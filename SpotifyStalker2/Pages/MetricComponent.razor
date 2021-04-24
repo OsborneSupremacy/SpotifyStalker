@@ -9,16 +9,16 @@
         @if (Metric.Winner != null)
         {
             <div class="alert alert-success">
-                Track with Highest @Metric.Name <span class="badge badge-success">@(Metric?.Winner?.MetricValue ?? 0)</span>: @WriteTrackInfo(Metric.Winner) 
-                <SpotifyLink Name="@Metric.Winner.Value.Track.Name" Id="@Metric.Winner.Value.Track.Id" Type="track" />
+                Track with Highest @Metric.Name <span class="badge badge-success">@(Metric?.Winner?.MetricValue ?? 0)</span>: 
+                <SpotifyLink Name="@Metric.Winner.Value.Track.Name" Id="@Metric.Winner.Value.Track.Id" Type="track" /> by @WriteArtistInfo(Metric.Winner)
             </div>
         }
 
         @if (Metric.Loser != null)
         {
             <div class="alert alert-danger">
-                Track with Lowest @Metric.Name <span class="badge badge-danger">@(Metric?.Loser?.MetricValue ?? 0)</span>: @WriteTrackInfo(Metric.Loser) 
-                <SpotifyLink Name="@Metric.Loser.Value.Track.Name" Id="@Metric.Loser.Value.Track.Id" Type="track" />
+                Track with Lowest @Metric.Name <span class="badge badge-danger">@(Metric?.Loser?.MetricValue ?? 0)</span>: 
+                <SpotifyLink Name="@Metric.Loser.Value.Track.Name" Id="@Metric.Loser.Value.Track.Id" Type="track" /> by @WriteArtistInfo(Metric.Loser)
             </div>
         }
 
@@ -41,18 +41,15 @@
     [Parameter]
     public Metric Metric { get; set; }
 
-    public string WriteTrackInfo((double MetricValue, Track Track)? input)
+    public string WriteArtistInfo((double MetricValue, Track Track)? input)
     {
         var s = new System.Text.StringBuilder();
-        s.Append($"\"{input.Value.Track.Name}\", by ");
-
         int artistCount = 0;
         foreach(var artist in input.Value.Track.Artists) {
             if (artistCount > 0) s.Append(", ");
             s.Append(artist.Name);
             artistCount++;
         }
-
         return s.ToString();
     }
 
