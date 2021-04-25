@@ -59,7 +59,7 @@ namespace SpotifyStalker.Service
             var url = _apiRequestUrlBuilder.BuildBatch<T>(ids);
 
             var result = await _apiRequestService.GetAsync<T>(url);
-            return (b, result.RequestStatus, result.Item2);
+            return (b, result.RequestStatus, result.Result);
         }
     }
 }

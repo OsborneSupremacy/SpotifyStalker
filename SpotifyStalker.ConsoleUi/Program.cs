@@ -9,9 +9,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
-using Serilog.Configuration;
-using Serilog.Context;
-using Serilog.Core;
 
 namespace SpotifyStalker.ConsoleUi
 {
@@ -54,6 +51,7 @@ namespace SpotifyStalker.ConsoleUi
                     services.AddSingleton<ArtistQueryService>();
                     services.AddSingleton<SearchTermBuilderService>();
 
+
                 })
                 .UseSerilog()
                 .RunConsoleAsync();
@@ -75,9 +73,9 @@ namespace SpotifyStalker.ConsoleUi
                 )
             {
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-                _appLifetime = appLifetime ?? throw new ArgumentNullException(nameof(userPromptService));
+                _appLifetime = appLifetime ?? throw new ArgumentNullException(nameof(appLifetime));
                 _userPromptService = userPromptService ?? throw new ArgumentNullException(nameof(userPromptService));
-;            }
+            }
 
             public Task StartAsync(CancellationToken cancellationToken)
             {
