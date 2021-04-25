@@ -2,7 +2,7 @@
 
 namespace SpotifyStalker.Data
 {
-    internal class SpotifyStalkerDbContext : DbContext
+    public class SpotifyStalkerDbContext : DbContext
     {
         public DbSet<Artist> Artists { get; set; }
 

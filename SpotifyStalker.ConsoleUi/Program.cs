@@ -4,11 +4,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Spotify.Model;
 using SpotifyStalker.Interface;
+using SpotifyStalker.Data;
 using SpotifyStalker.Service;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
+using Microsoft.EntityFrameworkCore;
 
 namespace SpotifyStalker.ConsoleUi
 {
@@ -51,6 +53,11 @@ namespace SpotifyStalker.ConsoleUi
                     services.AddSingleton<ArtistQueryService>();
                     services.AddSingleton<SearchTermBuilderService>();
 
+                    services.AddDbContext<SpotifyStalkerDbContext>();
+
+                    // TODO: Update SpotifyStalkerDbContext to accept parameters
+                    //services.AddDbContext<SpotifyStalkerDbContext>(options =>
+                    //    options.UseSqlServer(configuration.GetConnectionString("SpotifyStalker")));
 
                 })
                 .UseSerilog()

@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
@@ -28,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SpotifyStalker.Data\SpotifyStalker.Data.csproj" />
     <ProjectReference Include="..\SpotifyStalker.Interface\SpotifyStalker.Interface.csproj" />
     <ProjectReference Include="..\SpotifyStalker.Service\SpotifyStalker.Service.csproj" />
   </ItemGroup>
