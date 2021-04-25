@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Spotify.Object
 {
-    public class SearchResult
+    public class UserPlaylistSearchResult
     {
         [JsonPropertyName("playlists")]
         public SearchResultPlaylists Playlists { get; set; }

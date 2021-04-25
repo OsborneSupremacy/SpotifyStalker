@@ -25,6 +25,10 @@ namespace Spotify.Model
 
     public class ApiLimits
     {
+        [JsonPropertyName("search")]
+        [Required]
+        public SearchLimits Search { get; set; }
+
         [JsonPropertyName("userplaylist")]
         [Required]
         [Range(1, 50)]
@@ -39,6 +43,19 @@ namespace Spotify.Model
         [Required]
         [Range(1, 50)]
         public int BatchSize { get; set; }
+    }
+
+    public class SearchLimits
+    {
+        [JsonPropertyName("limit")]
+        [Required]
+        [Range(1, 50)]
+        public int Limit { get; set; }
+
+        [JsonPropertyName("maximumoffset")]
+        [Required]
+        [Range(1, 1000)]
+        public int MaximumOffset { get; set; }
     }
 
     public class ApiKeys

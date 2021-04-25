@@ -11,12 +11,12 @@ namespace SpotifyStalker.Service
 {
     public class ApiRequestService : IApiRequestService
     {
-        private readonly ILogger<IApiRequestService> _logger;
+        private readonly ILogger<ApiRequestService> _logger;
 
         private readonly IAuthorizedHttpClientFactory _httpClientFactory;
 
         public ApiRequestService(
-            ILogger<IApiRequestService> logger, 
+            ILogger<ApiRequestService> logger, 
             IAuthorizedHttpClientFactory httpClientFactory
         )
         {
@@ -33,6 +33,8 @@ namespace SpotifyStalker.Service
             {
                 using var httpClient = await _httpClientFactory.CreateClientAsync();
                 using var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
+
+                _logger.LogDebug("Querying {uri}", url);
 
                 var apiResponse = await ExecuteRequestAsync(httpClient, httpRequest);
                 requestStatus = apiResponse.RequestStatus;
@@ -84,10 +86,13 @@ namespace SpotifyStalker.Service
                 return apiResponse;
             }
 
+            _logger.LogDebug("Success response not received");
+
             // failed response at this point
             switch (response.StatusCode)
             {
                 case HttpStatusCode.NotFound:
+                    _logger.LogDebug("Not found");
                     apiResponse.RequestStatus = RequestStatus.NotFound;
                     return apiResponse;
                 case HttpStatusCode.TooManyRequests: // rate limit hit. Retry

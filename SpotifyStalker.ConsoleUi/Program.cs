@@ -1,60 +1,120 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Spotify.Model;
+using SpotifyStalker.Interface;
+using SpotifyStalker.Data;
+using SpotifyStalker.Service;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Serilog;
+using Microsoft.EntityFrameworkCore;
 
 namespace SpotifyStalker.ConsoleUi
 {
     class Program
     {
-        private readonly static Dictionary<int, string> _operations = 
-            new() {
-                { 1, "Query Artists" },
-                { 0, "Exit" }
-            };
-
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
-                .Build();
+                // this is only going to be run on a development machine, so we can add user secrets unconditionally
+                .AddUserSecrets<Program>();
 
-            var selectedOperation = SelectOperation();
+            var configuration = builder.Build();
 
-            while (selectedOperation != 0)
-            {
-                Console.WriteLine($"Selected operation: {selectedOperation.Value}");
-                Console.WriteLine();
-                selectedOperation = SelectOperation();
-            };
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
 
-            Environment.Exit(0);
+            await Host.CreateDefaultBuilder(args)
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHostedService<ConsoleHostedService>();
+
+                    services.AddAutoMapper(typeof(Program));
+
+                    services.Configure<SpotifyApiSettings>(configuration.GetSection("SpotifyApi"));
+
+                    services.AddHttpClient();
+                    services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+                    services.AddSingleton<ITokenService, TokenService>();
+                    services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
+
+                    services.AddSingleton<IHttpFormPostService, HttpFormPostService>();
+
+                    services.AddSingleton<IApiRequestUrlBuilder, ApiRequestUrlBuilder>();
+                    services.AddSingleton<IApiRequestService, ApiRequestService>();
+                    services.AddSingleton<IApiQueryService, ApiQueryService>();
+
+                    services.AddSingleton<UserPromptService>();
+                    services.AddSingleton<ArtistQueryService>();
+                    services.AddSingleton<SearchTermBuilderService>();
+
+                    services.AddDbContext<SpotifyStalkerDbContext>();
+
+                    // TODO: Update SpotifyStalkerDbContext to accept parameters
+                    //services.AddDbContext<SpotifyStalkerDbContext>(options =>
+                    //    options.UseSqlServer(configuration.GetConnectionString("SpotifyStalker")));
+
+                })
+                .UseSerilog()
+                .RunConsoleAsync();
         }
 
-        public static int? SelectOperation()
-        {
-            StringBuilder s = new();
-            s.AppendLine("SELECT AN OPERATION:");
 
-            foreach (var op in _operations) {
-                if(op.Key == 0) {
-                    s.AppendLine($"Any Other Key: {op.Value}");
-                    continue;
-                }
-                s.AppendLine($"{op.Key}. {op.Value}");
+        class ConsoleHostedService : IHostedService
+        {
+            private readonly ILogger<ConsoleHostedService> _logger;
+
+            private readonly IHostApplicationLifetime _appLifetime;
+
+            private readonly UserPromptService _userPromptService;
+
+            public ConsoleHostedService(
+                ILogger<ConsoleHostedService> logger,
+                IHostApplicationLifetime appLifetime,
+                UserPromptService userPromptService
+                )
+            {
+                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+                _appLifetime = appLifetime ?? throw new ArgumentNullException(nameof(appLifetime));
+                _userPromptService = userPromptService ?? throw new ArgumentNullException(nameof(userPromptService));
             }
 
-            Console.Write(s.ToString());
+            public Task StartAsync(CancellationToken cancellationToken)
+            {
+                _logger.LogDebug($"Starting with arguments: {string.Join(" ", Environment.GetCommandLineArgs())}");
 
-            var i = Console.ReadKey();
-            Console.WriteLine();
+                _appLifetime.ApplicationStarted.Register(async () =>
+                {
+                    try
+                    {
+                        bool processing = true;
+                        while(processing)
+                        {
+                            processing = await _userPromptService.PromptUserAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Unhandled exception");
+                    }
+                    finally
+                    {
+                        _appLifetime.StopApplication();
+                    }
+                });
 
-            i.KeyChar.ToString();
+                return Task.CompletedTask;
+            }
 
-            if (!int.TryParse(i.KeyChar.ToString(), out var input)) return 0;
-            if (!_operations.TryGetValue(input, out _)) return 0;
-
-            return input;
+            public Task StopAsync(CancellationToken cancellationToken)
+            {
+                return Task.CompletedTask;
+            }
         }
     }
 }

@@ -112,7 +112,7 @@
 
     public async Task QueryPlaylistsAsync()
     {
-        var (searchStatus, searchResultModel) = await ApiQueryService.QueryAsync<SearchResultModel>(ViewModel.Keyword);
+        var (searchStatus, searchResultModel) = await ApiQueryService.QueryAsync<UserPlaylistSearchResultModel>(ViewModel.Keyword);
 
         ViewModel.SearchStatus = searchStatus;
 

@@ -12,12 +12,12 @@ namespace SpotifyStalker.Service
 {
     public class ApiRequestUrlBuilder : IApiRequestUrlBuilder
     {
-        private readonly ILogger<IApiRequestService> _logger;
+        private readonly ILogger<ApiRequestUrlBuilder> _logger;
 
         private readonly SpotifyApiSettings _spotifyApiSettings;
 
         public ApiRequestUrlBuilder(
-            ILogger<IApiRequestService> logger,
+            ILogger<ApiRequestUrlBuilder> logger,
             IOptions<SpotifyApiSettings> settings
             )
         {
@@ -32,6 +32,13 @@ namespace SpotifyStalker.Service
             Build<T>(
                 new KeyValuePair<string, string>("Id", id),
                 new KeyValuePair<string, string>("Limit", limit.ToString())
+            );
+
+        public string Build<T>(string id, int limit, int offset) where T : IApiRequestObject, new() =>
+            Build<T>(
+                new KeyValuePair<string, string>("Id", id),
+                new KeyValuePair<string, string>("Limit", limit.ToString()),
+                new KeyValuePair<string, string>("Offset", offset.ToString())
             );
 
         public string Build<T>(params KeyValuePair<string, string>[] substitutions) where T : IApiRequestObject, new()
