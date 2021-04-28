@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpotifyStalker.Data;
 
 namespace SpotifyStalker.Data.Migrations
 {
     [DbContext(typeof(SpotifyStalkerDbContext))]
-    partial class SpotifyStalkerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210427121100_AddArtistQueryQueue")]
+    partial class AddArtistQueryQueue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace SpotifyStalker.Data
 {
+    [Index(nameof(ArtistId))]
     public record Artist
     {
+        [Key]
         [Required]
         [MaxLength(255)]
         public string ArtistId { get; set; }
@@ -16,7 +19,7 @@ namespace SpotifyStalker.Data
         public int Popularity { get; set; }
 
         [Required]
-        [MaxLength(2040)]
+        [MaxLength(4080)]
         public string Genres { get; set; }
     }
 }

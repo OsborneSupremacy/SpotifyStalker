@@ -6,6 +6,8 @@ namespace SpotifyStalker.Data
     {
         public DbSet<Artist> Artists { get; set; }
 
+        public DbSet<ArtistQueryLog> ArtistQueryLogs { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlServer(@"Data Source=BEN-LEGION;Initial Catalog=SpotifyStalker;Integrated Security=true");
 
