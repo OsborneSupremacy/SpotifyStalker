@@ -37,10 +37,6 @@ namespace SpotifyStalker.ConsoleUi
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        // TODO: Query Log Updater Service
-        // change query log to query queue. Make resultcount nullable
-
-
         public async Task ExecuteAsync()
         {
             _logger.LogDebug("Querying Artists");
@@ -73,15 +69,38 @@ namespace SpotifyStalker.ConsoleUi
 
             queryLog.QueriedDate = DateTime.Now;
 
-            await QueryArtistsUsingSearchTermAsync(searchTerm, queryLog);
+            await QueryArtistsUsingSearchTermAsync(searchTerm, resultCountUpdater, saveToDatabase);
 
             queryLog.CompletedDate = DateTime.Now;
             _dbContext.Update(queryLog);
             await _dbContext.SaveChangesAsync();
+
+            void resultCountUpdater(int resultCount)
+            {
+                queryLog.ResultCount = resultCount;
+                _dbContext.Update(queryLog);
+            }
+
+            async Task saveToDatabase(Spotify.Object.Artist artist)
+            {
+                // 1. Remove existing record from database
+                _dbContext.Artists.RemoveRange(_dbContext.Artists.Where(x => x.ArtistId == artist.Id));
+                // 2. add new record
+                _dbContext.Add(new Artist()
+                {
+                    ArtistId = artist.Id,
+                    ArtistName = artist.Name,
+                    Genres = string.Join("|", artist.Genres),
+                    Popularity = artist.Popularity
+                });
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
-
-        public async Task QueryArtistsUsingSearchTermAsync(string searchTerm, ArtistQueryLog queryLog)
+        public async Task QueryArtistsUsingSearchTermAsync(string searchTerm, 
+            Action<int> resultCountUpdater,
+            Func<Spotify.Object.Artist, Task> saveToDatabase
+            )
         {
             var itemsQueried = 0;
             var totalItems = 1;
@@ -94,23 +113,21 @@ namespace SpotifyStalker.ConsoleUi
                 var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>(searchTerm, _spotifyApiSettings.Limits.Search.Limit, itemsQueried);
                 itemsQueried += _spotifyApiSettings.Limits.Search.Limit;
 
-                if (result != Model.RequestStatus.Success)
-                    break;
+                if (result != Model.RequestStatus.Success)break;
 
                 // only need to read this info once, so do it on first iteration
-                if (firstIteration)
-                    getTotalItems();
+                if (firstIteration) getTotalItems();
 
                 foreach (var item in resultModel.Artists.Items)
                 {
-                    // skip artists with 0 popularity or unknown gengres. There are a ton of them in Spotify, and for our
+                    // skip artists with 0 popularity or unknown genres. There are a ton of them in Spotify, and for our
                     // purposes we don't want them.
                     if (item.Popularity == 0 || !(item.Genres?.Any() ?? false)) continue;
 
                     // if artist is already in dictionary, don't need to do anything else
                     if (!artists.TryAdd(item.Id, item)) continue;
 
-                    await saveArtistAsync(item);
+                    await saveToDatabase.Invoke(item);
                 }
 
                 void getTotalItems()
@@ -119,26 +136,10 @@ namespace SpotifyStalker.ConsoleUi
                     if (totalItems > _spotifyApiSettings.Limits.Search.MaximumOffset)
                         totalItems = _spotifyApiSettings.Limits.Search.MaximumOffset;
 
-                    queryLog.ResultCount = totalItems;
-                    _dbContext.Update(queryLog);
+                    resultCountUpdater.Invoke(totalItems);
 
                     _logger.LogDebug("Total Items: {totalItems}", totalItems);
                     firstIteration = false;
-                }
-
-                async Task saveArtistAsync(Spotify.Object.Artist artist)
-                {
-                    // 1. Remove existing record from database
-                    _dbContext.Artists.RemoveRange(_dbContext.Artists.Where(x => x.ArtistId == artist.Id));
-                    // 2. add new record
-                    _dbContext.Add(new Data.Artist()
-                    {
-                        ArtistId = artist.Id,
-                        ArtistName = artist.Name,
-                        Genres = string.Join("|", artist.Genres),
-                        Popularity = artist.Popularity
-                    });
-                    await _dbContext.SaveChangesAsync();
                 }
             } // loop through items
         }
