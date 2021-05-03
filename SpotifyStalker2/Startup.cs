@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using SpotifyStalker.Interface;
 using SpotifyStalker.Service;
-using AutoMapper;
 using Spotify.Model;
 
 namespace SpotifyStalker2
@@ -32,6 +31,11 @@ namespace SpotifyStalker2
             services.AddServerSideBlazor();
 
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+            services.AddSingleton<IFileContentProvider, FileContentProvider>();
+            services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
+            services.AddSingleton<IArtistProvider, ArtistProvider>();
+            services.AddSingleton<IGenreProvider, GenreProvider>();
             services.AddSingleton<IRandomProvider, RandomProvider>();
 
             services.AddSingleton<IHttpFormPostService, HttpFormPostService>();
