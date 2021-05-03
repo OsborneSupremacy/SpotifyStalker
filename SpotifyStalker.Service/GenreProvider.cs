@@ -20,7 +20,7 @@ namespace SpotifyStalker.Service
         public async Task<IEnumerable<string>> GetAsync() =>
             await _memoryCacheService.GetOrCreateAsync("_genres", async () =>
             {
-                var artists = _fileContentProvider.GetEnumerable(@"Files\genres.txt");
+                var artists = _fileContentProvider.GetEnumerable(@"Files", "genres.txt");
                 return await Task.FromResult(artists);
             });
     }
