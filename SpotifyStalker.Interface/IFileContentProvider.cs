@@ -4,8 +4,8 @@ namespace SpotifyStalker.Interface
 {
     public interface IFileContentProvider
     {
-        string Get(string fileName);
+        string Get(string directoryName, string fileName);
 
-        IEnumerable<string> GetEnumerable(string fileName);
+        IEnumerable<string> GetEnumerable(string directoryName, string fileName);
     }
 }
