@@ -22,7 +22,8 @@
         <p>From there, you can view all of that user's public playlists.</p>
 
         <p>
-            Can't think of a good keyword? Try the name of any band,
+            Can't think of a good keyword? Try the name of any
+            <span style="cursor: pointer" @onclick="FindRandomArtist" class="badge badge-danger">artist</span>,
             <span style="cursor: pointer" @onclick="FindRandomPerson" class="badge badge-success">person</span>,
             <span style="cursor: pointer" @onclick="FindRandomGenre" class="badge badge-primary">genre</span>,
             <span style="cursor: pointer" @onclick="FindRandomLocation" class="badge badge-info">place</span>,
@@ -125,6 +126,8 @@
         ViewModel.Playlists = searchResultModel.Playlists.Items.ToList();
 
     }
+
+    public async Task FindRandomArtist() => await SearchForKeyWord(RandomProvider.GetArtist());
 
     public async Task FindRandomPerson() => await SearchForKeyWord(RandomProvider.GetPersonName());
 
