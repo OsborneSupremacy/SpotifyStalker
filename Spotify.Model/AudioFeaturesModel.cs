@@ -13,10 +13,13 @@ namespace Spotify.Model
         public string Name => Id;
     }
 
-    public class AudioFeaturesModelCollection : IApiBatchRequestObject
+    public class AudioFeaturesModelCollection : IApiBatchRequestObject, IApiRequestObject
     {
         [JsonIgnore]
         public string UrlBase => "audio-features?ids=";
+
+        [JsonIgnore]
+        public string UrlTemplate => "audio-features?ids={Ids}";
 
         [JsonPropertyName("audio_features")]
         public IEnumerable<AudioFeaturesModel> AudioFeaturesList { get; set; }

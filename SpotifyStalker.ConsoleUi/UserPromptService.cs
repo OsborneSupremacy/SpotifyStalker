@@ -9,17 +9,22 @@ namespace SpotifyStalker.ConsoleUi
     {
         private readonly ArtistQueryService _artistQueryService;
 
+        private readonly TrackQueryService _trackQueryService;
+
         private Dictionary<int, (string name, Func<Task> operation)> _operations;
 
         public UserPromptService(
-            ArtistQueryService artistQueryService
+            ArtistQueryService artistQueryService,
+            TrackQueryService  trackQueryService
         )
         {
             _artistQueryService = artistQueryService ?? throw new ArgumentNullException(nameof(artistQueryService));
+            _trackQueryService = trackQueryService ?? throw new ArgumentNullException(nameof(trackQueryService));
             _operations =
                 new()
                 {
                     { 1, new ("Query Artists", () => { return _artistQueryService.ExecuteAsync(); }) },
+                    { 2, new("Query Tracks", () => { return _trackQueryService.ExecuteAsync(); }) },
                     { 0, ("Exit", null) }
                 };
         }

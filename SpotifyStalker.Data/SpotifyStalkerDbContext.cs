@@ -6,6 +6,8 @@ namespace SpotifyStalker.Data
     {
         public DbSet<Artist> Artists { get; set; }
 
+        public DbSet<Track> Tracks { get; set; }
+
         public DbSet<ArtistQueryLog> ArtistQueryLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

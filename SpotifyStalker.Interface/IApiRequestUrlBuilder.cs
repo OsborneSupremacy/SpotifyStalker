@@ -9,6 +9,8 @@ namespace SpotifyStalker.Interface
 
         string Build<T>(string id, int limit) where T : IApiRequestObject, new();
 
+        string Build<T>(IEnumerable<string> ids) where T : IApiRequestObject, new();
+
         string Build<T>(string id, int limit, int offset) where T : IApiRequestObject, new();
 
         string Build<T>(
