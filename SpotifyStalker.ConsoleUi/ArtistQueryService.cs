@@ -113,7 +113,7 @@ namespace SpotifyStalker.ConsoleUi
                 var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>(searchTerm, _spotifyApiSettings.Limits.Search.Limit, itemsQueried);
                 itemsQueried += _spotifyApiSettings.Limits.Search.Limit;
 
-                if (result != Model.RequestStatus.Success)break;
+                if (result != Model.RequestStatus.Success) break;
 
                 // only need to read this info once, so do it on first iteration
                 if (firstIteration) getTotalItems();

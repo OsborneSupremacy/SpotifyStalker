@@ -51,6 +51,7 @@ namespace SpotifyStalker.ConsoleUi
 
                     services.AddSingleton<UserPromptService>();
                     services.AddSingleton<ArtistQueryService>();
+                    services.AddSingleton<TrackQueryService>();
                     services.AddSingleton<SearchTermBuilderService>();
 
                     services.AddDbContext<SpotifyStalkerDbContext>();

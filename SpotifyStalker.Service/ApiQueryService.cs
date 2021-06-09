@@ -2,6 +2,7 @@
 using SpotifyStalker.Interface;
 using SpotifyStalker.Model;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SpotifyStalker.Service
@@ -36,6 +37,12 @@ namespace SpotifyStalker.Service
         public async Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(string id, int limit, int offset) where T : IApiRequestObject, new()
         {
             var url = _apiRequestUrlBuilder.Build<T>(id, limit, offset);
+            return await _apiRequestService.GetAsync<T>(url);
+        }
+
+        public async Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(IEnumerable<string> ids) where T : IApiRequestObject, new()
+        {
+            var url = _apiRequestUrlBuilder.Build<T>(ids);
             return await _apiRequestService.GetAsync<T>(url);
         }
     }

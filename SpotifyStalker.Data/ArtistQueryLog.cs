@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace SpotifyStalker.Data
 {
     [Index(nameof(SearchTerm))]
-    public class ArtistQueryLog
+    public record ArtistQueryLog
     {
         [Key]
         [Required]
