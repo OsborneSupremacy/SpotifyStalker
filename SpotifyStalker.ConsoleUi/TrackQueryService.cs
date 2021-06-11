@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Spotify.Model;
+using Spotify.Utility;
 using SpotifyStalker.Data;
 using SpotifyStalker.Interface;
 using System;
@@ -59,34 +60,45 @@ namespace SpotifyStalker.ConsoleUi
 
                 var trackDictionary = tracks.Tracks.ToDictionary(x => x.Id, x => x);
 
+                var existingTrackIds =_dbContext.Tracks
+                    .Where(x => trackDictionary.Keys.ToHashSet().Contains(x.Id))
+                    .Select(x => x.Id)
+                    .ToHashSet();
+
+                foreach (var trackId in existingTrackIds)
+                    trackDictionary.Remove(trackId);
+
                 var (audioFeaturesResult, audioFeatures) = await _apiQueryService.QueryAsync<AudioFeaturesModelCollection>(trackDictionary.Keys);
                 if (audioFeaturesResult != Model.RequestStatus.Success
-                    || !(audioFeatures.AudioFeaturesList.Any())) {
+                    || !audioFeatures.AudioFeaturesList.Any()) {
                     _logger.LogInformation("No audio features fround for top tracks of {ArtistId}", artist.ArtistId);
                     continue;
                 }
 
                 await _dbContext.Tracks.AddRangeAsync(
-                    audioFeatures.AudioFeaturesList.Select(x => new Track() 
-                    {
-                        Id = x.Id,
-                        ArtistId = artist.ArtistId,
-                        Name = trackDictionary.GetValueOrDefault(x.Id).Name,
-                        Popularity = trackDictionary.GetValueOrDefault(x.Id).Popularity,
-                        Danceability = x.Danceability,
-                        Energy = x.Energy,
-                        Key = x.Key,
-                        Loudness = x.Loudness,
-                        Mode = x.Mode,
-                        Speechiness = x.Speechiness,
-                        Acousticness = x.Acousticness,
-                        Instrumentalness = x.Instrumentalness,
-                        Liveness = x.Liveness,
-                        Valence = x.Valence,
-                        Tempo = x.Tempo,
-                        DurationMs = x.DurationMs,
-                        TimeSignature = x.TimeSignature
-                    })
+                    audioFeatures.AudioFeaturesList
+                        .Where(x => x != null) // ran into Spotify returning a null audio features object
+                        .Select(x => new Track() 
+                        {
+                            Id = x.Id,
+                            ArtistId = artist.ArtistId,
+                            Name = (trackDictionary.GetValueOrDefault(x.Id)?.Name ?? string.Empty).Left(255),
+                            Popularity = trackDictionary.GetValueOrDefault(x.Id)?.Popularity,
+                            Danceability = x.Danceability,
+                            Energy = x.Energy,
+                            Key = x.Key,
+                            Loudness = x.Loudness,
+                            Mode = x.Mode,
+                            Speechiness = x.Speechiness,
+                            Acousticness = x.Acousticness,
+                            Instrumentalness = x.Instrumentalness,
+                            Liveness = x.Liveness,
+                            Valence = x.Valence,
+                            Tempo = x.Tempo,
+                            DurationMs = x.DurationMs,
+                            TimeSignature = x.TimeSignature
+                        })
+                        .Distinct()
                 );
 
                 await _dbContext.SaveChangesAsync();

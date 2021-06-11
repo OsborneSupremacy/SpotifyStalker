@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Spotify.Utility\Spotify.Utility.csproj" />
     <ProjectReference Include="..\SpotifyStalker.Data\SpotifyStalker.Data.csproj" />
     <ProjectReference Include="..\SpotifyStalker.Interface\SpotifyStalker.Interface.csproj" />
     <ProjectReference Include="..\SpotifyStalker.Service\SpotifyStalker.Service.csproj" />
