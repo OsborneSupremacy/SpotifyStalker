@@ -33,7 +33,7 @@ namespace SpotifyStalker.ConsoleUi
             _logger.LogDebug("Querying Tracks");
 
             var artists = _dbContext.Artists
-                .OrderBy(x => x.Popularity)
+                .OrderByDescending(x => x.Popularity)
                 .ThenBy(x => x.ArtistId)
                 .ToList();
 
@@ -44,29 +44,9 @@ namespace SpotifyStalker.ConsoleUi
             {
                 _logger.LogDebug("Querying Tracks for {ArtistName}", artist.ArtistName);
 
-                // we already have tracks for this artist, so skip them
-                if (_dbContext.Tracks.Where(x => x.ArtistId == artist.ArtistId).Any()) {
-                    _logger.LogInformation("Tracks exist in database for {ArtistId} already. Skipping", artist.ArtistId);
-                    continue;
-                }
+                var trackDictionary = await GetTracksAsync(artist);
 
-                var (tracksResult, tracks) = await _apiQueryService.QueryAsync<TrackSearchResultModel>(artist.ArtistId);
-                if (tracksResult != Model.RequestStatus.Success
-                    || !(tracks?.Tracks.Any() ?? false))
-                {
-                    _logger.LogInformation("No top tracks fround for {ArtistId}", artist.ArtistId);
-                    continue;
-                }
-
-                var trackDictionary = tracks.Tracks.ToDictionary(x => x.Id, x => x);
-
-                var existingTrackIds =_dbContext.Tracks
-                    .Where(x => trackDictionary.Keys.ToHashSet().Contains(x.Id))
-                    .Select(x => x.Id)
-                    .ToHashSet();
-
-                foreach (var trackId in existingTrackIds)
-                    trackDictionary.Remove(trackId);
+                if(!trackDictionary.Any()) continue;
 
                 var (audioFeaturesResult, audioFeatures) = await _apiQueryService.QueryAsync<AudioFeaturesModelCollection>(trackDictionary.Keys);
                 if (audioFeaturesResult != Model.RequestStatus.Success
@@ -106,9 +86,28 @@ namespace SpotifyStalker.ConsoleUi
                 _logger.LogDebug("{ArtistName} tracks saved", artist.ArtistName);
 
 
-            } // end - artlist loop
-
+            } // end - artist loop
         }
 
+        protected async Task<Dictionary<string, Spotify.Object.Track>> GetTracksAsync(Artist artist)
+        {
+            var (tracksResult, tracks) = await _apiQueryService.QueryAsync<TrackSearchResultModel>(artist.ArtistId);
+            if (tracksResult != Model.RequestStatus.Success
+                || !(tracks?.Tracks.Any() ?? false))
+            {
+                _logger.LogInformation("No top tracks fround for {ArtistId}", artist.ArtistId);
+                return new Dictionary<string, Spotify.Object.Track>();
+            }
+
+            var existingTrackIds = _dbContext.Tracks
+                .Where(x => tracks.Tracks.Select(t => t.Id).Contains(x.Id))
+                .Select(x => x.Id)
+                .ToHashSet();
+
+            return tracks.Tracks
+                .Where(x => x != null)
+                .Where(x => !existingTrackIds.Contains(x.Id))
+                .ToDictionary(x => x.Id, x => x);
+        }
     }
 }
