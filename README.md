@@ -44,9 +44,7 @@ They can be used to query data from Spotify, saving it back to a SQL Server data
 
 ### Using SpotifyStalker.Data
 
-There is a hard-coded connection string in SpotifyStalkerDbContext.cs. Obviously, that needs to be updated for the machine running this app.
-
-There is a way to use a connection string in appsettings (see [here](https://stackoverflow.com/questions/56017952/how-to-set-connectionstring-from-appsettings-json-in-entity-framework-core)) and/or a user secrets file, however it's more work than I want to do right now, especially since I'm the only one likely to ever use this.
+Update appSettings.json with the connection string on your PC, or add it to your user secrets.
 
 #### Deploying Database Updates
 
