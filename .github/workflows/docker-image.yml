@@ -18,5 +18,4 @@ jobs:
       run: docker build . --file ./SpotifyStalker2/Dockerfile --tag spotifystalker:$(date +%s)
 
     - name: GitHub Container Registry Docker Action
-      uses: psbornesupremacy/spotifystalker@main
-      
+      uses: Osbornesupremacy/spotifystalker@main
