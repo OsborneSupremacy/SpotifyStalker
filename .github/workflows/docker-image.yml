@@ -18,4 +18,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag spotifystalker:$(date +%s)
+      run: docker build ./SpotifyStalker2 --file Dockerfile --tag spotifystalker:$(date +%s)
