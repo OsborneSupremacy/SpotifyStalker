@@ -16,3 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file ./SpotifyStalker2/Dockerfile --tag spotifystalker:$(date +%s)
+
+    - name: GitHub Container Registry Docker Action
+      uses: psbornesupremacy/spotifystalker@main
+      
