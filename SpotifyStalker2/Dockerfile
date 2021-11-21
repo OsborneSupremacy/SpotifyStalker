@@ -1,13 +1,19 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["SpotifyStalker2/SpotifyStalker2.csproj", "SpotifyStalker2/"]
+COPY ["Spotify.Object/Spotify.Object.csproj", "Spotify.Object/"]
+COPY ["Spotify.Interface/Spotify.Interface.csproj", "Spotify.Interface/"]
+COPY ["SpotifyStalker.Interface/SpotifyStalker.Interface.csproj", "SpotifyStalker.Interface/"]
+COPY ["Spotify.Model/Spotify.Model.csproj", "Spotify.Model/"]
+COPY ["SpotifyStalker.Model/SpotifyStalker.Model.csproj", "SpotifyStalker.Model/"]
+COPY ["SpotifyStalker.Service/SpotifyStalker.Service.csproj", "SpotifyStalker.Service/"]
 RUN dotnet restore "SpotifyStalker2/SpotifyStalker2.csproj"
 COPY . .
 WORKDIR "/src/SpotifyStalker2"
