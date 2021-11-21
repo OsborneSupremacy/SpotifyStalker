@@ -1,6 +1,3 @@
-name: Check out code
-use: actions/checkout@v2
-
 name: Docker Image CI
 
 on:
