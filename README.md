@@ -33,6 +33,34 @@ group by
     g.Genre
 order by
     count(g.ArtistId) desc;
+
+```
+
+#### Track Metrics
+
+```sql
+select
+    TrackCount = count(m.Id),
+    MaxDanceability = max(m.Danceability),
+    MinDanceability = min(m.Danceability),
+    MaxEnergy = max(m.Energy),
+    MinEnergy = min(m.Energy),
+    MaxLoudness = max(m.Loudness),
+    MinLoudness = min(m.Loudness),
+    MaxSpeechiness = max(m.Speechiness),
+    MinSpeechiness = min(m.Speechiness),
+    MaxAcousticness = max(m.Acousticness),
+    MinAcousticness = min(m.Acousticness),
+    MaxInstrumentalness = max(m.Instrumentalness),
+    MinInstrumentalness = min(m.Instrumentalness),
+    MaxLiveness = max(m.Liveness),
+    MinLiveness = min(m.Liveness),
+    MaxValence = max(m.Valence),
+    MinValence = min(m.Valence),
+    MaxTempo = max(m.Tempo),
+    MinTempo = min(m.Tempo)
+from
+    dbo.Tracks m;
 ```
 
 ## SpotifyStalker.ConsoleUi / SpotifyStalker.Data
