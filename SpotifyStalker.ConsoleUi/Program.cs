@@ -10,7 +10,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
-using Microsoft.EntityFrameworkCore;
 
 namespace SpotifyStalker.ConsoleUi
 {
@@ -19,9 +18,11 @@ namespace SpotifyStalker.ConsoleUi
         static async Task Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                // this is only going to be run on a development machine, so we can add user secrets unconditionally
-                .AddUserSecrets<Program>();
+                .AddJsonFile("appsettings.json");
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                .Equals("Development", StringComparison.OrdinalIgnoreCase))
+                builder.AddUserSecrets<Program>();
 
             var configuration = builder.Build();
 
