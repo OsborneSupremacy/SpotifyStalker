@@ -14,8 +14,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file ./SpotifyStalker2/Dockerfile --tag spotifystalker:$(date +%s)
 
-    - name: GitHub Container Registry Docker Action
-      uses: Osbornesupremacy/spotifystalker@main
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build the Docker image
+      run: |
+        docker build . --file ./SpotifyStalker2/Dockerfile --tag spotifystalker:$(date +%s)
+        docker push ghcr.io/osbornesupremacy/spotifystalker:latest
