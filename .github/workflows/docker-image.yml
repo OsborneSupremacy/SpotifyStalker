@@ -17,5 +17,5 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        docker build . --file ./SpotifyStalker2/Dockerfile --tag spotifystalker2:$(date +%s)
-        docker push spotifystalker2:latest
+        docker build . --file ./SpotifyStalker2/Dockerfile --tag ghcr.io/osbornesupremacy/spotifystalker2:latest
+        docker push ghcr.io/osbornesupremacy/spotifystalker2:latest
