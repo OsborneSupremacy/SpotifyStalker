@@ -26,3 +26,10 @@ jobs:
       run: |
         docker build . --file ./SpotifyStalker2/Dockerfile --tag ghcr.io/osbornesupremacy/spotifystalker2:latest
         docker push ghcr.io/osbornesupremacy/spotifystalker2:latest
+
+    - name: Publish to Azure
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'spotifystalker'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: 'ghcr.io/osbornesupremacy/spotifystalker2:latest'
