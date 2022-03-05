@@ -18,14 +18,19 @@ namespace SpotifyStalker.ConsoleUi
 
         private readonly SpotifyStalkerDbContext _dbContext;
 
+        private readonly IDateTimeProvider _dateTimeProvider;
+
         public TrackQueryService(
             ILogger<TrackQueryService> logger,
             IApiQueryService apiQueryService,
-            SpotifyStalkerDbContext dbContext)
+            SpotifyStalkerDbContext dbContext,
+            IDateTimeProvider dateTimeProvider
+            )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _apiQueryService = apiQueryService ?? throw new ArgumentNullException(nameof(apiQueryService));
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
         public async Task ExecuteAsync()
@@ -76,7 +81,8 @@ namespace SpotifyStalker.ConsoleUi
                             Valence = x.Valence,
                             Tempo = x.Tempo,
                             DurationMs = x.DurationMs,
-                            TimeSignature = x.TimeSignature
+                            TimeSignature = x.TimeSignature,
+                            AddedDate = _dateTimeProvider.GetCurrentDateTime()
                         })
                         .Distinct()
                 );

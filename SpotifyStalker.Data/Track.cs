@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SpotifyStalker.Data
@@ -45,5 +46,7 @@ namespace SpotifyStalker.Data
         public double? DurationMs { get; set; }
 
         public double? TimeSignature { get; set; }
+
+        public DateTime AddedDate { get; set; }
     }
 }
