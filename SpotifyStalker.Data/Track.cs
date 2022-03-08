@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace SpotifyStalker.Data
 {
     [Index(nameof(ArtistId))]
+    [Index(nameof(Name))]
     public record Track
     {
         [Key]

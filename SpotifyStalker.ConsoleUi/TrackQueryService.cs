@@ -47,6 +47,12 @@ namespace SpotifyStalker.ConsoleUi
             // begin - Artist loop
             foreach (var artist in artists) 
             {
+                if(_dbContext.Tracks.Any(x => x.ArtistId == artist.ArtistId))
+                {
+                    _logger.LogInformation("{ArtistName} already queried. Skipping.", artist.ArtistName);
+                    continue;
+                };
+
                 _logger.LogDebug("Querying Tracks for {ArtistName}", artist.ArtistName);
 
                 var trackDictionary = await GetTracksAsync(artist);
