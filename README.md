@@ -23,11 +23,11 @@ select ArtistName from dbo.Artists order by Popularity desc, ArtistName;
 ```sql
 select
     g.Genre
-from	
+from
     (
         select a.ArtistId, Genre = [value]
         from dbo.Artists a
-        cross apply string_split(a.Genres, '|') 
+        cross apply string_split(a.Genres, '|')
     ) g
 group by
     g.Genre
@@ -42,22 +42,31 @@ order by
 select
     TrackCount = count(m.Id),
     MaxDanceability = max(m.Danceability),
+    AvgDanceability = avg(m.Danceability),
     MinDanceability = min(m.Danceability),
     MaxEnergy = max(m.Energy),
+    AveEnergy = avg(m.Energy),
     MinEnergy = min(m.Energy),
     MaxLoudness = max(m.Loudness),
+    AvgLoudness = avg(m.Loudness),
     MinLoudness = min(m.Loudness),
     MaxSpeechiness = max(m.Speechiness),
+    AvgSpeechiness = avg(m.Speechiness),
     MinSpeechiness = min(m.Speechiness),
     MaxAcousticness = max(m.Acousticness),
+    AvgAcousticness = avg(m.Acousticness),
     MinAcousticness = min(m.Acousticness),
     MaxInstrumentalness = max(m.Instrumentalness),
+    AvgInstrumentalness = avg(m.Instrumentalness),
     MinInstrumentalness = min(m.Instrumentalness),
     MaxLiveness = max(m.Liveness),
+    AvgLiveness = avg(m.Liveness),
     MinLiveness = min(m.Liveness),
     MaxValence = max(m.Valence),
+    AvgValence = avg(m.Valence),
     MinValence = min(m.Valence),
     MaxTempo = max(m.Tempo),
+    AvgTempo = avg(m.Tempo),
     MinTempo = min(m.Tempo)
 from
     dbo.Tracks m;
@@ -104,6 +113,3 @@ dotnet ef database update
 ### Using SpotifyStalker.ConsoleUi
 
 Once a database is created, set SpotifyStalker.ConsoleUi as your startup project, and run it. It will write data to your local SpotifyStalker database.
-
-
-
