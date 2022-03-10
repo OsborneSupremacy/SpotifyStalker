@@ -23,7 +23,7 @@ select ArtistName from dbo.Artists order by Popularity desc, ArtistName;
 ```sql
 select
     g.Genre
-from	
+from
     (
         select a.ArtistId, Genre = [value]
         from dbo.Artists a
@@ -82,20 +82,20 @@ Navigate to the root folder of SpotifyStalker.Data.
 
 If the EF tools need to be installed, run this:
 
-```
+```powershell
 dotnet tool install --global dotnet-ef
 dotnet add package Microsoft.EntityFrameworkCore.Design
 ```
 
 To add a migration, run:
 
-```
+```powershell
 dotnet ef migrations add MigrationName
 ```
 
 To apply the migrations, run:
 
-```
+```powershell
 dotnet ef database update
 ```
 
@@ -104,6 +104,4 @@ dotnet ef database update
 ### Using SpotifyStalker.ConsoleUi
 
 Once a database is created, set SpotifyStalker.ConsoleUi as your startup project, and run it. It will write data to your local SpotifyStalker database.
-
-
 
