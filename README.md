@@ -91,20 +91,20 @@ Navigate to the root folder of SpotifyStalker.Data.
 
 If the EF tools need to be installed, run this:
 
-```
+```powershell
 dotnet tool install --global dotnet-ef
 dotnet add package Microsoft.EntityFrameworkCore.Design
 ```
 
 To add a migration, run:
 
-```
+```powershell
 dotnet ef migrations add MigrationName
 ```
 
 To apply the migrations, run:
 
-```
+```powershell
 dotnet ef database update
 ```
 
