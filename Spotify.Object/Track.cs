@@ -7,21 +7,21 @@ namespace Spotify.Object
     public class Track : ISpotifyStandardObject
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [JsonPropertyName("popularity")]
         public double? Popularity { get; set; }
 
         [JsonPropertyName("album")]
-        public Album Album { get; set; }
+        public Album? Album { get; set; }
 
         [JsonPropertyName("audioFeatures")]
-        public AudioFeatures AudioFeatures { get; set; }
+        public AudioFeatures? AudioFeatures { get; set; }
 
         [JsonPropertyName("artists")]
-        public IEnumerable<Artist> Artists { get; set; }
+        public IEnumerable<Artist>? Artists { get; set; }
     }
 }

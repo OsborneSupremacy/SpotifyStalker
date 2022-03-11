@@ -97,7 +97,7 @@ namespace SpotifyStalker.ConsoleUi
             }
         }
 
-        public async Task QueryArtistsUsingSearchTermAsync(string searchTerm, 
+        public async Task QueryArtistsUsingSearchTermAsync(string searchTerm,
             Action<int> resultCountUpdater,
             Func<Spotify.Object.Artist, Task> saveToDatabase
             )

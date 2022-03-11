@@ -56,7 +56,7 @@ namespace SpotifyStalker.Service
 
             var url = u.ToString();
 
-            if(url.Contains("{"))
+            if (url.Contains("{"))
                 throw new FormatException($"Url contains un-replaced placeholders, `{url}`");
 
             return url;
@@ -65,7 +65,7 @@ namespace SpotifyStalker.Service
         public string BuildBatch<T>(IEnumerable<string> ids) where T : IApiBatchRequestObject, new()
         {
             var u = new StringBuilder(_spotifyApiSettings.SpotifyBaseUrl);
-            u.Append($"/{new T().UrlBase}{string.Join(",",ids)}");
+            u.Append($"/{new T().UrlBase}{string.Join(",", ids)}");
 
             var url = u.ToString();
             return url;

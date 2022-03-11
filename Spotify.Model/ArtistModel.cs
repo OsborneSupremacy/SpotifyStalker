@@ -20,6 +20,6 @@ namespace Spotify.Model
         public string UrlBase => "artists?ids=";
 
         [JsonPropertyName("artists")]
-        public IEnumerable<ArtistModel> Artists { get; set; }
+        public IEnumerable<ArtistModel>? Artists { get; set; }
     }
 }

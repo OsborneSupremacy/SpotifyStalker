@@ -22,6 +22,6 @@ namespace Spotify.Model
         public string UrlTemplate => "audio-features?ids={Ids}";
 
         [JsonPropertyName("audio_features")]
-        public IEnumerable<AudioFeaturesModel> AudioFeaturesList { get; set; }
+        public IEnumerable<AudioFeaturesModel>? AudioFeaturesList { get; set; }
     }
 }

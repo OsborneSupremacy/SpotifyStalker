@@ -6,6 +6,6 @@ namespace Spotify.Object
     public class UserPlaylists
     {
         [JsonPropertyName("items")]
-        public IEnumerable<Playlist> Playlists { get; set; }
+        public IEnumerable<Playlist>? Playlists { get; set; }
     }
 }

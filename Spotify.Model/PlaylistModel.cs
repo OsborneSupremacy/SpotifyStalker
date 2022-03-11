@@ -24,6 +24,6 @@ namespace Spotify.Model
     public class PlaylistModelTrack
     {
         [JsonPropertyName("track")]
-        public Track Track { get; set; }
+        public Track? Track { get; set; }
     }
 }

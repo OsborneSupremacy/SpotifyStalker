@@ -5,7 +5,7 @@ namespace Spotify.Object
     public class AudioFeatures
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonPropertyName("danceability")]
         public double? Danceability { get; set; }

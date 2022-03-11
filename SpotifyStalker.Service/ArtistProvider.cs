@@ -17,7 +17,7 @@ namespace SpotifyStalker.Service
             _memoryCacheService = memoryCacheService ?? throw new ArgumentNullException(nameof(memoryCacheService));
         }
 
-        public async Task<IEnumerable<string>> GetAsync() => 
+        public async Task<IEnumerable<string>> GetAsync() =>
             await _memoryCacheService.GetOrCreateAsync("_artists", async () =>
             {
                 var artists = _fileContentProvider.GetEnumerable("Files", "artists.txt");

@@ -8,10 +8,10 @@ namespace Spotify.Model
     {
         public string Id => Name;
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public ConcurrentDictionary<string, ArtistModel> Artists { get; set; }
+        public ConcurrentDictionary<string, ArtistModel>? Artists { get; set; }
 
-        public ConcurrentDictionary<string, Track> Tracks { get; set; }
+        public ConcurrentDictionary<string, Track>? Tracks { get; set; }
     }
 }

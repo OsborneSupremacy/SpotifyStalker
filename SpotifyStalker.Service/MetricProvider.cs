@@ -10,7 +10,8 @@ namespace SpotifyStalker.Service
     {
         public async Task<IEnumerable<Metric>> GetAllAsync()
         {
-            return await Task.Run(() => {
+            return await Task.Run(() =>
+            {
 
                 return new List<Metric>() {
 

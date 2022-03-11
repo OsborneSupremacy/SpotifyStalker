@@ -46,9 +46,9 @@ namespace SpotifyStalker.Service
             int b = 0;
             var ids = new List<string>();
 
-            while(b < _spotifyApiSettings.Limits.BatchSize && !QueueIsEmpty())
+            while (b < _spotifyApiSettings.Limits.BatchSize && !QueueIsEmpty())
             {
-                if(_queuedItems.TryDequeue(out string id)) 
+                if (_queuedItems.TryDequeue(out string id))
                 {
                     ids.Add(id);
                     b++;

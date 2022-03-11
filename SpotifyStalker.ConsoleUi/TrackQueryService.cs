@@ -45,9 +45,9 @@ namespace SpotifyStalker.ConsoleUi
             _logger.LogDebug($"Querying Tracks for {artists.Count} Artists");
 
             // begin - Artist loop
-            foreach (var artist in artists) 
+            foreach (var artist in artists)
             {
-                if(_dbContext.Tracks.Any(x => x.ArtistId == artist.ArtistId))
+                if (_dbContext.Tracks.Any(x => x.ArtistId == artist.ArtistId))
                 {
                     _logger.LogInformation("{ArtistName} already queried. Skipping.", artist.ArtistName);
                     continue;
@@ -57,11 +57,12 @@ namespace SpotifyStalker.ConsoleUi
 
                 var trackDictionary = await GetTracksAsync(artist);
 
-                if(!trackDictionary.Any()) continue;
+                if (!trackDictionary.Any()) continue;
 
                 var (audioFeaturesResult, audioFeatures) = await _apiQueryService.QueryAsync<AudioFeaturesModelCollection>(trackDictionary.Keys);
                 if (audioFeaturesResult != Model.RequestStatus.Success
-                    || !audioFeatures.AudioFeaturesList.Any()) {
+                    || !audioFeatures.AudioFeaturesList.Any())
+                {
                     _logger.LogInformation("No audio features fround for top tracks of {ArtistId}", artist.ArtistId);
                     continue;
                 }
@@ -69,7 +70,7 @@ namespace SpotifyStalker.ConsoleUi
                 await _dbContext.Tracks.AddRangeAsync(
                     audioFeatures.AudioFeaturesList
                         .Where(x => x != null) // ran into Spotify returning a null audio features object
-                        .Select(x => new Track() 
+                        .Select(x => new Track()
                         {
                             Id = x.Id,
                             ArtistId = artist.ArtistId,

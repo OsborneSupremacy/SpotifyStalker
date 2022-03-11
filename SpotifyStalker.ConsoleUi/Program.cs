@@ -95,7 +95,7 @@ namespace SpotifyStalker.ConsoleUi
                     try
                     {
                         bool processing = true;
-                        while(processing)
+                        while (processing)
                         {
                             processing = await _userPromptService.PromptUserAsync();
                         }

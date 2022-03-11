@@ -16,7 +16,7 @@ namespace SpotifyStalker.Service
         private readonly IAuthorizedHttpClientFactory _httpClientFactory;
 
         public ApiRequestService(
-            ILogger<ApiRequestService> logger, 
+            ILogger<ApiRequestService> logger,
             IAuthorizedHttpClientFactory httpClientFactory
         )
         {

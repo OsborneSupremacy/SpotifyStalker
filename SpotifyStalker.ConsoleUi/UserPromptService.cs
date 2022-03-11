@@ -15,7 +15,7 @@ namespace SpotifyStalker.ConsoleUi
 
         public UserPromptService(
             ArtistQueryService artistQueryService,
-            TrackQueryService  trackQueryService
+            TrackQueryService trackQueryService
         )
         {
             _artistQueryService = artistQueryService ?? throw new ArgumentNullException(nameof(artistQueryService));
@@ -23,7 +23,7 @@ namespace SpotifyStalker.ConsoleUi
             _operations =
                 new()
                 {
-                    { 1, new ("Query Artists", () => { return _artistQueryService.ExecuteAsync(); }) },
+                    { 1, new("Query Artists", () => { return _artistQueryService.ExecuteAsync(); }) },
                     { 2, new("Query Tracks", () => { return _trackQueryService.ExecuteAsync(); }) },
                     { 0, ("Exit", null) }
                 };
@@ -67,7 +67,7 @@ namespace SpotifyStalker.ConsoleUi
 
             if (!int.TryParse(i.KeyChar.ToString(), out var input)) return inValid();
 
-            if (_operations.TryGetValue(input, out var foundOp)) 
+            if (_operations.TryGetValue(input, out var foundOp))
                 return (true, foundOp.name, foundOp.operation);
 
             return inValid();

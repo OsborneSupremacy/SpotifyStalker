@@ -13,7 +13,7 @@ namespace SpotifyStalker.Service
         {
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
-        
+
         public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> getDataFunction)
         {
             if (_cache.TryGetValue(cacheKey, out var cachedObject))
