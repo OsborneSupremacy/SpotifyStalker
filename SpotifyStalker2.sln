@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30804.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpotifyStalker2", "SpotifyStalker2\SpotifyStalker2.csproj", "{E055DC03-C4AC-4B00-BC16-DA35D2B71710}"
 EndProject
@@ -23,11 +23,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpotifyStalker.Data", "Spot
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6446E3BB-5698-4BD1-A98E-7F5B9AF8A4B0}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		logo.pspimage = logo.pspimage
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotify.Utility", "Spotify.Utility\Spotify.Utility.csproj", "{4E98FB85-C1AE-4DE9-A48A-A04DD8C284CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotify.Utility", "Spotify.Utility\Spotify.Utility.csproj", "{4E98FB85-C1AE-4DE9-A48A-A04DD8C284CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

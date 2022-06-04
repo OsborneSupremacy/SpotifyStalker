@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 
-namespace SpotifyStalker.Interface
+namespace SpotifyStalker.Interface;
+
+public interface IRandomProvider
 {
-    public interface IRandomProvider
-    {
-        public string GetPersonName();
+    public string GetPersonName();
 
-        public string GetWord();
+    public string GetWord();
 
-        public string GetLocation();
+    public string GetLocation();
 
-        public string GetArtist();
+    public string GetArtist();
 
-        public string GetGenre();
+    public string GetGenre();
 
-        T PickRandom<T>(IEnumerable<T> items);
-    }
+    T PickRandom<T>(IEnumerable<T> items);
 }

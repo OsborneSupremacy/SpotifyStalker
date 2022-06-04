@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace SpotifyStalker.Interface
+namespace SpotifyStalker.Interface;
+
+public interface IDateTimeProvider
 {
-    public interface IDateTimeProvider
-    {
-        DateTime GetCurrentDateTime();
-    }
+    DateTime GetCurrentDateTime();
 }

@@ -2,14 +2,13 @@
 using Spotify.Model;
 using Spotify.Object;
 
-namespace SpotifyStalker2.Configuration
+namespace SpotifyStalker2.Configuration;
+
+public class AutoMapperProfile : Profile
 {
-    public class AutoMapperProfile : Profile
+    public AutoMapperProfile()
     {
-        public AutoMapperProfile()
-        {
-            CreateMap<Artist, ArtistModel>();
-            CreateMap<Playlist, PlaylistModel>();
-        }
+        CreateMap<Artist, ArtistModel>();
+        CreateMap<Playlist, PlaylistModel>();
     }
 }

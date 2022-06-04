@@ -1,25 +1,24 @@
-﻿using Spotify.Interface;
-using Spotify.Object;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Spotify.Interface;
+using Spotify.Object;
 
-namespace Spotify.Model
+namespace Spotify.Model;
+
+public class ArtistModel : Artist, IApiRequestObject
 {
-    public class ArtistModel : Artist, IApiRequestObject
-    {
-        [JsonIgnore]
-        public string UrlTemplate => "artists/{Id}";
+    [JsonIgnore]
+    public string UrlTemplate => "artists/{Id}";
 
-        public ConcurrentDictionary<string, Track>? Tracks { get; set; }
-    }
+    public ConcurrentDictionary<string, Track>? Tracks { get; set; }
+}
 
-    public class ArtistModelCollection : IApiBatchRequestObject
-    {
-        [JsonIgnore]
-        public string UrlBase => "artists?ids=";
+public class ArtistModelCollection : IApiBatchRequestObject
+{
+    [JsonIgnore]
+    public string UrlBase => "artists?ids=";
 
-        [JsonPropertyName("artists")]
-        public IEnumerable<ArtistModel>? Artists { get; set; }
-    }
+    [JsonPropertyName("artists")]
+    public IEnumerable<ArtistModel>? Artists { get; set; }
 }

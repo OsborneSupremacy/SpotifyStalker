@@ -1,41 +1,40 @@
-﻿using SpotifyStalker.Interface;
-using Bogus;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.Linq;
+using Bogus;
+using SpotifyStalker.Interface;
 
-namespace SpotifyStalker.Service
+namespace SpotifyStalker.Service;
+
+public class RandomProvider : IRandomProvider
 {
-    public class RandomProvider : IRandomProvider
+    private readonly IArtistProvider _artistProvider;
+
+    private readonly IGenreProvider _genreProvider;
+
+    public RandomProvider(IArtistProvider artistProvider, IGenreProvider genreProvider)
     {
-        private readonly IArtistProvider _artistProvider;
+        _artistProvider = artistProvider ?? throw new ArgumentNullException(nameof(artistProvider));
+        _genreProvider = genreProvider ?? throw new ArgumentNullException(nameof(genreProvider));
+    }
 
-        private readonly IGenreProvider _genreProvider;
+    public string GetPersonName() => new Faker().Person.FirstName;
 
-        public RandomProvider(IArtistProvider artistProvider, IGenreProvider genreProvider)
-        {
-            _artistProvider = artistProvider ?? throw new ArgumentNullException(nameof(artistProvider));
-            _genreProvider = genreProvider ?? throw new ArgumentNullException(nameof(genreProvider));
-        }
+    public string GetWord() => new Randomizer().Word().ToString();
 
-        public string GetPersonName() => new Faker().Person.FirstName;
+    public T PickRandom<T>(IEnumerable<T> items) => new Faker().PickRandom(items);
 
-        public string GetWord() => new Randomizer().Word().ToString();
+    public string GetLocation() => new Faker().Address.Country().ToString();
 
-        public T PickRandom<T>(IEnumerable<T> items) => new Faker().PickRandom(items);
+    public string GetArtist()
+    {
+        var artists = _artistProvider.GetAsync().GetAwaiter().GetResult().ToList();
+        return PickRandom(artists);
+    }
 
-        public string GetLocation() => new Faker().Address.Country().ToString();
-
-        public string GetArtist()
-        {
-            var artists = _artistProvider.GetAsync().GetAwaiter().GetResult().ToList();
-            return PickRandom(artists);
-        }
-
-        public string GetGenre()
-        {
-            var genres = _genreProvider.GetAsync().GetAwaiter().GetResult().ToList();
-            return PickRandom(genres);
-        }
+    public string GetGenre()
+    {
+        var genres = _genreProvider.GetAsync().GetAwaiter().GetResult().ToList();
+        return PickRandom(genres);
     }
 }

@@ -1,12 +1,11 @@
 ﻿
-namespace SpotifyStalker.Model
+namespace SpotifyStalker.Model;
+
+public enum RequestStatus
 {
-    public enum RequestStatus
-    {
-        Default,
-        Success,
-        NotFound,
-        Retry,
-        Failed
-    }
+    Default,
+    Success,
+    NotFound,
+    Retry,
+    Failed
 }

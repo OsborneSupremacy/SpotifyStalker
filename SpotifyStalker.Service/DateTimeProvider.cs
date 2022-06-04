@@ -1,10 +1,9 @@
-﻿using SpotifyStalker.Interface;
-using System;
+﻿using System;
+using SpotifyStalker.Interface;
 
-namespace SpotifyStalker.Service
+namespace SpotifyStalker.Service;
+
+public class DateTimeProvider : IDateTimeProvider
 {
-    public class DateTimeProvider : IDateTimeProvider
-    {
-        public DateTime GetCurrentDateTime() => DateTime.Now;
-    }
+    public DateTime GetCurrentDateTime() => DateTime.Now;
 }

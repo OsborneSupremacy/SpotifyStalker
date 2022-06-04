@@ -1,8 +1,7 @@
 ﻿
-namespace Spotify.Interface
+namespace Spotify.Interface;
+
+public interface IApiBatchRequestObject
 {
-    public interface IApiBatchRequestObject
-    {
-        string UrlBase { get; }
-    }
+    string UrlBase { get; }
 }

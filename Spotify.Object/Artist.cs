@@ -1,21 +1,20 @@
-﻿using Spotify.Interface;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Spotify.Interface;
 
-namespace Spotify.Object
+namespace Spotify.Object;
+
+public class Artist : ISpotifyStandardObject
 {
-    public class Artist : ISpotifyStandardObject
-    {
-        [JsonPropertyName("id")]
-        public string? Id { get; set; }
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 
-        [JsonPropertyName("name")]
-        public string? Name { get; set; }
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 
-        [JsonPropertyName("genres")]
-        public IEnumerable<string>? Genres { get; set; }
+    [JsonPropertyName("genres")]
+    public IEnumerable<string>? Genres { get; set; }
 
-        [JsonPropertyName("popularity")]
-        public int Popularity { get; set; }
-    }
+    [JsonPropertyName("popularity")]
+    public int Popularity { get; set; }
 }

@@ -1,10 +1,9 @@
 ﻿
-namespace Spotify.Interface
-{
-    public interface ISpotifyStandardObject
-    {
-        string Id { get; }
+namespace Spotify.Interface;
 
-        string Name { get; }
-    }
+public interface ISpotifyStandardObject
+{
+    string Id { get; }
+
+    string Name { get; }
 }

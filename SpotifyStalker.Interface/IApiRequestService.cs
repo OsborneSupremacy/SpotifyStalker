@@ -1,10 +1,9 @@
-﻿using SpotifyStalker.Model;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using SpotifyStalker.Model;
 
-namespace SpotifyStalker.Interface
+namespace SpotifyStalker.Interface;
+
+public interface IApiRequestService
 {
-    public interface IApiRequestService
-    {
-        Task<(RequestStatus RequestStatus, T Result)> GetAsync<T>(string url);
-    }
+    Task<(RequestStatus RequestStatus, T Result)> GetAsync<T>(string url);
 }

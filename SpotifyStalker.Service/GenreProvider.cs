@@ -1,27 +1,26 @@
-﻿using SpotifyStalker.Interface;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SpotifyStalker.Interface;
 
-namespace SpotifyStalker.Service
+namespace SpotifyStalker.Service;
+
+public class GenreProvider : IGenreProvider
 {
-    public class GenreProvider : IGenreProvider
+    private readonly IFileContentProvider _fileContentProvider;
+
+    private readonly IMemoryCacheService _memoryCacheService;
+
+    public GenreProvider(IFileContentProvider fileContentProvider, IMemoryCacheService memoryCacheService)
     {
-        private readonly IFileContentProvider _fileContentProvider;
-
-        private readonly IMemoryCacheService _memoryCacheService;
-
-        public GenreProvider(IFileContentProvider fileContentProvider, IMemoryCacheService memoryCacheService)
-        {
-            _fileContentProvider = fileContentProvider ?? throw new ArgumentNullException(nameof(fileContentProvider));
-            _memoryCacheService = memoryCacheService ?? throw new ArgumentNullException(nameof(memoryCacheService));
-        }
-
-        public async Task<IEnumerable<string>> GetAsync() =>
-            await _memoryCacheService.GetOrCreateAsync("_genres", async () =>
-            {
-                var artists = _fileContentProvider.GetEnumerable(@"Files", "genres.txt");
-                return await Task.FromResult(artists);
-            });
+        _fileContentProvider = fileContentProvider ?? throw new ArgumentNullException(nameof(fileContentProvider));
+        _memoryCacheService = memoryCacheService ?? throw new ArgumentNullException(nameof(memoryCacheService));
     }
+
+    public async Task<IEnumerable<string>> GetAsync() =>
+        await _memoryCacheService.GetOrCreateAsync("_genres", async () =>
+        {
+            var artists = _fileContentProvider.GetEnumerable(@"Files", "genres.txt");
+            return await Task.FromResult(artists);
+        });
 }

@@ -1,7 +1,6 @@
-﻿namespace Spotify.Interface
+﻿namespace Spotify.Interface;
+
+public interface IApiRequestObject
 {
-    public interface IApiRequestObject
-    {
-        string UrlTemplate { get; }
-    }
+    string UrlTemplate { get; }
 }

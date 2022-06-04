@@ -2,13 +2,13 @@
 
 #nullable disable
 
-namespace SpotifyStalker.Data.Migrations
+namespace SpotifyStalker.Data.Migrations;
+
+public partial class TracksView : Migration
 {
-    public partial class TracksView : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(@"
+        migrationBuilder.Sql(@"
 
 create or alter view dbo.vTracks as
 
@@ -38,11 +38,10 @@ from
     inner join dbo.Tracks t on a.ArtistId = t.ArtistId;
 
 ");
-        }
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql("drop view if exists dbo.vTracks;");
-        }
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql("drop view if exists dbo.vTracks;");
     }
 }

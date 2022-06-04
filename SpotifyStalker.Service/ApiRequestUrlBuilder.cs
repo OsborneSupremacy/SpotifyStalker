@@ -1,74 +1,73 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Web;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spotify.Interface;
 using Spotify.Model;
 using SpotifyStalker.Interface;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Web;
 
-namespace SpotifyStalker.Service
+namespace SpotifyStalker.Service;
+
+public class ApiRequestUrlBuilder : IApiRequestUrlBuilder
 {
-    public class ApiRequestUrlBuilder : IApiRequestUrlBuilder
+    private readonly ILogger<ApiRequestUrlBuilder> _logger;
+
+    private readonly SpotifyApiSettings _spotifyApiSettings;
+
+    public ApiRequestUrlBuilder(
+        ILogger<ApiRequestUrlBuilder> logger,
+        IOptions<SpotifyApiSettings> settings
+        )
     {
-        private readonly ILogger<ApiRequestUrlBuilder> _logger;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _spotifyApiSettings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
+    }
 
-        private readonly SpotifyApiSettings _spotifyApiSettings;
+    public string Build<T>(string id) where T : IApiRequestObject, new() =>
+        Build<T>(new KeyValuePair<string, string>("Id", id));
 
-        public ApiRequestUrlBuilder(
-            ILogger<ApiRequestUrlBuilder> logger,
-            IOptions<SpotifyApiSettings> settings
-            )
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _spotifyApiSettings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
-        }
+    public string Build<T>(string id, int limit) where T : IApiRequestObject, new() =>
+        Build<T>(
+            new KeyValuePair<string, string>("Id", id),
+            new KeyValuePair<string, string>("Limit", limit.ToString())
+        );
 
-        public string Build<T>(string id) where T : IApiRequestObject, new() =>
-            Build<T>(new KeyValuePair<string, string>("Id", id));
+    public string Build<T>(IEnumerable<string> ids) where T : IApiRequestObject, new() =>
+        Build<T>(
+            new KeyValuePair<string, string>("Ids", string.Join(',', ids))
+        );
 
-        public string Build<T>(string id, int limit) where T : IApiRequestObject, new() =>
-            Build<T>(
-                new KeyValuePair<string, string>("Id", id),
-                new KeyValuePair<string, string>("Limit", limit.ToString())
-            );
+    public string Build<T>(string id, int limit, int offset) where T : IApiRequestObject, new() =>
+        Build<T>(
+            new KeyValuePair<string, string>("Id", id),
+            new KeyValuePair<string, string>("Limit", limit.ToString()),
+            new KeyValuePair<string, string>("Offset", offset.ToString())
+        );
 
-        public string Build<T>(IEnumerable<string> ids) where T : IApiRequestObject, new() =>
-            Build<T>(
-                new KeyValuePair<string, string>("Ids", string.Join(',', ids))
-            );
+    public string Build<T>(params KeyValuePair<string, string>[] substitutions) where T : IApiRequestObject, new()
+    {
+        var u = new StringBuilder(_spotifyApiSettings.SpotifyBaseUrl);
+        u.Append($"/{new T().UrlTemplate}");
 
-        public string Build<T>(string id, int limit, int offset) where T : IApiRequestObject, new() =>
-            Build<T>(
-                new KeyValuePair<string, string>("Id", id),
-                new KeyValuePair<string, string>("Limit", limit.ToString()),
-                new KeyValuePair<string, string>("Offset", offset.ToString())
-            );
+        foreach (var sub in substitutions)
+            u.Replace("{" + sub.Key + "}", HttpUtility.UrlEncode(sub.Value));
 
-        public string Build<T>(params KeyValuePair<string, string>[] substitutions) where T : IApiRequestObject, new()
-        {
-            var u = new StringBuilder(_spotifyApiSettings.SpotifyBaseUrl);
-            u.Append($"/{new T().UrlTemplate}");
+        var url = u.ToString();
 
-            foreach (var sub in substitutions)
-                u.Replace("{" + sub.Key + "}", HttpUtility.UrlEncode(sub.Value));
+        if (url.Contains("{"))
+            throw new FormatException($"Url contains un-replaced placeholders, `{url}`");
 
-            var url = u.ToString();
+        return url;
+    }
 
-            if (url.Contains("{"))
-                throw new FormatException($"Url contains un-replaced placeholders, `{url}`");
+    public string BuildBatch<T>(IEnumerable<string> ids) where T : IApiBatchRequestObject, new()
+    {
+        var u = new StringBuilder(_spotifyApiSettings.SpotifyBaseUrl);
+        u.Append($"/{new T().UrlBase}{string.Join(",", ids)}");
 
-            return url;
-        }
-
-        public string BuildBatch<T>(IEnumerable<string> ids) where T : IApiBatchRequestObject, new()
-        {
-            var u = new StringBuilder(_spotifyApiSettings.SpotifyBaseUrl);
-            u.Append($"/{new T().UrlBase}{string.Join(",", ids)}");
-
-            var url = u.ToString();
-            return url;
-        }
+        var url = u.ToString();
+        return url;
     }
 }

@@ -1,10 +1,9 @@
 ﻿
-namespace SpotifyStalker.Data
+namespace SpotifyStalker.Data;
+
+static class Program
 {
-    static class Program
-    {
 
 
 
-    }
 }

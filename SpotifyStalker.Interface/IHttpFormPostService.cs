@@ -2,13 +2,12 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SpotifyStalker.Interface
+namespace SpotifyStalker.Interface;
+
+public interface IHttpFormPostService
 {
-    public interface IHttpFormPostService
-    {
-        Task<string> PostFormAsync(
-                HttpClient httpClient,
-                string url,
-                List<KeyValuePair<string, string>> nameValueList);
-    }
+    Task<string> PostFormAsync(
+            HttpClient httpClient,
+            string url,
+            List<KeyValuePair<string, string>> nameValueList);
 }

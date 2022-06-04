@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SpotifyStalker.Interface
+namespace SpotifyStalker.Interface;
+
+public interface IArtistProvider
 {
-    public interface IArtistProvider
-    {
-        Task<IEnumerable<string>> GetAsync();
-    }
+    Task<IEnumerable<string>> GetAsync();
 }

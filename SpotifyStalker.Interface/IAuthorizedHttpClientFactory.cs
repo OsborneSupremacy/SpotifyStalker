@@ -1,10 +1,9 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SpotifyStalker.Interface
+namespace SpotifyStalker.Interface;
+
+public interface IAuthorizedHttpClientFactory
 {
-    public interface IAuthorizedHttpClientFactory
-    {
-        Task<HttpClient> CreateClientAsync();
-    }
+    Task<HttpClient> CreateClientAsync();
 }

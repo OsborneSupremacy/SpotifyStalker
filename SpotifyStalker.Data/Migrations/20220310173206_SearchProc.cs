@@ -2,13 +2,13 @@
 
 #nullable disable
 
-namespace SpotifyStalker.Data.Migrations
+namespace SpotifyStalker.Data.Migrations;
+
+public partial class SearchProc : Migration
 {
-    public partial class SearchProc : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(@"
+        migrationBuilder.Sql(@"
 
 create or alter proc dbo.pSearch
     @SearchTerm nvarchar(255)
@@ -69,11 +69,10 @@ where
     [Name] like '%' + @searchTerm + '%'
 
 ");
-        }
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.Sql(@"drop proc if exists dbo.pSearch;");
-        }
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql(@"drop proc if exists dbo.pSearch;");
     }
 }

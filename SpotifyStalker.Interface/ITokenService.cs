@@ -1,10 +1,9 @@
-﻿using Spotify.Object;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Spotify.Object;
 
-namespace SpotifyStalker.Interface
+namespace SpotifyStalker.Interface;
+
+public interface ITokenService
 {
-    public interface ITokenService
-    {
-        Task<Token> GetAsync();
-    }
+    Task<Token> GetAsync();
 }

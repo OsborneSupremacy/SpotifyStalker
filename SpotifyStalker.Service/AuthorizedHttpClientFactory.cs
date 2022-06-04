@@ -1,31 +1,30 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
-using System;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using SpotifyStalker.Interface;
 
-namespace SpotifyStalker.Service
+namespace SpotifyStalker.Service;
+
+public class AuthorizedHttpClientFactory : IAuthorizedHttpClientFactory
 {
-    public class AuthorizedHttpClientFactory : IAuthorizedHttpClientFactory
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    private readonly ITokenService _tokenService;
+
+    public AuthorizedHttpClientFactory(IHttpClientFactory httpClientFactory, ITokenService tokenService)
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+        _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+    }
 
-        private readonly ITokenService _tokenService;
+    public async Task<HttpClient> CreateClientAsync()
+    {
+        var authToken = await _tokenService.GetAsync();
 
-        public AuthorizedHttpClientFactory(IHttpClientFactory httpClientFactory, ITokenService tokenService)
-        {
-            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-            _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
-        }
+        var client = _httpClientFactory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken.AccessToken);
 
-        public async Task<HttpClient> CreateClientAsync()
-        {
-            var authToken = await _tokenService.GetAsync();
-
-            var client = _httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken.AccessToken);
-
-            return client;
-        }
+        return client;
     }
 }

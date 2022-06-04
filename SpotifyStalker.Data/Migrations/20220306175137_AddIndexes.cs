@@ -2,32 +2,31 @@
 
 #nullable disable
 
-namespace SpotifyStalker.Data.Migrations
+namespace SpotifyStalker.Data.Migrations;
+
+public partial class AddIndexes : Migration
 {
-    public partial class AddIndexes : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateIndex(
-                name: "IX_Tracks_Name",
-                table: "Tracks",
-                column: "Name");
+        migrationBuilder.CreateIndex(
+            name: "IX_Tracks_Name",
+            table: "Tracks",
+            column: "Name");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Artists_ArtistName",
-                table: "Artists",
-                column: "ArtistName");
-        }
+        migrationBuilder.CreateIndex(
+            name: "IX_Artists_ArtistName",
+            table: "Artists",
+            column: "ArtistName");
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropIndex(
-                name: "IX_Tracks_Name",
-                table: "Tracks");
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropIndex(
+            name: "IX_Tracks_Name",
+            table: "Tracks");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Artists_ArtistName",
-                table: "Artists");
-        }
+        migrationBuilder.DropIndex(
+            name: "IX_Artists_ArtistName",
+            table: "Artists");
     }
 }

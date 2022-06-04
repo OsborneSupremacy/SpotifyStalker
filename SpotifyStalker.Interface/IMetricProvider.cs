@@ -1,11 +1,10 @@
-﻿using SpotifyStalker.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using SpotifyStalker.Model;
 
-namespace SpotifyStalker.Interface
+namespace SpotifyStalker.Interface;
+
+public interface IMetricProvider
 {
-    public interface IMetricProvider
-    {
-        Task<IEnumerable<Metric>> GetAllAsync();
-    }
+    Task<IEnumerable<Metric>> GetAllAsync();
 }

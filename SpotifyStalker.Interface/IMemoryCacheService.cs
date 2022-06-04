@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SpotifyStalker.Interface
+namespace SpotifyStalker.Interface;
+
+public interface IMemoryCacheService
 {
-    public interface IMemoryCacheService
-    {
-        Task<T> GetOrCreateAsync<T>(
-            string cacheKey,
-            Func<Task<T>> getDataFunction
-        );
-    }
+    Task<T> GetOrCreateAsync<T>(
+        string cacheKey,
+        Func<Task<T>> getDataFunction
+    );
 }

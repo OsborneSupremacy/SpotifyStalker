@@ -1,122 +1,121 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Spotify.Model;
-using SpotifyStalker.Interface;
-using SpotifyStalker.Data;
-using SpotifyStalker.Service;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Serilog;
+using Spotify.Model;
+using SpotifyStalker.Data;
+using SpotifyStalker.Interface;
+using SpotifyStalker.Service;
 
-namespace SpotifyStalker.ConsoleUi
+namespace SpotifyStalker.ConsoleUi;
+
+class Program
 {
-    class Program
+    static async Task Main(string[] args)
     {
-        static async Task Main(string[] args)
+        var builder = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json");
+
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+            .Equals("Development", StringComparison.OrdinalIgnoreCase))
+            builder.AddUserSecrets<Program>();
+
+        var configuration = builder.Build();
+
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(configuration)
+            .CreateLogger();
+
+        await Host.CreateDefaultBuilder(args)
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddHostedService<ConsoleHostedService>();
+
+                services.AddAutoMapper(typeof(Program));
+
+                services.Configure<SpotifyApiSettings>(configuration.GetSection("SpotifyApi"));
+
+                services.AddHttpClient();
+                services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+                services.AddSingleton<ITokenService, TokenService>();
+                services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
+
+                services.AddSingleton<IHttpFormPostService, HttpFormPostService>();
+
+                services.AddSingleton<IApiRequestUrlBuilder, ApiRequestUrlBuilder>();
+                services.AddSingleton<IApiRequestService, ApiRequestService>();
+                services.AddSingleton<IApiQueryService, ApiQueryService>();
+
+                services.AddSingleton<UserPromptService>();
+                services.AddSingleton<ArtistQueryService>();
+                services.AddSingleton<TrackQueryService>();
+                services.AddSingleton<SearchTermBuilderService>();
+
+                services.AddDbContext<SpotifyStalkerDbContext>();
+
+                // TODO: Update SpotifyStalkerDbContext to accept parameters
+                //services.AddDbContext<SpotifyStalkerDbContext>(options =>
+                //    options.UseSqlServer(configuration.GetConnectionString("SpotifyStalker")));
+
+            })
+            .UseSerilog()
+            .RunConsoleAsync();
+    }
+
+
+    class ConsoleHostedService : IHostedService
+    {
+        private readonly ILogger<ConsoleHostedService> _logger;
+
+        private readonly IHostApplicationLifetime _appLifetime;
+
+        private readonly UserPromptService _userPromptService;
+
+        public ConsoleHostedService(
+            ILogger<ConsoleHostedService> logger,
+            IHostApplicationLifetime appLifetime,
+            UserPromptService userPromptService
+            )
         {
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json");
-
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-                .Equals("Development", StringComparison.OrdinalIgnoreCase))
-                builder.AddUserSecrets<Program>();
-
-            var configuration = builder.Build();
-
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
-                .CreateLogger();
-
-            await Host.CreateDefaultBuilder(args)
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddHostedService<ConsoleHostedService>();
-
-                    services.AddAutoMapper(typeof(Program));
-
-                    services.Configure<SpotifyApiSettings>(configuration.GetSection("SpotifyApi"));
-
-                    services.AddHttpClient();
-                    services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-                    services.AddSingleton<ITokenService, TokenService>();
-                    services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
-
-                    services.AddSingleton<IHttpFormPostService, HttpFormPostService>();
-
-                    services.AddSingleton<IApiRequestUrlBuilder, ApiRequestUrlBuilder>();
-                    services.AddSingleton<IApiRequestService, ApiRequestService>();
-                    services.AddSingleton<IApiQueryService, ApiQueryService>();
-
-                    services.AddSingleton<UserPromptService>();
-                    services.AddSingleton<ArtistQueryService>();
-                    services.AddSingleton<TrackQueryService>();
-                    services.AddSingleton<SearchTermBuilderService>();
-
-                    services.AddDbContext<SpotifyStalkerDbContext>();
-
-                    // TODO: Update SpotifyStalkerDbContext to accept parameters
-                    //services.AddDbContext<SpotifyStalkerDbContext>(options =>
-                    //    options.UseSqlServer(configuration.GetConnectionString("SpotifyStalker")));
-
-                })
-                .UseSerilog()
-                .RunConsoleAsync();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _appLifetime = appLifetime ?? throw new ArgumentNullException(nameof(appLifetime));
+            _userPromptService = userPromptService ?? throw new ArgumentNullException(nameof(userPromptService));
         }
 
-
-        class ConsoleHostedService : IHostedService
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            private readonly ILogger<ConsoleHostedService> _logger;
+            _logger.LogDebug($"Starting with arguments: {string.Join(" ", Environment.GetCommandLineArgs())}");
 
-            private readonly IHostApplicationLifetime _appLifetime;
-
-            private readonly UserPromptService _userPromptService;
-
-            public ConsoleHostedService(
-                ILogger<ConsoleHostedService> logger,
-                IHostApplicationLifetime appLifetime,
-                UserPromptService userPromptService
-                )
+            _appLifetime.ApplicationStarted.Register(async () =>
             {
-                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-                _appLifetime = appLifetime ?? throw new ArgumentNullException(nameof(appLifetime));
-                _userPromptService = userPromptService ?? throw new ArgumentNullException(nameof(userPromptService));
-            }
-
-            public Task StartAsync(CancellationToken cancellationToken)
-            {
-                _logger.LogDebug($"Starting with arguments: {string.Join(" ", Environment.GetCommandLineArgs())}");
-
-                _appLifetime.ApplicationStarted.Register(async () =>
+                try
                 {
-                    try
+                    bool processing = true;
+                    while (processing)
                     {
-                        bool processing = true;
-                        while (processing)
-                        {
-                            processing = await _userPromptService.PromptUserAsync();
-                        }
+                        processing = await _userPromptService.PromptUserAsync();
                     }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Unhandled exception");
-                    }
-                    finally
-                    {
-                        _appLifetime.StopApplication();
-                    }
-                });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Unhandled exception");
+                }
+                finally
+                {
+                    _appLifetime.StopApplication();
+                }
+            });
 
-                return Task.CompletedTask;
-            }
+            return Task.CompletedTask;
+        }
 
-            public Task StopAsync(CancellationToken cancellationToken)
-            {
-                return Task.CompletedTask;
-            }
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }

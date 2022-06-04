@@ -1,25 +1,24 @@
-﻿using SpotifyStalker.Interface;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SpotifyStalker.Interface;
 
-namespace SpotifyStalker.Service
+namespace SpotifyStalker.Service;
+
+public class HttpFormPostService : IHttpFormPostService
 {
-    public class HttpFormPostService : IHttpFormPostService
+    public async Task<string> PostFormAsync(
+        HttpClient httpClient,
+        string url,
+        List<KeyValuePair<string, string>> nameValueList)
     {
-        public async Task<string> PostFormAsync(
-            HttpClient httpClient,
-            string url,
-            List<KeyValuePair<string, string>> nameValueList)
+        using var httpRequest = new HttpRequestMessage(HttpMethod.Post, url)
         {
-            using var httpRequest = new HttpRequestMessage(HttpMethod.Post, url)
-            {
-                Content = new FormUrlEncodedContent(nameValueList)
-            };
-            using var response = await httpClient.SendAsync(httpRequest);
-            response.EnsureSuccessStatusCode();
+            Content = new FormUrlEncodedContent(nameValueList)
+        };
+        using var response = await httpClient.SendAsync(httpRequest);
+        response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadAsStringAsync();
-        }
+        return await response.Content.ReadAsStringAsync();
     }
 }
