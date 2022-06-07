@@ -111,19 +111,24 @@
 
     FindPersonModel ViewModel = new FindPersonModel();
 
-    public async Task QueryPlaylistsAsync()
+    public async Task<bool> QueryPlaylistsAsync()
     {
-        var (searchStatus, searchResultModel) = await ApiQueryService.QueryAsync<UserPlaylistSearchResultModel>(ViewModel.Keyword);
+        var result = await ApiQueryService
+            .QueryAsync<UserPlaylistSearchResultModel>(ViewModel.Keyword);
 
-        ViewModel.SearchStatus = searchStatus;
-
-        if(searchStatus != RequestStatus.Success)
-        {
-            StateHasChanged();
-            return;
-        }
-
-        ViewModel.Playlists = searchResultModel.Playlists.Items.ToList();
+        return result.Match
+        (
+            model =>
+            {
+                ViewModel.SearchStatus = RequestStatus.Success;
+                ViewModel.Playlists = model.Playlists.Items.ToList();
+                return true;
+            },
+            exception =>
+            {
+                return false;
+            }
+        );
 
     }
 

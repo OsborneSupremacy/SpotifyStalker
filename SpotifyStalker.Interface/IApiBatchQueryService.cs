@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using LanguageExt.Common;
 using Spotify.Interface;
-using SpotifyStalker.Model;
 
 namespace SpotifyStalker.Interface;
 
@@ -10,5 +10,5 @@ public interface IApiBatchQueryService<T> where T : IApiBatchRequestObject, new(
 
     bool QueueIsEmpty();
 
-    Task<(int CountOfItemsQueried, RequestStatus RequestStatus, T ResultCollection)> QueryAsync();
+    Task<(Result<T>, int)> QueryAsync();
 }

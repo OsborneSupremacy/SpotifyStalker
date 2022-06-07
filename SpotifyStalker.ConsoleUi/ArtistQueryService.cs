@@ -110,37 +110,53 @@ public class ArtistQueryService
 
         while (itemsQueried < totalItems)
         {
-            var (result, resultModel) = await _apiQueryService.QueryAsync<ArtistSearchResultModel>(searchTerm, _spotifyApiSettings.Limits.Search.Limit, itemsQueried);
+            var result = await _apiQueryService.QueryAsync<ArtistSearchResultModel>(searchTerm, _spotifyApiSettings.Limits.Search.Limit, itemsQueried);
             itemsQueried += _spotifyApiSettings.Limits.Search.Limit;
 
-            if (result != Model.RequestStatus.Success) break;
+            await result.Match
+            (
+                async success =>
+                {
+                    // only need to read this info once, so do it on first iteration
+                    if (firstIteration)
+                    {
+                        GetTotalItems(success, resultCountUpdater);
+                        firstIteration = false;
+                    }
 
-            // only need to read this info once, so do it on first iteration
-            if (firstIteration) getTotalItems();
+                    foreach (var item in success.Artists.Items)
+                    {
+                        // skip artists with 0 popularity or unknown genres. There are a ton of them in Spotify, and for our
+                        // purposes we don't want them.
+                        if (item.Popularity == 0 || !(item.Genres?.Any() ?? false)) continue;
 
-            foreach (var item in resultModel.Artists.Items)
-            {
-                // skip artists with 0 popularity or unknown genres. There are a ton of them in Spotify, and for our
-                // purposes we don't want them.
-                if (item.Popularity == 0 || !(item.Genres?.Any() ?? false)) continue;
+                        // if artist is already in dictionary, don't need to do anything else
+                        if (!artists.TryAdd(item.Id, item)) continue;
 
-                // if artist is already in dictionary, don't need to do anything else
-                if (!artists.TryAdd(item.Id, item)) continue;
+                        await saveToDatabase.Invoke(item);
+                    }
 
-                await saveToDatabase.Invoke(item);
-            }
-
-            void getTotalItems()
-            {
-                totalItems = resultModel.Artists.Total;
-                if (totalItems > _spotifyApiSettings.Limits.Search.MaximumOffset)
-                    totalItems = _spotifyApiSettings.Limits.Search.MaximumOffset;
-
-                resultCountUpdater.Invoke(totalItems);
-
-                _logger.LogDebug("Total Items: {totalItems}", totalItems);
-                firstIteration = false;
-            }
+                    return true;
+                },
+                exception =>
+                {
+                    return Task.FromResult(true);
+                }
+            );
         } // loop through items
+    }
+
+    private void GetTotalItems(
+        ArtistSearchResultModel resultModel,
+        Action<int> resultCountUpdater
+        )
+    {
+        var totalItems = resultModel.Artists.Total;
+        if (totalItems > _spotifyApiSettings.Limits.Search.MaximumOffset)
+            totalItems = _spotifyApiSettings.Limits.Search.MaximumOffset;
+
+        resultCountUpdater.Invoke(totalItems);
+
+        _logger.LogDebug("Total Items: {totalItems}", totalItems);
     }
 }

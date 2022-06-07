@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LanguageExt.Core" Version="4.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Spotify.Model\Spotify.Model.csproj" />
     <ProjectReference Include="..\Spotify.Object\Spotify.Object.csproj" />
     <ProjectReference Include="..\SpotifyStalker.Model\SpotifyStalker.Model.csproj" />

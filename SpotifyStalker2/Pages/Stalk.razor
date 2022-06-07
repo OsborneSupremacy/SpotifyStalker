@@ -252,20 +252,24 @@
         ViewModel = await StalkModelTransformer.ResetAsync(ViewModel);
         setProcessingMessage("Looking up playlists");
 
-        var (userPlaylistResult, userPlaylistModel) = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
+        var userPlayListResult = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
 
-        ViewModel.UserPlaylistResult = userPlaylistResult;
-
-        if (userPlaylistResult != RequestStatus.Success)
-        {
-            clearProcessingMessage();
-            return;
-        }
-
-        setProcessingMessage("Registering playlists");
-        ViewModel = StalkModelTransformer.RegisterPlaylists(ViewModel, userPlaylistModel.Playlists);
-
-        StateHasChanged();
+        userPlayListResult.Match
+        (
+            model =>
+            {
+                ViewModel.UserPlaylistResult = RequestStatus.Success;
+                setProcessingMessage("Registering playlists");
+                ViewModel = StalkModelTransformer.RegisterPlaylists(ViewModel, model.Playlists);
+                StateHasChanged();
+                return true;
+            },
+            exception =>
+            {
+                ViewModel.UserPlaylistResult = RequestStatus.Failed;
+                return false;
+            }
+        );
 
         if (!ViewModel.Playlists.Display)
         {
@@ -279,20 +283,24 @@
         // get the track list for each playlist
         foreach (var playlist in ViewModel.Playlists.Items)
         {
-            var (playlistResult, playlistResultModel) = await ApiQueryService.QueryAsync<PlaylistModel>(playlist.Value.Id, Options.Value.Limits.PlaylistTrack);
+            var playlistResult = await ApiQueryService.QueryAsync<PlaylistModel>(playlist.Value.Id, Options.Value.Limits.PlaylistTrack);
 
             IncrementCount<PlaylistModel>();
 
-            // if playlist request failed or no tracks were found, continue to next
-            if (playlistResult != RequestStatus.Success
-            || (!playlistResultModel?.Items?.Any() ?? false)
-            )
-                continue;
-
-            // add the tracks from the playlist api query to the list of all tracks
-            foreach (var playlistModelTrack in playlistResultModel.Items)
-                ViewModel = StalkModelTransformer.RegisterTrack(ViewModel, playlist.Value, playlistModelTrack.Track);
-
+            playlistResult.Match
+            (
+                model =>
+                {
+                    // add the tracks from the playlist api query to the list of all tracks
+                    foreach (var playlistModelTrack in model.Items)
+                        ViewModel = StalkModelTransformer.RegisterTrack(ViewModel, playlist.Value, playlistModelTrack.Track);
+                    return true;
+                },
+                exception =>
+                {
+                    return false;
+                }
+            );
         }
 
         setProcessingMessage("Looking up artists");
@@ -303,26 +311,31 @@
 
         while (!ArtistBatchQueryService.QueueIsEmpty())
         {
-            var (countOfItemsQueried, requestStatus, results) = await ArtistBatchQueryService.QueryAsync();
+            var (artistResult, artistItemsQueried) = await ArtistBatchQueryService.QueryAsync();
 
-            if (requestStatus != RequestStatus.Success)
-            {
-                IncrementCount<ArtistModel>(countOfItemsQueried);
-                continue;
-            };
+            artistResult.Match
+            (
+                model =>
+                {
+                    // loop through results, assigning artist genres to artists
+                    foreach (var result in model.Artists)
+                    {
+                        IncrementCount<ArtistModel>();
 
-            // loop through results, assigning artist genres to artists
-            foreach (var result in results.Artists)
-            {
-                IncrementCount<ArtistModel>();
+                        var artist = ViewModel.Artists.Items[result.Id];
 
-                var artist = ViewModel.Artists.Items[result.Id];
-
-                artist.Genres = result.Genres;
-                StalkModelTransformer.RegisterGenre(ViewModel, artist);
-            }
+                        artist.Genres = result.Genres;
+                        StalkModelTransformer.RegisterGenre(ViewModel, artist);
+                    }
+                    return true;
+                },
+                exception =>
+                {
+                    IncrementCount<ArtistModel>(artistItemsQueried);
+                    return false;
+                }
+            );
         }
-
 
         setProcessingMessage("Looking up audio features");
 
@@ -334,20 +347,26 @@
 
         while (!AudioFeaturesQueryService.QueueIsEmpty())
         {
-            var (countOfItemsQueried, requestStatus, results) = await AudioFeaturesQueryService.QueryAsync();
+            var (audioFeaturesResult, audioFeaturesQueriedCount) = await AudioFeaturesQueryService.QueryAsync();
 
-            if (requestStatus != RequestStatus.Success)
-            {
-                IncrementCount<Track>(countOfItemsQueried);
-                continue;
-            }
-
+            audioFeaturesResult.Match
+            (
+                model =>
+                {
+                    foreach (var result in model.AudioFeaturesList)
+                    {
+                        IncrementCount<Track>();
+                        ViewModel = StalkModelTransformer.RegisterAudioFeature(ViewModel, result);
+                    }
+                    return true;
+                },
+                exception =>
+                {
+                    IncrementCount<Track>(audioFeaturesQueriedCount);
+                    return false;
+                }
+            );
             // loop through results
-            foreach (var result in results.AudioFeaturesList)
-            {
-                IncrementCount<Track>();
-                ViewModel = StalkModelTransformer.RegisterAudioFeature(ViewModel, result);
-            }
         }
 
         clearProcessingMessage();

@@ -2,12 +2,12 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LanguageExt.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spotify.Interface;
 using Spotify.Model;
 using SpotifyStalker.Interface;
-using SpotifyStalker.Model;
 
 namespace SpotifyStalker.Service;
 
@@ -41,7 +41,7 @@ public class ApiBatchQueryService<T> : IApiBatchQueryService<T> where T : IApiBa
 
     public bool QueueIsEmpty() => _queuedItems.IsEmpty;
 
-    public async Task<(int CountOfItemsQueried, RequestStatus RequestStatus, T ResultCollection)> QueryAsync()
+    public async Task<(Result<T>, int)> QueryAsync()
     {
         int b = 0;
         var ids = new List<string>();
@@ -56,9 +56,20 @@ public class ApiBatchQueryService<T> : IApiBatchQueryService<T> where T : IApiBa
         }
 
         _logger.LogDebug($"Batch is ready to send. Item count {b}");
+
         var url = _apiRequestUrlBuilder.BuildBatch<T>(ids);
 
-        var result = await _apiRequestService.GetAsync<T>(url);
-        return (b, result.RequestStatus, result.Result);
+        return (await _apiRequestService.GetAsync<T>(url))
+            .Match
+            (
+                success =>
+                {
+                    return (success, b);
+                },
+                exception =>
+                {
+                    return (new Result<T>(exception), b);
+                }
+            );
     }
 }

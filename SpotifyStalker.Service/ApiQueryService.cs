@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LanguageExt.Common;
 using Spotify.Interface;
 using SpotifyStalker.Interface;
-using SpotifyStalker.Model;
 
 namespace SpotifyStalker.Service;
 
@@ -22,25 +22,25 @@ public class ApiQueryService : IApiQueryService
         _apiRequestService = apiRequestService ?? throw new ArgumentNullException(nameof(apiRequestService));
     }
 
-    public async Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(string id) where T : IApiRequestObject, new()
+    public async Task<Result<T>> QueryAsync<T>(string id) where T : IApiRequestObject, new()
     {
         var url = _apiRequestUrlBuilder.Build<T>(id);
         return await _apiRequestService.GetAsync<T>(url);
     }
 
-    public async Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(string id, int limit) where T : IApiRequestObject, new()
+    public async Task<Result<T>> QueryAsync<T>(string id, int limit) where T : IApiRequestObject, new()
     {
         var url = _apiRequestUrlBuilder.Build<T>(id, limit);
         return await _apiRequestService.GetAsync<T>(url);
     }
 
-    public async Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(string id, int limit, int offset) where T : IApiRequestObject, new()
+    public async Task<Result<T>> QueryAsync<T>(string id, int limit, int offset) where T : IApiRequestObject, new()
     {
         var url = _apiRequestUrlBuilder.Build<T>(id, limit, offset);
         return await _apiRequestService.GetAsync<T>(url);
     }
 
-    public async Task<(RequestStatus RequestStatus, T Data)> QueryAsync<T>(IEnumerable<string> ids) where T : IApiRequestObject, new()
+    public async Task<Result<T>> QueryAsync<T>(IEnumerable<string> ids) where T : IApiRequestObject, new()
     {
         var url = _apiRequestUrlBuilder.Build<T>(ids);
         return await _apiRequestService.GetAsync<T>(url);

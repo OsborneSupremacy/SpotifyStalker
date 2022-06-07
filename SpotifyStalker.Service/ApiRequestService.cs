@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
+using LanguageExt.Common;
 using Microsoft.Extensions.Logging;
 using SpotifyStalker.Interface;
 using SpotifyStalker.Model;
@@ -24,66 +24,55 @@ public class ApiRequestService : IApiRequestService
         _httpClientFactory = httpClientFactory ?? throw new System.ArgumentNullException(nameof(httpClientFactory));
     }
 
-    public async Task<(RequestStatus RequestStatus, T Result)> GetAsync<T>(string url)
+    public async Task<Result<T>> GetAsync<T>(string url)
     {
-        var keepTrying = true;
-        var requestStatus = RequestStatus.Default;
+        var responseMessage = await TryGetAsync<T>(url);
 
-        while (keepTrying)
-        {
-            using var httpClient = await _httpClientFactory.CreateClientAsync();
-            using var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
-
-            _logger.LogDebug("Querying {uri}", url);
-
-            var apiResponse = await ExecuteRequestAsync(httpClient, httpRequest);
-            requestStatus = apiResponse.RequestStatus;
-
-            keepTrying = (requestStatus == RequestStatus.Retry);
-
-            if (keepTrying)
-            {
-                Thread.Sleep((int)apiResponse.WaitMs);
-                continue;
-            };
-
-            if (requestStatus != RequestStatus.Success) continue;
-
-            // success -- read response body
-            var stringResponse = await apiResponse.HttpResponseMessage.Content.ReadAsStringAsync();
-            var deserialized = JsonSerializer.Deserialize<T>(stringResponse);
-
-            return (requestStatus, deserialized);
-        }
-
-        return (requestStatus, default);
+        return await responseMessage
+            .Match<Task<Result<T>>>
+            (
+                async message =>
+                {
+                    return await ReadAndDeserializeAsync<T>(message);
+                },
+                async exception =>
+                {
+                    while (exception is RequestException rex && rex.Retry)
+                    {
+                        await Task.Delay((int)rex.WaitMs);
+                        return await GetAsync<T>(url);
+                    }
+                    return new Result<T>(exception);
+                }
+            );
     }
 
-    protected struct ApiResponse
+    protected async Task<T> ReadAndDeserializeAsync<T>(HttpResponseMessage message)
     {
-        public RequestStatus RequestStatus;
-        public double WaitMs;
-        public HttpResponseMessage HttpResponseMessage;
+        var stringResponse = await message.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<T>(stringResponse);
     }
 
-    protected async Task<ApiResponse> ExecuteRequestAsync(
+    protected async Task<Result<HttpResponseMessage>> TryGetAsync<T>(string url)
+    {
+        using var httpClient = await _httpClientFactory.CreateClientAsync();
+        using var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
+
+        _logger.LogDebug("Querying {uri}", url);
+        return await ExecuteRequestAsync(httpClient, httpRequest);
+    }
+
+    protected async Task<Result<HttpResponseMessage>> ExecuteRequestAsync(
         HttpClient httpClient,
         HttpRequestMessage httpRequest
         )
     {
-        var apiResponse = new ApiResponse()
-        {
-            RequestStatus = RequestStatus.Default
-        };
-
         var response = await httpClient.SendAsync(httpRequest);
 
         if (response.IsSuccessStatusCode)
         {
             _logger.LogDebug("Success response received");
-            apiResponse.RequestStatus = RequestStatus.Success;
-            apiResponse.HttpResponseMessage = response;
-            return apiResponse;
+            return response;
         }
 
         _logger.LogDebug("Success response not received");
@@ -93,26 +82,28 @@ public class ApiRequestService : IApiRequestService
         {
             case HttpStatusCode.NotFound:
                 _logger.LogDebug("Not found");
-                apiResponse.RequestStatus = RequestStatus.NotFound;
-                return apiResponse;
+                return new Result<HttpResponseMessage>(new RequestException(RequestStatus.NotFound));
+
             case HttpStatusCode.TooManyRequests: // rate limit hit. Retry
             case HttpStatusCode.ServiceUnavailable:
-                apiResponse.RequestStatus = RequestStatus.Retry;
-                apiResponse.WaitMs = response.Headers?.RetryAfter?.Delta?.TotalMilliseconds ?? 5000;
-                _logger.LogDebug($"Rate limit hit. Retry in {apiResponse.WaitMs} milliseconds.");
-                return apiResponse;
+                var waitMs = response.Headers?.RetryAfter?.Delta?.TotalMilliseconds ?? 5000;
+                _logger.LogDebug($"Rate limit hit. Retry in {waitMs} milliseconds.");
+                return new Result<HttpResponseMessage>(new RequestException(RequestStatus.Retry, true, waitMs));
+
+            default:
+                try
+                {
+                    response.EnsureSuccessStatusCode(); // do this so an exception can be generated and logged
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, "Request failed");
+                    return new Result<HttpResponseMessage>(ex);
+                }
+                break;
         }
 
-        // don't retry
-        try
-        {
-            response.EnsureSuccessStatusCode(); // do this so an exception can be generated and logged
-        }
-        catch (HttpRequestException ex)
-        {
-            _logger.LogError(ex, "Request failed");
-        }
+        return new Result<HttpResponseMessage>(new RequestException(RequestStatus.Failed));
 
-        return apiResponse;
     }
 }
