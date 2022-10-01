@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-
-namespace SpotifyStalker.Service;
+﻿namespace SpotifyStalker.Service;
 
 public class HttpFormPostService : IHttpFormPostService
 {

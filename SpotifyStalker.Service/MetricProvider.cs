@@ -1,7 +1,4 @@
-﻿using Spotify.Object;
-using SpotifyStalker.Model;
-
-namespace SpotifyStalker.Service;
+﻿namespace SpotifyStalker.Service;
 
 public class MetricProvider : IMetricProvider
 {

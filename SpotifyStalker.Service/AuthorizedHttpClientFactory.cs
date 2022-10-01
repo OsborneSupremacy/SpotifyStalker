@@ -1,7 +1,4 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
-
-namespace SpotifyStalker.Service;
+﻿namespace SpotifyStalker.Service;
 
 public class AuthorizedHttpClientFactory : IAuthorizedHttpClientFactory
 {

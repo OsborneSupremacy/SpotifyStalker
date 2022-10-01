@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Bogus;
+﻿using Bogus;
 
 namespace SpotifyStalker.Service;
 

@@ -1,10 +1,4 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using Spotify.Object;
-
-namespace SpotifyStalker.Service;
+﻿namespace SpotifyStalker.Service;
 
 public class TokenService : ITokenService
 {
