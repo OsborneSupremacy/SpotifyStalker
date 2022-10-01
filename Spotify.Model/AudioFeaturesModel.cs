@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using Spotify.Interface;
-using Spotify.Object;
+﻿namespace Spotify.Model;
 
-namespace Spotify.Model;
-
-public class AudioFeaturesModel : AudioFeatures, IApiRequestObject, ISpotifyStandardObject
+public record AudioFeaturesModel : AudioFeatures, IApiRequestObject, ISpotifyStandardObject
 {
     public string UrlTemplate => "audio-features/{Id}";
 
@@ -13,7 +8,7 @@ public class AudioFeaturesModel : AudioFeatures, IApiRequestObject, ISpotifyStan
     public string Name => Id;
 }
 
-public class AudioFeaturesModelCollection : IApiBatchRequestObject, IApiRequestObject
+public record AudioFeaturesModelCollection : IApiBatchRequestObject, IApiRequestObject
 {
     [JsonIgnore]
     public string UrlBase => "audio-features?ids=";

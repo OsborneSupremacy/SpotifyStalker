@@ -1,7 +1,4 @@
-﻿using System;
-using SpotifyStalker.Interface;
-
-namespace SpotifyStalker.Service;
+﻿namespace SpotifyStalker.Service;
 
 public class DateTimeProvider : IDateTimeProvider
 {

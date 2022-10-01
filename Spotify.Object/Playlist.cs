@@ -1,9 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using Spotify.Interface;
+﻿namespace Spotify.Object;
 
-namespace Spotify.Object;
-
-public class Playlist : ISpotifyStandardObject
+public record Playlist : ISpotifyStandardObject
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -20,7 +17,7 @@ public class Playlist : ISpotifyStandardObject
     public User? Owner { get; set; }
 }
 
-public class PlaylistTrackInfo
+public record PlaylistTrackInfo
 {
     [JsonPropertyName("href")]
     public string? Href { get; set; }

@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using LanguageExt.Common;
-
-namespace SpotifyStalker.Interface;
+﻿namespace SpotifyStalker.Interface;
 
 public interface IApiRequestService
 {

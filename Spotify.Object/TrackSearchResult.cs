@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿namespace Spotify.Object;
 
-namespace Spotify.Object;
-
-public class TrackSearchResult
+public record TrackSearchResult
 {
     [JsonPropertyName("tracks")]
     public IEnumerable<Track>? Tracks { get; set; }

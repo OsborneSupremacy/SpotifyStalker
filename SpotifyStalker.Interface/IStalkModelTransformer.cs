@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Spotify.Interface;
-using Spotify.Model;
+﻿using Spotify.Model;
 using Spotify.Object;
 using SpotifyStalker.Model;
 

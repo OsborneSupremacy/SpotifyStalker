@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Spotify.Interface;
-
-namespace SpotifyStalker.Interface;
+﻿namespace SpotifyStalker.Interface;
 
 public interface IApiRequestUrlBuilder
 {

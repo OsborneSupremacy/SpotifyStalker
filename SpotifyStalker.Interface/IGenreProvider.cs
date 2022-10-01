@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace SpotifyStalker.Interface;
+﻿namespace SpotifyStalker.Interface;
 
 public interface IGenreProvider
 {

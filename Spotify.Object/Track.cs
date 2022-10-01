@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using Spotify.Interface;
-
-namespace Spotify.Object;
+﻿namespace Spotify.Object;
 
 public class Track : ISpotifyStandardObject
 {

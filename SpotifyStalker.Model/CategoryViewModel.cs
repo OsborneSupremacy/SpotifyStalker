@@ -1,9 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using Spotify.Interface;
-
-namespace SpotifyStalker.Model;
+﻿namespace SpotifyStalker.Model;
 
 public class CategoryViewModel<T> where T : ISpotifyStandardObject
 {

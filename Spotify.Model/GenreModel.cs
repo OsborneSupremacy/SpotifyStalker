@@ -1,10 +1,6 @@
-﻿using System.Collections.Concurrent;
-using Spotify.Interface;
-using Spotify.Object;
+﻿namespace Spotify.Model;
 
-namespace Spotify.Model;
-
-public class GenreModel : ISpotifyStandardObject
+public record GenreModel : ISpotifyStandardObject
 {
     public string Id => Name;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using SpotifyStalker.Interface;
+﻿using System.IO;
 
 namespace SpotifyStalker.Service;
 

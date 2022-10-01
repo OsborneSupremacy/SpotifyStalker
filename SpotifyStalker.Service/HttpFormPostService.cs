@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using SpotifyStalker.Interface;
+﻿using System.Net.Http;
 
 namespace SpotifyStalker.Service;
 

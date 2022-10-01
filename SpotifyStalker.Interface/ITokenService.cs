@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Spotify.Object;
+﻿using Spotify.Object;
 
 namespace SpotifyStalker.Interface;
 

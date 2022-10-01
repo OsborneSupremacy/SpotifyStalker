@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using LanguageExt.Common;
-using Spotify.Interface;
-using SpotifyStalker.Interface;
-
-namespace SpotifyStalker.Service;
+﻿namespace SpotifyStalker.Service;
 
 public class ApiQueryService : IApiQueryService
 {

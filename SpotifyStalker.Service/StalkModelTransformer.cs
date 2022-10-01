@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.Extensions.Logging;
-using Spotify.Interface;
-using Spotify.Model;
-using Spotify.Object;
-using SpotifyStalker.Interface;
-using SpotifyStalker.Model;
-
-namespace SpotifyStalker.Service;
+﻿namespace SpotifyStalker.Service;
 
 public class StalkModelTransformer : IStalkModelTransformer
 {

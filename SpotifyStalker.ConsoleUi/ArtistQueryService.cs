@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Spotify.Model;
-using SpotifyStalker.Data;
-using SpotifyStalker.Interface;
-
-namespace SpotifyStalker.ConsoleUi;
+﻿namespace SpotifyStalker.ConsoleUi;
 
 public class ArtistQueryService
 {

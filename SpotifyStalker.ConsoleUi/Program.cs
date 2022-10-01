@@ -1,14 +1,8 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
-using Spotify.Model;
-using SpotifyStalker.Data;
-using SpotifyStalker.Interface;
 using SpotifyStalker.Service;
 
 namespace SpotifyStalker.ConsoleUi;

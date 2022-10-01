@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿namespace Spotify.Object;
 
-namespace Spotify.Object;
-
-public class UserPlaylistSearchResult
+public record UserPlaylistSearchResult
 {
     [JsonPropertyName("playlists")]
     public SearchResultPlaylists? Playlists { get; set; }
 }
 
-public class SearchResultPlaylists
+public record SearchResultPlaylists
 {
     [JsonPropertyName("href")]
     public string? Href { get; set; }

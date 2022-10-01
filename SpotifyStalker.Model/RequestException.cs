@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SpotifyStalker.Model;
+﻿namespace SpotifyStalker.Model;
 
 public class RequestException : Exception
 {

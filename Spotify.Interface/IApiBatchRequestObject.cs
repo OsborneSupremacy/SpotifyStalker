@@ -1,5 +1,4 @@
-﻿
-namespace Spotify.Interface;
+﻿namespace Spotify.Interface;
 
 public interface IApiBatchRequestObject
 {

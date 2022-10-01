@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace Spotify.Object;
 
-namespace Spotify.Object;
-
-public class AudioFeatures
+public record AudioFeatures
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

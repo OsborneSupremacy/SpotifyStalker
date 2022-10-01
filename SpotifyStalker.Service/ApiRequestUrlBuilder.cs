@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Web;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Spotify.Interface;
-using Spotify.Model;
-using SpotifyStalker.Interface;
 
 namespace SpotifyStalker.Service;
 

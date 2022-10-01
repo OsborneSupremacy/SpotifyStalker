@@ -1,12 +1,6 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using Spotify.Interface;
-using Spotify.Object;
+﻿namespace Spotify.Model;
 
-namespace Spotify.Model;
-
-public class PlaylistModel : Playlist, IApiRequestObject
+public record PlaylistModel : Playlist, IApiRequestObject
 {
     public PlaylistModel()
     {
@@ -21,7 +15,7 @@ public class PlaylistModel : Playlist, IApiRequestObject
     public string UrlTemplate => "playlists/{Id}/tracks?limit={Limit}";
 }
 
-public class PlaylistModelTrack
+public record PlaylistModelTrack
 {
     [JsonPropertyName("track")]
     public Track? Track { get; set; }

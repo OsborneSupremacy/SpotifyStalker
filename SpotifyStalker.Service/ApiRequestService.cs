@@ -1,13 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-using LanguageExt.Common;
-using Microsoft.Extensions.Logging;
-using SpotifyStalker.Interface;
-using SpotifyStalker.Model;
-
-namespace SpotifyStalker.Service;
+﻿namespace SpotifyStalker.Service;
 
 public class ApiRequestService : IApiRequestService
 {

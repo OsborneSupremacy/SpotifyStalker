@@ -1,8 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
-
-namespace SpotifyStalker.Data;
+﻿namespace SpotifyStalker.Data;
 
 [Index(nameof(ArtistId))]
 [Index(nameof(Name))]

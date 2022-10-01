@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Spotify.Model;
-using Spotify.Utility;
-using SpotifyStalker.Data;
-using SpotifyStalker.Interface;
-
-namespace SpotifyStalker.ConsoleUi;
+﻿namespace SpotifyStalker.ConsoleUi;
 
 public class TrackQueryService
 {

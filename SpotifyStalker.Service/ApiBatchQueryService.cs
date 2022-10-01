@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using LanguageExt.Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Spotify.Interface;
-using Spotify.Model;
-using SpotifyStalker.Interface;
-
-namespace SpotifyStalker.Service;
+﻿namespace SpotifyStalker.Service;
 
 public class ApiBatchQueryService<T> : IApiBatchQueryService<T> where T : IApiBatchRequestObject, new()
 {

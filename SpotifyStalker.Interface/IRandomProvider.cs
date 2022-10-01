@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SpotifyStalker.Interface;
+﻿namespace SpotifyStalker.Interface;
 
 public interface IRandomProvider
 {
