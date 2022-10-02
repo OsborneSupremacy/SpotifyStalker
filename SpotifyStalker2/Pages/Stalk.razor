@@ -39,7 +39,7 @@
         @if (ViewModel.UserPlaylistResult == RequestStatus.Success && !ViewModel.Playlists.Display)
         {
             <h5 class="alert alert-warning" role="alert">
-                User <span class="badge badge-warning">@ViewModel.UserName exists</span>, but has no public playlists. They must think they're too precious to be stalked by random Internet strangers 🙄.
+                User <span class="badge badge-warning"><SpotifyLink Name="@ViewModel.UserName" Id="@ViewModel.UserName" Type="user" /></span> exists, but has no public playlists. They must think they're too precious to be stalked by random Internet strangers.
             </h5>
         }
 
@@ -250,6 +250,7 @@
     public async Task QueryUserAsync()
     {
         ViewModel = await StalkModelTransformer.ResetAsync(ViewModel);
+
         setProcessingMessage("Looking up playlists");
 
         var userPlayListResult = await ApiQueryService.QueryAsync<UserPlaylistsModel>(ViewModel.UserName, Options.Value.Limits.UserPlaylist);
@@ -266,7 +267,10 @@
             },
             exception =>
             {
-                ViewModel.UserPlaylistResult = RequestStatus.Failed;
+                ViewModel.UserPlaylistResult = exception switch {
+                    RequestException x => x.RequestStatus,
+                    _ => RequestStatus.Failed
+                };
                 return false;
             }
         );

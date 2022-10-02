@@ -19,12 +19,12 @@
 
 @code {
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public string OwnerId { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public string DisplayName { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public (bool InProcess, string Stage) Processing { get; set; }
 }

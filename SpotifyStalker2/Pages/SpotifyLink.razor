@@ -2,12 +2,12 @@
 
 @code {
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public string Name { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public string Type { get; set; }
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public string Id { get; set; }
 }
