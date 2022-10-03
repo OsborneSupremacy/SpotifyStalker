@@ -4,7 +4,6 @@ public enum RequestStatus
 {
     [Obsolete]
     Default,
-    [Obsolete]
     Success,
     NotFound,
     Retry,

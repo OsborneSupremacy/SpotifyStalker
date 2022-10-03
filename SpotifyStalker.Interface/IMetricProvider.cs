@@ -1,6 +1,4 @@
-﻿using SpotifyStalker.Model;
-
-namespace SpotifyStalker.Interface;
+﻿namespace SpotifyStalker.Interface;
 
 public interface IMetricProvider
 {

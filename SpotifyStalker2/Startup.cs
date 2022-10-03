@@ -43,12 +43,12 @@ public class Startup
         services.AddSingleton<IApiRequestUrlBuilder, ApiRequestUrlBuilder>();
         services.AddSingleton<ITokenService, TokenService>();
         services.AddSingleton<IApiQueryService, ApiQueryService>();
-
         services.AddSingleton<IMetricProvider, MetricProvider>();
 
         services.AddHttpClient();
         services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
 
+        services.AddScoped<IUserQueryService, UserQueryService>();
         services.AddScoped<IStalkModelTransformer, StalkModelTransformer>();
         services.AddScoped<IApiBatchQueryService<ArtistModelCollection>, ApiBatchQueryService<ArtistModelCollection>>();
         services.AddScoped<IApiBatchQueryService<AudioFeaturesModelCollection>, ApiBatchQueryService<AudioFeaturesModelCollection>>();
