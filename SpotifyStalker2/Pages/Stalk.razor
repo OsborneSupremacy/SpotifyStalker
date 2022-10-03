@@ -45,7 +45,7 @@
 
         @if (ViewModel.Playlists.Display)
         {
-            <StalkTarget OwnerId="@ViewModel.Playlists.Items.FirstOrDefault().Value.Owner.Id"
+            <StalkTarget OwnerId="@ViewModel.Playlists.Items.FirstOrDefault().Value.Owner.Id" 
                          DisplayName="@ViewModel.Playlists.Items.FirstOrDefault().Value.Owner.DisplayName"
                          Processing="@ViewModel.Processing" />
         }
@@ -375,9 +375,9 @@
 
         clearProcessingMessage();
 
-        void setProcessingMessage(string message) => ViewModel.Processing = (true, message);
+        void setProcessingMessage(string message) => ViewModel.Processing =new ProcessingStage(true, message);
 
-        void clearProcessingMessage() => ViewModel.Processing = (false, default);
+        void clearProcessingMessage() => ViewModel.Processing = new ProcessingStage(false, default);
     }
 
     private void IncrementCount<T>(int incrementBy = 1) where T : ISpotifyStandardObject

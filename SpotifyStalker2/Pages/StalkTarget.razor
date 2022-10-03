@@ -26,5 +26,5 @@
     public string DisplayName { get; set; }
 
     [Parameter, EditorRequired]
-    public (bool InProcess, string Stage) Processing { get; set; }
+    public SpotifyStalker.Model.ProcessingStage Processing { get; set; }
 }

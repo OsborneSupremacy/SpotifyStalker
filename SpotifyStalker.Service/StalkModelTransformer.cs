@@ -32,7 +32,7 @@ public class StalkModelTransformer : IStalkModelTransformer
         stalkModel.AudioFeatures = new CategoryViewModel<AudioFeaturesModel>();
         stalkModel.Metrics = new CategoryViewModel<Metric>();
 
-        stalkModel.Processing = (false, default);
+        stalkModel.Processing = new ProcessingStage(false, default);
 
         var metrics = (await _metricProvider.GetAllAsync()).ToList();
 

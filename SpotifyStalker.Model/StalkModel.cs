@@ -15,7 +15,7 @@ public class StalkModel
         Metrics = new CategoryViewModel<Metric>();
     }
 
-    public (bool InProcess, string Stage) Processing { get; set; }
+    public ProcessingStage Processing { get; set; }
 
     public string UserName { get; set; }
 
