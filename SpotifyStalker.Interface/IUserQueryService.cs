@@ -2,7 +2,7 @@
 
 public interface IUserQueryService
 {
-    public Task QueryUserAsync(
+    public Task QueryAsync(
             StalkModel viewModel,
             Action stateHasChangedCallback
             );

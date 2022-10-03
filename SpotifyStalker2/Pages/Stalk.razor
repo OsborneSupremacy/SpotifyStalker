@@ -247,7 +247,7 @@
     public async Task QueryUserAsync()
     {
         await UserQueryService
-            .QueryUserAsync(ViewModel,
+            .QueryAsync(ViewModel,
                 () => {
                     StateHasChanged();
                 }
