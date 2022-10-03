@@ -198,6 +198,6 @@ public class StalkModelTransformer : IStalkModelTransformer
             mp += 1.0;
         metric.MarkerPosition = _plotAreaWidth * mp;
 
-        return (metric);
+        return metric;
     }
 }

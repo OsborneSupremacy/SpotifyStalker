@@ -6,24 +6,24 @@ public class UserQueryService : IUserQueryService
 
     private readonly IUserPlaylistsQueryService _userPlaylistsQueryService;
 
-    private readonly IPlaylistQueryService _playlistsQueryService;
+    private readonly IArtistQueryService _artistQueryService;
 
-    private readonly IApiBatchQueryService<ArtistModelCollection> _artistBatchQueryService;
+    private readonly IPlaylistQueryService _playlistsQueryService;
 
     private readonly IApiBatchQueryService<AudioFeaturesModelCollection> _audioFeaturesQueryService;
 
     public UserQueryService(
         IStalkModelTransformer stalkModelTransformer,
         IUserPlaylistsQueryService userPlaylistsQueryService,
+        IArtistQueryService artistQueryService,
         IPlaylistQueryService playlistsQueryService,
-        IApiBatchQueryService<ArtistModelCollection> artistBatchQueryService,
         IApiBatchQueryService<AudioFeaturesModelCollection> audioFeaturesQueryService
         )
     {
         _stalkModelTransformer = stalkModelTransformer ?? throw new ArgumentNullException(nameof(stalkModelTransformer));
         _userPlaylistsQueryService = userPlaylistsQueryService ?? throw new ArgumentNullException(nameof(userPlaylistsQueryService));
+        _artistQueryService = artistQueryService ?? throw new ArgumentNullException(nameof(artistQueryService));
         _playlistsQueryService = playlistsQueryService ?? throw new ArgumentNullException(nameof(playlistsQueryService));
-        _artistBatchQueryService = artistBatchQueryService ?? throw new ArgumentNullException(nameof(artistBatchQueryService));
         _audioFeaturesQueryService = audioFeaturesQueryService ?? throw new ArgumentNullException(nameof(audioFeaturesQueryService));
     }
 
@@ -41,47 +41,25 @@ public class UserQueryService : IUserQueryService
             return;
         }
 
-        await _playlistsQueryService.QueryAsync(
-            viewModel,
-            setProcessingMessage,
-            () => {
-                incrementCount<PlaylistModel>();
-            }
-        );
-
-        setProcessingMessage("Looking up artists");
-
-        // add all artists to batch query service
-        foreach (var artist in viewModel.Artists.Items)
-            _artistBatchQueryService.AddToQueue(artist.Key);
-
-        while (!_artistBatchQueryService.QueueIsEmpty())
-        {
-            var (artistResult, artistItemsQueried) = await _artistBatchQueryService.QueryAsync();
-
-            artistResult.Match
+        await _playlistsQueryService
+            .QueryAsync
             (
-                model =>
-                {
-                    // loop through results, assigning artist genres to artists
-                    foreach (var result in model.Artists)
-                    {
-                        incrementCount<ArtistModel>();
-
-                        var artist = viewModel.Artists.Items[result.Id];
-
-                        artist.Genres = result.Genres;
-                        _stalkModelTransformer.RegisterGenre(viewModel, artist);
-                    }
-                    return true;
-                },
-                exception =>
-                {
-                    incrementCount<ArtistModel>(artistItemsQueried);
-                    return false;
+                viewModel,
+                setProcessingMessage,
+                () => {
+                    incrementCount<PlaylistModel>();
                 }
             );
-        }
+
+        await _artistQueryService
+            .QueryAsync
+            (
+                viewModel,
+                setProcessingMessage,
+                incrementBy => {
+                    incrementCount<ArtistModel>(incrementBy);
+                }
+            );
 
         setProcessingMessage("Looking up audio features");
 
