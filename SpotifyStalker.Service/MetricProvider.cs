@@ -9,7 +9,7 @@ public class MetricProvider : IMetricProvider
             new()
             {
                 Name = "Danceability",
-                Content = "Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.A value of 0.0 is least danceable and 1.0 is most danceable.",
+                Content = "Danceability describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.",
                 Unit = "",
                 Min = 0,
                 Max = 1,

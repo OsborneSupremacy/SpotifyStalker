@@ -50,6 +50,7 @@ public class Startup
 
         services.AddScoped<IUserQueryService, UserQueryService>();
         services.AddScoped<IUserPlaylistsQueryService, UserPlaylistsQueryService>();
+        services.AddScoped<IPlaylistQueryService, PlaylistQueryService>();
         services.AddScoped<IStalkModelTransformer, StalkModelTransformer>();
         services.AddScoped<IApiBatchQueryService<ArtistModelCollection>, ApiBatchQueryService<ArtistModelCollection>>();
         services.AddScoped<IApiBatchQueryService<AudioFeaturesModelCollection>, ApiBatchQueryService<AudioFeaturesModelCollection>>();

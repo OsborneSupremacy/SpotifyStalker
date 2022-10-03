@@ -4,31 +4,27 @@ public class UserQueryService : IUserQueryService
 {
     private readonly IStalkModelTransformer _stalkModelTransformer;
 
-    private readonly IApiQueryService _apiQueryService;
-
     private readonly IUserPlaylistsQueryService _userPlaylistsQueryService;
+
+    private readonly IPlaylistQueryService _playlistsQueryService;
 
     private readonly IApiBatchQueryService<ArtistModelCollection> _artistBatchQueryService;
 
     private readonly IApiBatchQueryService<AudioFeaturesModelCollection> _audioFeaturesQueryService;
 
-    private readonly IOptions<SpotifyApiSettings> _options;
-
     public UserQueryService(
         IStalkModelTransformer stalkModelTransformer,
-        IApiQueryService apiQueryService,
         IUserPlaylistsQueryService userPlaylistsQueryService,
+        IPlaylistQueryService playlistsQueryService,
         IApiBatchQueryService<ArtistModelCollection> artistBatchQueryService,
-        IApiBatchQueryService<AudioFeaturesModelCollection> audioFeaturesQueryService,
-        IOptions<SpotifyApiSettings> options
+        IApiBatchQueryService<AudioFeaturesModelCollection> audioFeaturesQueryService
         )
     {
         _stalkModelTransformer = stalkModelTransformer ?? throw new ArgumentNullException(nameof(stalkModelTransformer));
-        _apiQueryService = apiQueryService ?? throw new ArgumentNullException(nameof(apiQueryService));
         _userPlaylistsQueryService = userPlaylistsQueryService ?? throw new ArgumentNullException(nameof(userPlaylistsQueryService));
+        _playlistsQueryService = playlistsQueryService ?? throw new ArgumentNullException(nameof(playlistsQueryService));
         _artistBatchQueryService = artistBatchQueryService ?? throw new ArgumentNullException(nameof(artistBatchQueryService));
         _audioFeaturesQueryService = audioFeaturesQueryService ?? throw new ArgumentNullException(nameof(audioFeaturesQueryService));
-        _options = options ?? throw new ArgumentNullException(nameof(options));
     }
 
     public async Task QueryAsync(
@@ -45,31 +41,13 @@ public class UserQueryService : IUserQueryService
             return;
         }
 
-        setProcessingMessage("Getting playlist tracks");
-
-        // at this point we only have playlist names and IDs.
-        // get the track list for each playlist
-        foreach (var playlist in viewModel.Playlists.Items)
-        {
-            var playlistResult = await _apiQueryService.QueryAsync<PlaylistModel>(playlist.Value.Id, _options.Value.Limits.PlaylistTrack);
-
-            incrementCount<PlaylistModel>();
-
-            playlistResult.Match
-            (
-                model =>
-                {
-                    // add the tracks from the playlist api query to the list of all tracks
-                    foreach (var playlistModelTrack in model.Items)
-                        viewModel = _stalkModelTransformer.RegisterTrack(viewModel, playlist.Value, playlistModelTrack.Track);
-                    return true;
-                },
-                exception =>
-                {
-                    return false;
-                }
-            );
-        }
+        await _playlistsQueryService.QueryAsync(
+            viewModel,
+            setProcessingMessage,
+            () => {
+                incrementCount<PlaylistModel>();
+            }
+        );
 
         setProcessingMessage("Looking up artists");
 
