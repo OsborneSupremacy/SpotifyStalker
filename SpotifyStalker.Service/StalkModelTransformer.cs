@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Scoped)]
+[RegistrationTarget(typeof(IStalkModelTransformer))]
 public class StalkModelTransformer : IStalkModelTransformer
 {
     private readonly IMapper _mapper;

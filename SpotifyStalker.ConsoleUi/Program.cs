@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using SpotifyStalker.Service;
@@ -34,20 +33,9 @@ class Program
                 services.Configure<SpotifyApiSettings>(configuration.GetSection("SpotifyApi"));
 
                 services.AddHttpClient();
-                services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-                services.AddSingleton<ITokenService, TokenService>();
-                services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
 
-                services.AddSingleton<IHttpFormPostService, HttpFormPostService>();
-
-                services.AddSingleton<IApiRequestUrlBuilder, ApiRequestUrlBuilder>();
-                services.AddSingleton<IApiRequestService, ApiRequestService>();
-                services.AddSingleton<IApiQueryService, ApiQueryService>();
-
-                services.AddSingleton<UserPromptService>();
-                services.AddSingleton<ArtistQueryService>();
-                services.AddSingleton<TrackQueryService>();
-                services.AddSingleton<SearchTermBuilderService>();
+                services.RegisterServicesInAssembly(typeof(UserPromptService));
+                services.RegisterServicesInAssembly(typeof(ApiQueryService));
 
                 services.AddDbContext<SpotifyStalkerDbContext>();
 

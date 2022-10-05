@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
+[RegistrationTarget(typeof(IAuthorizedHttpClientFactory))]
 public class AuthorizedHttpClientFactory : IAuthorizedHttpClientFactory
 {
     private readonly IHttpClientFactory _httpClientFactory;

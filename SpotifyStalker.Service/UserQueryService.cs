@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Scoped)]
+[RegistrationTarget(typeof(IUserQueryService))]
 public class UserQueryService : IUserQueryService
 {
     private readonly IStalkModelTransformer _stalkModelTransformer;

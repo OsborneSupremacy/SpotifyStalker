@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OsborneSupremacy.Extensions.Net.DependencyInjection;
 using Serilog;
 using Spotify.Model;
 using SpotifyStalker.Interface;
@@ -30,30 +31,10 @@ public class Startup
         services.AddRazorPages();
         services.AddServerSideBlazor();
 
-        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-
-        services.AddSingleton<IFileContentProvider, FileContentProvider>();
-        services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
-        services.AddSingleton<IArtistProvider, ArtistProvider>();
-        services.AddSingleton<IGenreProvider, GenreProvider>();
-        services.AddSingleton<IRandomProvider, RandomProvider>();
-
-        services.AddSingleton<IHttpFormPostService, HttpFormPostService>();
-        services.AddSingleton<IApiRequestService, ApiRequestService>();
-        services.AddSingleton<IApiRequestUrlBuilder, ApiRequestUrlBuilder>();
-        services.AddSingleton<ITokenService, TokenService>();
-        services.AddSingleton<IApiQueryService, ApiQueryService>();
-        services.AddSingleton<IMetricProvider, MetricProvider>();
-
         services.AddHttpClient();
-        services.AddSingleton<IAuthorizedHttpClientFactory, AuthorizedHttpClientFactory>();
 
-        services.AddScoped<IUserQueryService, UserQueryService>();
-        services.AddScoped<IUserPlaylistsQueryService, UserPlaylistsQueryService>();
-        services.AddScoped<IPlaylistQueryService, PlaylistQueryService>();
-        services.AddScoped<IArtistQueryService, ArtistQueryService>();
-        services.AddScoped<IAudioFeaturesQueryService, AudioFeaturesQueryService>();
-        services.AddScoped<IStalkModelTransformer, StalkModelTransformer>();
+        services.RegisterServicesInAssembly(typeof(ApiQueryService));
+
         services.AddScoped<IApiBatchQueryService<ArtistModelCollection>, ApiBatchQueryService<ArtistModelCollection>>();
         services.AddScoped<IApiBatchQueryService<AudioFeaturesModelCollection>, ApiBatchQueryService<AudioFeaturesModelCollection>>();
 

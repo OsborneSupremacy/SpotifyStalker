@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
+[RegistrationTarget(typeof(IMetricProvider))]
 public class MetricProvider : IMetricProvider
 {
     public Task<IEnumerable<Metric>> GetAllAsync()

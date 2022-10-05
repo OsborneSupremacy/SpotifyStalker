@@ -1,5 +1,6 @@
 ﻿namespace SpotifyStalker.ConsoleUi;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
 public class ArtistQueryService
 {
     private readonly ILogger<ArtistQueryService> _logger;

@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
+[RegistrationTarget(typeof(ITokenService))]
 public class TokenService : ITokenService
 {
     private readonly ILogger<ITokenService> _logger;

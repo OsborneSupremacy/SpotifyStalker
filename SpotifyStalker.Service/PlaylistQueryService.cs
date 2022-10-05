@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Scoped)]
+[RegistrationTarget(typeof(IPlaylistQueryService))]
 public class PlaylistQueryService : IPlaylistQueryService
 {
     private readonly IApiQueryService _apiQueryService;

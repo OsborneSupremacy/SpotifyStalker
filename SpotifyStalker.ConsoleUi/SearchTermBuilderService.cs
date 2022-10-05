@@ -1,5 +1,6 @@
 ﻿namespace SpotifyStalker.ConsoleUi;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
 public class SearchTermBuilderService
 {
     private readonly ILogger<SearchTermBuilderService> _logger;

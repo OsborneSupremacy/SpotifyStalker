@@ -9,3 +9,5 @@ global using SpotifyStalker.Data;
 global using SpotifyStalker.Interface;
 global using System.Text;
 global using Spotify.Utility;
+global using OsborneSupremacy.Extensions.Net.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection;

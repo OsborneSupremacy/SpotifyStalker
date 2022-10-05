@@ -1,5 +1,8 @@
 ﻿namespace SpotifyStalker.Service;
 
+
+[ServiceLifetime(ServiceLifetime.Singleton)]
+[RegistrationTarget(typeof(IHttpFormPostService))]
 public class HttpFormPostService : IHttpFormPostService
 {
     public async Task<string> PostFormAsync(

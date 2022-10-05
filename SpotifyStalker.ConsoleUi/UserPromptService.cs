@@ -1,5 +1,6 @@
 ﻿namespace SpotifyStalker.ConsoleUi;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
 public class UserPromptService
 {
     private readonly ArtistQueryService _artistQueryService;

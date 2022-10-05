@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
+[RegistrationTarget(typeof(IArtistProvider))]
 public class ArtistProvider : IArtistProvider
 {
     private readonly IFileContentProvider _fileContentProvider;

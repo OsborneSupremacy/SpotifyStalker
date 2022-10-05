@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Scoped)]
+[RegistrationTarget(typeof(IArtistQueryService))]
 public class ArtistQueryService : IArtistQueryService
 {
     private readonly IApiBatchQueryService<ArtistModelCollection> _artistBatchQueryService;

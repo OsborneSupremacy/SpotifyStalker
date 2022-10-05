@@ -2,6 +2,8 @@
 
 namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
+[RegistrationTarget(typeof(IMemoryCacheService))]
 public class MemoryCacheService : IMemoryCacheService
 {
     private readonly IMemoryCache _cache;

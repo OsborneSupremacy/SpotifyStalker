@@ -2,6 +2,8 @@
 
 namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
+[RegistrationTarget(typeof(IFileContentProvider))]
 public class FileContentProvider : IFileContentProvider
 {
     public string Get(string directoryName, string fileName)

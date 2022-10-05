@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Scoped)]
+[RegistrationTarget(typeof(IAudioFeaturesQueryService))]
 public class AudioFeaturesQueryService : IAudioFeaturesQueryService
 {
     private readonly IApiBatchQueryService<AudioFeaturesModelCollection> _audioFeaturesQueryService;

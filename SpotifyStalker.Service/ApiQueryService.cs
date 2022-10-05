@@ -1,5 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
+[RegistrationTarget(typeof(IApiQueryService))]
 public class ApiQueryService : IApiQueryService
 {
     private readonly IApiRequestUrlBuilder _apiRequestUrlBuilder;

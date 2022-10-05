@@ -2,6 +2,8 @@
 
 namespace SpotifyStalker.Service;
 
+[ServiceLifetime(ServiceLifetime.Singleton)]
+[RegistrationTarget(typeof(IRandomProvider))]
 public class RandomProvider : IRandomProvider
 {
     private readonly IArtistProvider _artistProvider;
