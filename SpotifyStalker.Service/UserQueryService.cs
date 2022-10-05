@@ -10,14 +10,14 @@ public class UserQueryService : IUserQueryService
 
     private readonly IPlaylistQueryService _playlistsQueryService;
 
-    private readonly IApiBatchQueryService<AudioFeaturesModelCollection> _audioFeaturesQueryService;
+    private readonly IAudioFeaturesQueryService _audioFeaturesQueryService;
 
     public UserQueryService(
         IStalkModelTransformer stalkModelTransformer,
         IUserPlaylistsQueryService userPlaylistsQueryService,
         IArtistQueryService artistQueryService,
         IPlaylistQueryService playlistsQueryService,
-        IApiBatchQueryService<AudioFeaturesModelCollection> audioFeaturesQueryService
+        IAudioFeaturesQueryService audioFeaturesQueryService
         )
     {
         _stalkModelTransformer = stalkModelTransformer ?? throw new ArgumentNullException(nameof(stalkModelTransformer));
@@ -61,43 +61,23 @@ public class UserQueryService : IUserQueryService
                 }
             );
 
-        setProcessingMessage("Looking up audio features");
-
-        foreach (var track in viewModel.Tracks.Items)
-        {
-            if (!string.IsNullOrEmpty(track.Value.Id))
-                _audioFeaturesQueryService.AddToQueue(track.Value.Id);
-        }
-
-        while (!_audioFeaturesQueryService.QueueIsEmpty())
-        {
-            var (audioFeaturesResult, audioFeaturesQueriedCount) = await _audioFeaturesQueryService.QueryAsync();
-
-            audioFeaturesResult.Match
+        await _audioFeaturesQueryService
+            .QueryAsync
             (
-                model =>
-                {
-                    foreach (var result in model.AudioFeaturesList)
-                    {
-                        incrementCount<Track>();
-                        viewModel = _stalkModelTransformer.RegisterAudioFeature(viewModel, result);
-                    }
-                    return true;
-                },
-                exception =>
-                {
-                    incrementCount<Track>(audioFeaturesQueriedCount);
-                    return false;
+                viewModel,
+                setProcessingMessage,
+                incrementBy => {
+                    incrementCount<Track>(incrementBy);
                 }
             );
-            // loop through results
-        }
 
         clearProcessingMessage();
 
-        void setProcessingMessage(string message) => viewModel.Processing = new ProcessingStage(true, message);
+        void setProcessingMessage(string message) => 
+            viewModel.Processing = new ProcessingStage(true, message);
 
-        void clearProcessingMessage() => viewModel.Processing = new ProcessingStage(false, default);
+        void clearProcessingMessage() => 
+            viewModel.Processing = new ProcessingStage(false, default);
 
         void incrementCount<T>(int incrementBy = 1) where T : ISpotifyStandardObject
         {
