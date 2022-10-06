@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Linq;
+using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,10 +36,6 @@ public class Startup
         services.AddHttpClient();
 
         services.RegisterServicesInAssembly(typeof(ApiQueryService));
-
-        services.AddScoped<IApiBatchQueryService<ArtistModelCollection>, ApiBatchQueryService<ArtistModelCollection>>();
-        services.AddScoped<IApiBatchQueryService<AudioFeaturesModelCollection>, ApiBatchQueryService<AudioFeaturesModelCollection>>();
-
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

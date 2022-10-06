@@ -48,7 +48,6 @@ class Program
             .RunConsoleAsync();
     }
 
-
     class ConsoleHostedService : IHostedService
     {
         private readonly ILogger<ConsoleHostedService> _logger;

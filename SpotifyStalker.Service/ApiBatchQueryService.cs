@@ -1,6 +1,7 @@
 ﻿namespace SpotifyStalker.Service;
 
 [ServiceLifetime(ServiceLifetime.Scoped)]
+[RegistrationTarget(typeof(IApiBatchQueryService<>))]
 public class ApiBatchQueryService<T> : IApiBatchQueryService<T> where T : IApiBatchRequestObject, new()
 {
     private readonly ILogger<IApiRequestService> _logger;
