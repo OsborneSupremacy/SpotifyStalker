@@ -1,10 +1,8 @@
 ﻿namespace Spotify.Model;
 
-public class SpotifyApiSettings
+public record SpotifyApiSettings
 {
     [JsonPropertyName("tokenUrl")]
-    [Required(AllowEmptyStrings = false)]
-    [Url]
     public string TokenUrl { get; set; }
 
     [JsonPropertyName("spotifyBaseUrl")]
@@ -20,46 +18,24 @@ public class SpotifyApiSettings
     public ApiLimits Limits { get; set; }
 }
 
-public class ApiLimits
+public class SpotifyApiSettingsValidator : AbstractValidator<SpotifyApiSettings>
 {
-    [JsonPropertyName("search")]
-    [Required]
-    public SearchLimits Search { get; set; }
+    public SpotifyApiSettingsValidator()
+    {
+        RuleFor(x => x.TokenUrl).NotEmpty();
+        RuleFor(x => x.TokenUrl)
+            .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _));
 
-    [JsonPropertyName("userplaylist")]
-    [Required]
-    [Range(1, 50)]
-    public int UserPlaylist { get; set; }
+        RuleFor(x => x.SpotifyBaseUrl).NotEmpty();
+        RuleFor(x => x.SpotifyBaseUrl)
+            .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _));
 
-    [JsonPropertyName("playlisttrack")]
-    [Required]
-    [Range(1, 100)]
-    public int PlaylistTrack { get; set; }
-
-    [JsonPropertyName("batchsize")]
-    [Required]
-    [Range(1, 50)]
-    public int BatchSize { get; set; }
+        RuleFor(x => x.ApiKeys).NotNull();
+        
+        RuleFor(x => x.Limits).NotNull();
+        //RuleFor(x => x.Limits).SetValidator(new ApiLimitsValidator());
+    }
 }
 
-public class SearchLimits
-{
-    [JsonPropertyName("limit")]
-    [Required]
-    [Range(1, 50)]
-    public int Limit { get; set; }
 
-    [JsonPropertyName("maximumoffset")]
-    [Required]
-    [Range(1, 1000)]
-    public int MaximumOffset { get; set; }
-}
 
-public class ApiKeys
-{
-    [JsonPropertyName("clientid")]
-    public string ClientId { get; set; }
-
-    [JsonPropertyName("clientsecret")]
-    public string ClientSecret { get; set; }
-}

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using OsborneSupremacy.Extensions.Net.DependencyInjection;
 using Serilog;
 using Spotify.Model;
-using SpotifyStalker.Interface;
 using SpotifyStalker.Service;
 
 namespace SpotifyStalker2;
