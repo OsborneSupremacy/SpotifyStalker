@@ -18,13 +18,13 @@ public class ApiBatchQueryService<T> : IApiBatchQueryService<T> where T : IApiBa
         ILogger<IApiRequestService> logger,
         IApiRequestUrlBuilder apiRequestUrlBuilder,
         IApiRequestService apiRequestService,
-        IOptions<SpotifyApiSettings> settings
+        SpotifyApiSettings settings
         )
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _apiRequestUrlBuilder = apiRequestUrlBuilder ?? throw new ArgumentNullException(nameof(apiRequestUrlBuilder));
         _apiRequestService = apiRequestService ?? throw new ArgumentNullException(nameof(apiRequestService));
-        _spotifyApiSettings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
+        _spotifyApiSettings = settings ?? throw new ArgumentNullException(nameof(settings));
         _queuedItems = new ConcurrentQueue<string>();
     }
 

@@ -8,17 +8,17 @@ public class PlaylistQueryService : IPlaylistQueryService
 
     private readonly IStalkModelTransformer _stalkModelTransformer;
 
-    private readonly IOptions<SpotifyApiSettings> _options;
+    private readonly SpotifyApiSettings _settings;
 
     public PlaylistQueryService(
         IApiQueryService apiQueryService,
         IStalkModelTransformer stalkModelTransformer,
-        IOptions<SpotifyApiSettings> options
+        SpotifyApiSettings settings
         )
     {
         _apiQueryService = apiQueryService ?? throw new ArgumentNullException(nameof(apiQueryService));
         _stalkModelTransformer = stalkModelTransformer ?? throw new ArgumentNullException(nameof(stalkModelTransformer));
-        _options = options ?? throw new ArgumentNullException(nameof(options));
+        _settings = settings ?? throw new ArgumentNullException(nameof(settings));
     }
 
     public async Task QueryAsync(
@@ -33,7 +33,7 @@ public class PlaylistQueryService : IPlaylistQueryService
         // get the track list for each playlist
         foreach (var playlist in viewModel.Playlists.Items)
         {
-            var playlistResult = await _apiQueryService.QueryAsync<PlaylistModel>(playlist.Value.Id, _options.Value.Limits.PlaylistTrack);
+            var playlistResult = await _apiQueryService.QueryAsync<PlaylistModel>(playlist.Value.Id, _settings.Limits.PlaylistTrack);
 
             incrementCountCallback();
 

@@ -8,17 +8,17 @@ public class UserPlaylistsQueryService : IUserPlaylistsQueryService
 
     private readonly IStalkModelTransformer _stalkModelTransformer;
 
-    private readonly IOptions<SpotifyApiSettings> _options;
+    private readonly SpotifyApiSettings _settings;
 
     public UserPlaylistsQueryService(
         IApiQueryService apiQueryService,
         IStalkModelTransformer stalkModelTransformer,
-        IOptions<SpotifyApiSettings> options
+        SpotifyApiSettings settings
         )
     {
         _apiQueryService = apiQueryService ?? throw new ArgumentNullException(nameof(apiQueryService));
         _stalkModelTransformer = stalkModelTransformer ?? throw new ArgumentNullException(nameof(stalkModelTransformer));
-        _options = options ?? throw new ArgumentNullException(nameof(options));
+        _settings = settings ?? throw new ArgumentNullException(nameof(settings));
     }
 
     public async Task<bool> QueryAsync(
@@ -30,7 +30,7 @@ public class UserPlaylistsQueryService : IUserPlaylistsQueryService
         statusUpdateCallback("Looking up playlists");
 
         var queryResult = await _apiQueryService
-            .QueryAsync<UserPlaylistsModel>(viewModel.UserName, _options.Value.Limits.UserPlaylist);
+            .QueryAsync<UserPlaylistsModel>(viewModel.UserName, _settings.Limits.UserPlaylist);
 
         return queryResult.Match
         (

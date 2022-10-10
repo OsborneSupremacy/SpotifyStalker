@@ -2,10 +2,8 @@
 
 public record ApiKeys
 {
-    [JsonPropertyName("clientid")]
     public string ClientId { get; set; }
 
-    [JsonPropertyName("clientsecret")]
     public string ClientSecret { get; set; }
 }
 
@@ -13,7 +11,7 @@ public class ApiKeysValidator : AbstractValidator<ApiKeys>
 {
     public ApiKeysValidator()
     {
-        RuleFor(x => x.ClientId).NotNull();
-        RuleFor(x => x.ClientSecret).NotNull();
+        RuleFor(x => x.ClientId).NotEmpty();
+        RuleFor(x => x.ClientSecret).NotEmpty();
     }
 }

@@ -12,11 +12,11 @@ public class ApiRequestUrlBuilder : IApiRequestUrlBuilder
 
     public ApiRequestUrlBuilder(
         ILogger<ApiRequestUrlBuilder> logger,
-        IOptions<SpotifyApiSettings> settings
+        SpotifyApiSettings settings
         )
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _spotifyApiSettings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
+        _spotifyApiSettings = settings ?? throw new ArgumentNullException(nameof(settings));
     }
 
     public string Build<T>(string id) where T : IApiRequestObject, new() =>

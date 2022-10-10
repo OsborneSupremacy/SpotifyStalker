@@ -22,14 +22,14 @@ public class TokenService : ITokenService
 
     public TokenService(
         ILogger<ITokenService> logger,
-        IOptions<SpotifyApiSettings> settings,
+        SpotifyApiSettings settings,
         IHttpFormPostService httpFormPostService,
         IHttpClientFactory httpClientFactory,
         IDateTimeProvider dateTimeProvider
         )
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _spotifyApiSettings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
+        _spotifyApiSettings = settings ?? throw new ArgumentNullException(nameof(settings));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _httpFormPostService = httpFormPostService ?? throw new ArgumentNullException(nameof(httpFormPostService));
         _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));

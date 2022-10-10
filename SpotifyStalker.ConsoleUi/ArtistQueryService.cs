@@ -15,14 +15,14 @@ public class ArtistQueryService
 
     public ArtistQueryService(
         ILogger<ArtistQueryService> logger,
-        IOptions<SpotifyApiSettings> settings,
+        SpotifyApiSettings settings,
         IApiQueryService apiQueryService,
         SearchTermBuilderService searchTermBuilderService,
         SpotifyStalkerDbContext dbContext
     )
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _spotifyApiSettings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
+        _spotifyApiSettings = settings ?? throw new ArgumentNullException(nameof(settings));
         _apiQueryService = apiQueryService ?? throw new ArgumentNullException(nameof(apiQueryService));
         _searchTermBuilderService = searchTermBuilderService ?? throw new ArgumentNullException(nameof(searchTermBuilderService));
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));

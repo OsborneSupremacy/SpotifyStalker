@@ -2,19 +2,12 @@
 
 public record SpotifyApiSettings
 {
-    [JsonPropertyName("tokenUrl")]
     public string TokenUrl { get; set; }
 
-    [JsonPropertyName("spotifyBaseUrl")]
-    [Required(AllowEmptyStrings = false)]
-    [Url]
     public string SpotifyBaseUrl { get; set; }
 
-    [JsonPropertyName("apikeys")]
     public ApiKeys ApiKeys { get; set; }
 
-    [JsonPropertyName("limits")]
-    [Required]
     public ApiLimits Limits { get; set; }
 }
 
@@ -31,9 +24,10 @@ public class SpotifyApiSettingsValidator : AbstractValidator<SpotifyApiSettings>
             .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _));
 
         RuleFor(x => x.ApiKeys).NotNull();
-        
+        RuleFor(x => x.ApiKeys).SetValidator(new ApiKeysValidator());
+
         RuleFor(x => x.Limits).NotNull();
-        //RuleFor(x => x.Limits).SetValidator(new ApiLimitsValidator());
+        RuleFor(x => x.Limits).SetValidator(new ApiLimitsValidator());
     }
 }
 
