@@ -1,5 +1,5 @@
 ﻿
-div.imageFrame {
+.imageFrame {
     background-size: contain;
     background-position: bottom;
     background-repeat: no-repeat;
@@ -9,7 +9,7 @@ div.imageFrame {
     height: 500px;
 }
 
-    div.imageFrame > svg {
+    .imageFrame > svg {
         /* border: solid 1px blue; */
         position: absolute;
         /* this creates a box around the plot area of Spotify's distribution images */
@@ -19,3 +19,20 @@ div.imageFrame {
         bottom: 54px;
     }
 
+        .imageFrame > svg > line.lowest {
+            stroke: #4cff00;
+            stroke-width: 2;
+            opacity: 0.75;
+        }
+
+        .imageFrame > svg > line.average {
+            stroke: rgb(255, 193, 7);
+            stroke-width: 2;
+            opacity: 0.75;
+        }
+
+        .imageFrame > svg > line.highest {
+            stroke: rgb(255,0,0);
+            stroke-width: 2;
+            opacity: 0.75;
+        }

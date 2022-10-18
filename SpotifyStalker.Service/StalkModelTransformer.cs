@@ -1,4 +1,6 @@
-﻿namespace SpotifyStalker.Service;
+﻿using SpotifyStalker.Model;
+
+namespace SpotifyStalker.Service;
 
 [ServiceLifetime(ServiceLifetime.Scoped)]
 [RegistrationTarget(typeof(IStalkModelTransformer))]
@@ -187,19 +189,25 @@ public class StalkModelTransformer : IStalkModelTransformer
 
         if (thisValue.HasValue)
         {
-            if (!metric.Loser.HasValue || thisValue > metric.Winner.Value.MetricValue)
-                metric.Winner = (thisValue.Value, stalkModel.Tracks.Items[currentAudioFeaturesModel.Id]);
+            if (!metric.Winner.HasValue || thisValue > metric.Winner.Value.MetricValue)
+                metric.Winner =
+                    (thisValue.Value, stalkModel.Tracks.Items[currentAudioFeaturesModel.Id], CalculateMarkerPosition(metric, thisValue));
 
             if (!metric.Loser.HasValue || thisValue < metric.Loser.Value.MetricValue)
-                metric.Loser = (thisValue.Value, stalkModel.Tracks.Items[currentAudioFeaturesModel.Id]);
+                metric.Loser =
+                    (thisValue.Value, stalkModel.Tracks.Items[currentAudioFeaturesModel.Id], CalculateMarkerPosition(metric, thisValue));
         }
 
-        // calculate marker position for average
-        var mp = metric.Average / (metric.Max - metric.Min);
-        if (mp < 0)
-            mp += 1.0;
-        metric.MarkerPosition = _plotAreaWidth * mp;
+        metric.MarkerPosition = CalculateMarkerPosition(metric, metric.Average);
 
         return metric;
+    }
+
+    public double? CalculateMarkerPosition(Metric metric, double? value)
+    {
+        var mp = value / (metric.Max - metric.Min);
+        if (mp < 0)
+            mp += 1.0;
+        return _plotAreaWidth * mp;
     }
 }

@@ -6,31 +6,45 @@
         <h1 class="display-4">@Metric.Name</h1>
         <p class="lead">@Metric.Content</p>
 
-        @if (Metric.Winner != null)
-        {
-            <div class="alert alert-success">
-                Track with Highest @Metric.Name <span class="badge badge-success">@(Metric?.Winner?.MetricValue ?? 0)</span>: 
-                <SpotifyLink Name="@Metric.Winner.Value.Track.Name" Id="@Metric.Winner.Value.Track.Id" Type="track" /> by @WriteArtistInfo(Metric.Winner)
-            </div>
-        }
-
         @if (Metric.Loser != null)
         {
-            <div class="alert alert-danger">
-                Track with Lowest @Metric.Name <span class="badge badge-danger">@(Metric?.Loser?.MetricValue ?? 0)</span>: 
+            <div class="alert alert-success">
+                Track with Lowest @Metric.Name <span class="badge badge-success">@(Metric?.Loser?.MetricValue ?? 0)</span>:
                 <SpotifyLink Name="@Metric.Loser.Value.Track.Name" Id="@Metric.Loser.Value.Track.Id" Type="track" /> by @WriteArtistInfo(Metric.Loser)
             </div>
         }
 
-        <div class="alert alert-primary">
-            Average @Metric.Name: @Metric.FormattedAverage
-        </div>
+        @if (Metric.FormattedAverage != null)
+        {
+            <div class="alert alert-warning">
+                Average @Metric.Name for this user's playlists: <span class="badge badge-warning">@Metric.FormattedAverage</span>
+            </div>
+        }
 
-        <div class="imageFrame" style="background-image: url('/assets/images/@Metric.ImageFile')">
+        @if (Metric.Winner != null)
+        {
+            <div class="alert alert-danger">
+                Track with Highest @Metric.Name <span class="badge badge-danger">@(Metric?.Winner?.MetricValue ?? 0)</span>: 
+                <SpotifyLink Name="@Metric.Winner.Value.Track.Name" Id="@Metric.Winner.Value.Track.Id" Type="track" /> by @WriteArtistInfo(Metric.Winner)
+            </div>
+        }
+
+        <figure class="imageFrame" style="background-image: url('/assets/images/@Metric.ImageFile')">
             <svg>
-                <line x1="@Metric.MarkerPosition" y1="0" x2="@Metric.MarkerPosition" y2="386" style="stroke:rgb(255,0,0);stroke-width:2" />
+                @if (Metric.Loser != null)
+                {
+                    <line class="lowest" x1="@Metric.Loser.Value.MarkerPosition" y1="0" x2="@Metric.Loser.Value.MarkerPosition" y2="386" />
+                }
+                @if (Metric.MarkerPosition != null)
+                {
+                    <line class="average" x1="@Metric.MarkerPosition" y1="0" x2="@Metric.MarkerPosition" y2="386" />
+                }
+                @if (Metric.Winner != null)
+                {
+                    <line class="highest" x1="@Metric.Winner.Value.MarkerPosition" y1="0" x2="@Metric.Winner.Value.MarkerPosition" y2="386" />
+                }
             </svg>
-        </div>
+        </figure>
 
     </div>
 </div>
@@ -41,7 +55,7 @@
     [Parameter]
     public Metric Metric { get; set; }
 
-    public string WriteArtistInfo((double MetricValue, Track Track)? input)
+    public string WriteArtistInfo((double MetricValue, Track Track, double? MakerPosition)? input)
     {
         var s = new System.Text.StringBuilder();
         int artistCount = 0;

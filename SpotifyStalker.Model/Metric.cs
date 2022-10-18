@@ -34,7 +34,7 @@ public class Metric : ISpotifyStandardObject
 
     public string FormatString { get; set; }
 
-    public (double MetricValue, Track Track)? Winner { get; set; }
+    public (double MetricValue, Track Track, double? MarkerPosition)? Winner { get; set; }
 
-    public (double MetricValue, Track Track)? Loser { get; set; }
+    public (double MetricValue, Track Track, double? MarkerPosition)? Loser { get; set; }
 }
