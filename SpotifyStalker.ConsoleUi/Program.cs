@@ -1,8 +1,10 @@
 ﻿using System.Threading;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using SpotifyStalker.Service;
+using OsborneSupremacy.Extensions.AspNet;
 
 namespace SpotifyStalker.ConsoleUi;
 
@@ -23,6 +25,9 @@ class Program
             .ReadFrom.Configuration(configuration)
             .CreateLogger();
 
+        var spotifySettings = configuration
+            .GetAndValidateTypedSection("SpotifyApi", new SpotifyApiSettingsValidator());
+
         await Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
@@ -30,18 +35,16 @@ class Program
 
                 services.AddAutoMapper(typeof(Program));
 
-                services.Configure<SpotifyApiSettings>(configuration.GetSection("SpotifyApi"));
+                services.AddSingleton(spotifySettings);
 
                 services.AddHttpClient();
 
                 services.RegisterServicesInAssembly(typeof(UserPromptService));
                 services.RegisterServicesInAssembly(typeof(ApiQueryService));
 
-                services.AddDbContext<SpotifyStalkerDbContext>();
-
-                // TODO: Update SpotifyStalkerDbContext to accept parameters
-                //services.AddDbContext<SpotifyStalkerDbContext>(options =>
-                //    options.UseSqlServer(configuration.GetConnectionString("SpotifyStalker")));
+                services.AddDbContext<SpotifyStalkerDbContext>(options =>
+                    options.UseSqlServer(configuration.GetConnectionString("SpotifyStalker"))
+                );
 
             })
             .UseSerilog()

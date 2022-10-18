@@ -18,6 +18,5 @@ public class ApiLimitsValidator : AbstractValidator<ApiLimits>
         RuleFor(x => x.Search).NotNull();
         RuleFor(x => x.UserPlaylist).InclusiveBetween(1, 50);
         RuleFor(x => x.PlaylistTrack).InclusiveBetween(1, 100);
-        RuleFor(x => x.PlaylistTrack).InclusiveBetween(1, 50);
     }
 }

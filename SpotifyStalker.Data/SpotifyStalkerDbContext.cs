@@ -10,6 +10,15 @@ public class SpotifyStalkerDbContext : DbContext
 
     public DbSet<ArtistQueryLog> ArtistQueryLogs { get; set; }
 
+    public SpotifyStalkerDbContext()
+    {
+    }
+
+    public SpotifyStalkerDbContext(DbContextOptions<SpotifyStalkerDbContext> options)
+        : base(options)
+    {
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var builder = new ConfigurationBuilder()

@@ -2,10 +2,8 @@
 
 public record SearchLimits
 {
-    [JsonPropertyName("limit")]
     public int Limit { get; set; }
 
-    [JsonPropertyName("maximumoffset")]
     public int MaximumOffset { get; set; }
 }
 
