@@ -9,12 +9,12 @@
         @if (Metric.Loser != null)
         {
             <div class="alert alert-success">
-                Track with Lowest @Metric.Name <span class="badge badge-success">@(Metric?.Loser?.MetricValue ?? 0)</span>:
-                <SpotifyLink Name="@Metric.Loser.Value.Track.Name" Id="@Metric.Loser.Value.Track.Id" Type="track" /> by @WriteArtistInfo(Metric.Loser)
+                Track with Lowest @Metric.Name <span class="badge badge-success">@Metric.Loser.FormattedValue</span>:
+                <SpotifyLink Name="@Metric.Loser.Track.Name" Id="@Metric.Loser.Track.Id" Type="track" /> by @WriteArtistInfo(Metric.Loser)
             </div>
         }
 
-        @if (Metric.FormattedAverage != null)
+        @if (Metric.Average.HasValue)
         {
             <div class="alert alert-warning">
                 Average @Metric.Name for this user's playlists: <span class="badge badge-warning">@Metric.FormattedAverage</span>
@@ -24,8 +24,8 @@
         @if (Metric.Winner != null)
         {
             <div class="alert alert-danger">
-                Track with Highest @Metric.Name <span class="badge badge-danger">@(Metric?.Winner?.MetricValue ?? 0)</span>: 
-                <SpotifyLink Name="@Metric.Winner.Value.Track.Name" Id="@Metric.Winner.Value.Track.Id" Type="track" /> by @WriteArtistInfo(Metric.Winner)
+                Track with Highest @Metric.Name <span class="badge badge-danger">@Metric.Winner.FormattedValue</span>: 
+                <SpotifyLink Name="@Metric.Winner.Track.Name" Id="@Metric.Winner.Track.Id" Type="track" /> by @WriteArtistInfo(Metric.Winner)
             </div>
         }
 
@@ -33,7 +33,7 @@
             <svg>
                 @if (Metric.Loser != null)
                 {
-                    <line class="lowest" x1="@Metric.Loser.Value.MarkerPosition" y1="0" x2="@Metric.Loser.Value.MarkerPosition" y2="386" />
+                    <line class="lowest" x1="@Metric.Loser.MarkerPosition" y1="0" x2="@Metric.Loser.MarkerPosition" y2="386" />
                 }
                 @if (Metric.MarkerPosition != null)
                 {
@@ -41,7 +41,7 @@
                 }
                 @if (Metric.Winner != null)
                 {
-                    <line class="highest" x1="@Metric.Winner.Value.MarkerPosition" y1="0" x2="@Metric.Winner.Value.MarkerPosition" y2="386" />
+                    <line class="highest" x1="@Metric.Winner.MarkerPosition" y1="0" x2="@Metric.Winner.MarkerPosition" y2="386" />
                 }
             </svg>
         </figure>
@@ -55,11 +55,11 @@
     [Parameter]
     public Metric Metric { get; set; }
 
-    public string WriteArtistInfo((double MetricValue, Track Track, double? MakerPosition)? input)
+    public string WriteArtistInfo(ExampleTrack input)
     {
         var s = new System.Text.StringBuilder();
         int artistCount = 0;
-        foreach(var artist in input.Value.Track.Artists) {
+        foreach(var artist in input.Track.Artists) {
             if (artistCount > 0) s.Append(", ");
             s.Append(artist.Name);
             artistCount++;

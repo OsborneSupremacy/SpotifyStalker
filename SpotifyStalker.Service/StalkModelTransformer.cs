@@ -189,26 +189,33 @@ public class StalkModelTransformer : IStalkModelTransformer
 
         if (thisValue.HasValue)
         {
-            if (!metric.Winner.HasValue || thisValue > metric.Winner.Value.MetricValue)
-                metric.Winner =
-                    (thisValue.Value, stalkModel.Tracks.Items[currentAudioFeaturesModel.Id], CalculateMarkerPosition(metric, thisValue));
+            if (metric.Winner is null || thisValue > metric.Winner.MetricValue)
+                metric.Winner = new(
+                    metric,
+                    thisValue.Value,
+                    stalkModel.Tracks.Items[currentAudioFeaturesModel.Id],
+                    CalculateMarkerPosition(metric, thisValue.Value)
+                );
 
-            if (!metric.Loser.HasValue || thisValue < metric.Loser.Value.MetricValue)
-                metric.Loser =
-                    (thisValue.Value, stalkModel.Tracks.Items[currentAudioFeaturesModel.Id], CalculateMarkerPosition(metric, thisValue));
+            if (metric.Loser is null || thisValue < metric.Loser.MetricValue)
+                metric.Loser = new(
+                    metric,
+                    thisValue.Value,
+                    stalkModel.Tracks.Items[currentAudioFeaturesModel.Id],
+                    CalculateMarkerPosition(metric, thisValue.Value)
+                );
         }
 
-        metric.MarkerPosition = CalculateMarkerPosition(metric, metric.Average);
-
+        metric.MarkerPosition = CalculateMarkerPosition(metric, metric.Average ?? 0);
         return metric;
     }
 
-    public double? CalculateMarkerPosition(Metric metric, double? value)
+    public double CalculateMarkerPosition(Metric metric, double value)
     {
         var totalUnits = Math.Abs(metric.Max) + Math.Abs(metric.Min);
 
         var pxPerUnit = _plotAreaWidth / totalUnits;
-        var unitsFromMinToValue = metric.Min - (value ?? 0);
+        var unitsFromMinToValue = metric.Min - value;
 
         return Math.Abs(unitsFromMinToValue) * pxPerUnit;
     }

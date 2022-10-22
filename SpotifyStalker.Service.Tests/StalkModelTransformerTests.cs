@@ -20,7 +20,7 @@ public class StalkModelTransformerTests : TestBase
         var sut = Fixture.Create<StalkModelTransformer>();
 
         // act
-        var result = sut.CalculateMarkerPosition(metric, input)!.Value;
+        var result = sut.CalculateMarkerPosition(metric, input);
 
         // assert
         result.Should().BeApproximately(expectedResult, 0.01);
