@@ -15,7 +15,11 @@
     <div class="jumbotron">
         <h1>Stalk</h1>
 
-        <p class="lead text-muted">Need some text here.</p>
+        <p class="lead text-muted">Enter the username of the Spotify user you want to stalk.</p>
+
+        <p class="text-muted">Spotify usernames can be hard to find. You might not even know your own. You can find it by going to someone's profile page, then looking at the last part of the URL. For example, if the URL is open.spotify.com/user/joesmith, then <i>joesmith</i> is that person's Spotify username.</p>
+
+        <p class="text-muted">If you're don't know someone's Spotify username, and you're not connected to them (you're not following them, they're not following you) you're not going to be able to use this feature. Try <a href="findperson">Find Someone To Stalk</a>.</p>
 
         <div class="input-group mb-3" style="width: 500px;">
             <input type="text" placeholder="Spotify Username" class="form-control" @bind-value="ViewModel.UserName" />

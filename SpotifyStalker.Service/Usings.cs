@@ -19,3 +19,4 @@ global using System.Linq;
 global using AutoMapper;
 global using OsborneSupremacy.Extensions.Net.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection;
+global using Spotify.Utility;

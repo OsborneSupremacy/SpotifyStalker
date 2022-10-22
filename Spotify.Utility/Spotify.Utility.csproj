@@ -9,4 +9,8 @@
       <PackageReference Include="LanguageExt.Core" Version="4.2.9" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Spotify.Object\Spotify.Object.csproj" />
+    </ItemGroup>
+
 </Project>

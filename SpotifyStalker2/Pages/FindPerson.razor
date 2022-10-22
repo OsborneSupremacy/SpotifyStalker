@@ -3,6 +3,7 @@
 @using SpotifyStalker.Interface
 @using SpotifyStalker.Model
 @using Spotify.Model
+@using Spotify.Utility
 @using Microsoft.Extensions.Options;
 
 @inject IApiQueryService ApiQueryService
@@ -120,7 +121,11 @@
             model =>
             {
                 ViewModel.SearchStatus = RequestStatus.Success;
-                ViewModel.Playlists = model.Playlists.Items.ToList();
+                ViewModel.Playlists = model
+                    .Playlists
+                    .Items
+                    .Where(x => !x.IsOwnedBySpotify())
+                    .ToList();
                 return true;
             },
             exception =>
@@ -155,7 +160,7 @@
 
         var playlist = RandomProvider.PickRandom(
             ViewModel.Playlists
-                .Where(x => !(x.Owner.Id.Equals("spotify", StringComparison.OrdinalIgnoreCase)))
+                .Where(x => !x.IsOwnedBySpotify())
         );
 
         if (playlist == null) return;
