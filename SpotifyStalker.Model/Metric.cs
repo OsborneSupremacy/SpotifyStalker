@@ -16,13 +16,13 @@ public class Metric : ISpotifyStandardObject
 
     public string Unit { get; set; }
 
-    public double? Min { get; set; }
+    public double Min { get; set; }
 
-    public double? Max { get; set; }
+    public double Max { get; set; }
 
-    public double? NominalMin { get; set; }
+    public double NominalMin { get; set; }
 
-    public double? NominalMax { get; set; }
+    public double NominalMax { get; set; }
 
     public double? Average { get; set; }
 

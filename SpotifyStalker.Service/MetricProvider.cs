@@ -43,7 +43,7 @@ public class MetricProvider : IMetricProvider
                 Name = "Loudness",
                 Content = "The overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological correlate of physical strength (amplitude). Values typical range between -60 and 0 db.",
                 Unit = "dB",
-                Min = -49,
+                Min = -50,
                 Max = 2,
                 NominalMin = -60,
                 NominalMax = 0,

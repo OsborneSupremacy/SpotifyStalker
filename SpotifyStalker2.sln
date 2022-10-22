@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotify.Utility", "Spotify.Utility\Spotify.Utility.csproj", "{4E98FB85-C1AE-4DE9-A48A-A04DD8C284CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyStalker.Service.Tests", "SpotifyStalker.Service.Tests\SpotifyStalker.Service.Tests.csproj", "{FCA0CC1E-EA38-43CD-BE06-A3A8F9C4E1D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{4E98FB85-C1AE-4DE9-A48A-A04DD8C284CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E98FB85-C1AE-4DE9-A48A-A04DD8C284CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E98FB85-C1AE-4DE9-A48A-A04DD8C284CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCA0CC1E-EA38-43CD-BE06-A3A8F9C4E1D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCA0CC1E-EA38-43CD-BE06-A3A8F9C4E1D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCA0CC1E-EA38-43CD-BE06-A3A8F9C4E1D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCA0CC1E-EA38-43CD-BE06-A3A8F9C4E1D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

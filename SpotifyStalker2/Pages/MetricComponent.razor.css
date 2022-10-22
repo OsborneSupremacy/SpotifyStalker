@@ -13,9 +13,9 @@
         /* border: solid 1px blue; */
         position: absolute;
         /* this creates a box around the plot area of Spotify's distribution images */
-        width: 931px;
+        width: 847px;
         height: 386px;
-        left: 150px;
+        left: 192px;
         bottom: 54px;
     }
 

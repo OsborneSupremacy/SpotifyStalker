@@ -1,4 +1,4 @@
-﻿using SpotifyStalker.Model;
+﻿using System.Text.RegularExpressions;
 
 namespace SpotifyStalker.Service;
 
@@ -12,7 +12,7 @@ public class StalkModelTransformer : IStalkModelTransformer
 
     private readonly IMetricProvider _metricProvider;
 
-    private readonly double _plotAreaWidth = 931.0;
+    private readonly double _plotAreaWidth = 847;
 
     public StalkModelTransformer(
         ILogger<IApiRequestService> logger,
@@ -205,9 +205,11 @@ public class StalkModelTransformer : IStalkModelTransformer
 
     public double? CalculateMarkerPosition(Metric metric, double? value)
     {
-        var mp = value / (metric.Max - metric.Min);
-        if (mp < 0)
-            mp += 1.0;
-        return _plotAreaWidth * mp;
+        var totalUnits = Math.Abs(metric.Max) + Math.Abs(metric.Min);
+
+        var pxPerUnit = _plotAreaWidth / totalUnits;
+        var unitsFromMinToValue = metric.Min - (value ?? 0);
+
+        return Math.Abs(unitsFromMinToValue) * pxPerUnit;
     }
 }
