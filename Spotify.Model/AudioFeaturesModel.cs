@@ -5,7 +5,7 @@ public record AudioFeaturesModel : AudioFeatures, IApiRequestObject, ISpotifySta
     public string UrlTemplate => "audio-features/{Id}";
 
     // these objects don't have a separate name, so just use ID as name (it won't be displayed anywhere)
-    public string Name => Id;
+    public string Name => Id ?? string.Empty;
 }
 
 public record AudioFeaturesModelCollection : IApiBatchRequestObject, IApiRequestObject
