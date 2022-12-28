@@ -1,6 +1,6 @@
 ﻿namespace Spotify.Object;
 
-public class User
+public record User
 {
     [JsonPropertyName("display_name")]
     public string? DisplayName { get; set; }

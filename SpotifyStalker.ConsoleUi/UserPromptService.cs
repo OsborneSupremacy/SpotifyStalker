@@ -7,7 +7,7 @@ public class UserPromptService
 
     private readonly TrackQueryService _trackQueryService;
 
-    private Dictionary<int, (string name, Func<Task> operation)> _operations;
+    private readonly Dictionary<int, (string name, Func<Task> operation)> _operations;
 
     public UserPromptService(
         ArtistQueryService artistQueryService,
@@ -19,8 +19,8 @@ public class UserPromptService
         _operations =
             new()
             {
-                { 1, new("Query Artists", () => { return _artistQueryService.ExecuteAsync(); }) },
-                { 2, new("Query Tracks", () => { return _trackQueryService.ExecuteAsync(); }) },
+                { 1, new("Query Artists", _artistQueryService.ExecuteAsync) },
+                { 2, new("Query Tracks", _trackQueryService.ExecuteAsync) },
                 { 0, ("Exit", null) }
             };
     }

@@ -2,7 +2,7 @@
 
 namespace Spotify.Object;
 
-public class Token
+public record Token
 {
     [JsonPropertyName("access_token")]
     public string? AccessToken { get; set; }

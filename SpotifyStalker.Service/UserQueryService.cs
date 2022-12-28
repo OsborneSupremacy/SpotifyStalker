@@ -58,9 +58,7 @@ public class UserQueryService : IUserQueryService
             (
                 viewModel,
                 setProcessingMessage,
-                incrementBy => {
-                    incrementCount<ArtistModel>(incrementBy);
-                }
+                incrementCount<ArtistModel>
             );
 
         await _audioFeaturesQueryService
@@ -68,9 +66,7 @@ public class UserQueryService : IUserQueryService
             (
                 viewModel,
                 setProcessingMessage,
-                incrementBy => {
-                    incrementCount<Track>(incrementBy);
-                }
+                incrementCount<Track>
             );
 
         clearProcessingMessage();

@@ -28,7 +28,9 @@ public class SpotifyStalkerDbContext : DbContext
 
         var config = builder.Build();
 
-        optionsBuilder.UseSqlServer(config.GetConnectionString("SpotifyStalker"));
+        optionsBuilder
+            .UseSqlServer(config.GetConnectionString("SpotifyStalker"))
+            .EnableSensitiveDataLogging();
     }
 
     /// <summary>

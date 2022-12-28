@@ -1,6 +1,6 @@
 ﻿namespace Spotify.Object;
 
-public class Album : ISpotifyStandardObject
+public record Album : ISpotifyStandardObject
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
