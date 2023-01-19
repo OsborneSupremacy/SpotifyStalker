@@ -35,6 +35,8 @@ public record Metric : ISpotifyStandardObject
 
     public double? MarkerPosition { get; set; }
 
+    public double? GlobalAverageMarkerPosition { get; set; }
+
     public Func<AudioFeatures, double?> Field { get; set; }
 
     public string FormatString { get; set; }

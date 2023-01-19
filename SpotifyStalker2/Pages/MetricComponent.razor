@@ -43,6 +43,10 @@
                 {
                     <line class="average" x1="@Metric.MarkerPosition" y1="0" x2="@Metric.MarkerPosition" y2="386" />
                 }
+                @if (Metric.GlobalAverageMarkerPosition != null)
+                {
+                    <line class="globalaverage" x1="@Metric.GlobalAverageMarkerPosition" y1="0" x2="@Metric.GlobalAverageMarkerPosition" y2="386" />
+                }
                 @if (Metric.Winner != null)
                 {
                     <line class="highest" x1="@Metric.Winner.MarkerPosition" y1="0" x2="@Metric.Winner.MarkerPosition" y2="386" />

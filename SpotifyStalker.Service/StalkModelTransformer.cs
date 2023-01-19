@@ -205,6 +205,8 @@ public class StalkModelTransformer : IStalkModelTransformer
         }
 
         metric.MarkerPosition = CalculateMarkerPosition(metric, metric.Average ?? 0);
+        metric.GlobalAverageMarkerPosition = CalculateMarkerPosition(metric, metric.GlobalAverage);
+
         return metric;
     }
 
