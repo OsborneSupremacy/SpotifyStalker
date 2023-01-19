@@ -1,8 +1,9 @@
-﻿using Spotify.Object;
+﻿using System.Reflection.Metadata;
+using Spotify.Object;
 
 namespace SpotifyStalker.Model;
 
-public class Metric : ISpotifyStandardObject
+public record Metric : ISpotifyStandardObject
 {
     public string Name { get; set; }
 
@@ -27,6 +28,10 @@ public class Metric : ISpotifyStandardObject
     public double? Average { get; set; }
 
     public string FormattedAverage => (Average ?? 0).ToString(FormatString);
+
+    public double GlobalAverage { get; init; }
+
+    public string FormattedGlobalAverage => GlobalAverage.ToString(FormatString);
 
     public double? MarkerPosition { get; set; }
 

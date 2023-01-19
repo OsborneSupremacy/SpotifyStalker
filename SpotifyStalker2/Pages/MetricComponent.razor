@@ -29,6 +29,10 @@
             </div>
         }
 
+        <div class="alert alert-dark">
+            Global Average @Metric.Name (Across all of Spotify): <span class="badge badge-dark">@Metric.FormattedGlobalAverage</span>
+        </div>
+
         <figure class="imageFrame" style="background-image: url('/assets/images/@Metric.ImageFile')">
             <svg>
                 @if (Metric.Loser != null)

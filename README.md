@@ -45,7 +45,7 @@ select
     AvgDanceability = avg(m.Danceability),
     MinDanceability = min(m.Danceability),
     MaxEnergy = max(m.Energy),
-    AveEnergy = avg(m.Energy),
+    AvgEnergy = avg(m.Energy),
     MinEnergy = min(m.Energy),
     MaxLoudness = max(m.Loudness),
     AvgLoudness = avg(m.Loudness),
@@ -68,6 +68,26 @@ select
     MaxTempo = max(m.Tempo),
     AvgTempo = avg(m.Tempo),
     MinTempo = min(m.Tempo)
+from
+    dbo.Tracks m;
+```
+
+##### Averages Only
+
+ Use this to populate Metric.GlobalAverage values.
+
+```sql
+select
+    TrackCount = count(m.Id),
+    AvgDanceability = avg(m.Danceability),
+    AvgEnergy = avg(m.Energy),
+    AvgLoudness = avg(m.Loudness),
+    AvgSpeechiness = avg(m.Speechiness),
+    AvgAcousticness = avg(m.Acousticness),
+    AvgInstrumentalness = avg(m.Instrumentalness),
+    AvgLiveness = avg(m.Liveness),
+    AvgValence = avg(m.Valence),
+    AvgTempo = avg(m.Tempo)
 from
     dbo.Tracks m;
 ```

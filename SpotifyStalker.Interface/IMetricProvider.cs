@@ -2,5 +2,5 @@
 
 public interface IMetricProvider
 {
-    Task<IEnumerable<Metric>> GetAllAsync();
+    IEnumerable<Metric> GetAll();
 }

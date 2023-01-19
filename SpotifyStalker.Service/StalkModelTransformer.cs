@@ -38,9 +38,7 @@ public class StalkModelTransformer : IStalkModelTransformer
 
         stalkModel.Processing = new ProcessingStage(false, default);
 
-        var metrics = (await _metricProvider.GetAllAsync()).ToList();
-
-        foreach (var metric in metrics)
+        foreach (var metric in _metricProvider.GetAll())
             stalkModel.Metrics.TryAdd(metric.Id, metric);
 
         return stalkModel;
