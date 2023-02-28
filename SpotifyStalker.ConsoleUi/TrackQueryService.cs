@@ -55,7 +55,7 @@ public class TrackQueryService
             if(result.IsFaulted)
             {
                 _logger.LogInformation("No audio features fround for top tracks of {ArtistId}", artist.ArtistId);
-                return;
+                continue;
             }
 
             await AddAudioFeaturesAsync(artist, trackDictionary, result.Value);
