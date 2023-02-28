@@ -6,5 +6,5 @@ public interface IApiBatchQueryService<T> where T : IApiBatchRequestObject, new(
 
     bool QueueIsEmpty();
 
-    Task<(Result<T>, int)> QueryAsync();
+    Task<(Outcome<T>, int)> QueryAsync();
 }

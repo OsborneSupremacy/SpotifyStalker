@@ -1,4 +1,6 @@
-﻿namespace SpotifyStalker.Service;
+﻿using System;
+
+namespace SpotifyStalker.Service;
 
 [ServiceLifetime(ServiceLifetime.Singleton)]
 [RegistrationTarget(typeof(IApiRequestService))]
@@ -17,27 +19,23 @@ public class ApiRequestService : IApiRequestService
         _httpClientFactory = httpClientFactory ?? throw new System.ArgumentNullException(nameof(httpClientFactory));
     }
 
-    public async Task<Result<T>> GetAsync<T>(string url)
+    public async Task<Outcome<T>> GetAsync<T>(string url)
     {
         var responseMessage = await TryGetAsync<T>(url);
 
-        return await responseMessage
-            .Match<Task<Result<T>>>
-            (
-                async message =>
-                {
-                    return await ReadAndDeserializeAsync<T>(message);
-                },
-                async exception =>
-                {
-                    while (exception is RequestException rex && rex.Retry)
-                    {
-                        await Task.Delay((int)rex.WaitMs);
-                        return await GetAsync<T>(url);
-                    }
-                    return new Result<T>(exception);
-                }
-            );
+        while (
+            responseMessage.IsFaulted
+            && responseMessage.Exception is RequestException rex
+            && rex.Retry)
+        {
+            await Task.Delay((int)rex.WaitMs);
+            return await GetAsync<T>(url);
+        };
+
+        if (responseMessage.IsFaulted)
+            return new Outcome<T>(responseMessage.Exception);
+
+        return await ReadAndDeserializeAsync<T>(responseMessage.Value);
     }
 
     protected async Task<T> ReadAndDeserializeAsync<T>(HttpResponseMessage message)
@@ -46,7 +44,7 @@ public class ApiRequestService : IApiRequestService
         return JsonSerializer.Deserialize<T>(stringResponse);
     }
 
-    protected async Task<Result<HttpResponseMessage>> TryGetAsync<T>(string url)
+    protected async Task<Outcome<HttpResponseMessage>> TryGetAsync<T>(string url)
     {
         using var httpClient = await _httpClientFactory.CreateClientAsync();
         using var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
@@ -55,7 +53,7 @@ public class ApiRequestService : IApiRequestService
         return await ExecuteRequestAsync(httpClient, httpRequest);
     }
 
-    protected async Task<Result<HttpResponseMessage>> ExecuteRequestAsync(
+    protected async Task<Outcome<HttpResponseMessage>> ExecuteRequestAsync(
         HttpClient httpClient,
         HttpRequestMessage httpRequest
         )
@@ -75,13 +73,13 @@ public class ApiRequestService : IApiRequestService
         {
             case HttpStatusCode.NotFound:
                 _logger.LogDebug("Not found");
-                return new Result<HttpResponseMessage>(new RequestException(RequestStatus.NotFound));
+                return new Outcome<HttpResponseMessage>(new RequestException(RequestStatus.NotFound));
 
             case HttpStatusCode.TooManyRequests: // rate limit hit. Retry
             case HttpStatusCode.ServiceUnavailable:
                 var waitMs = response.Headers?.RetryAfter?.Delta?.TotalMilliseconds ?? 5000;
                 _logger.LogDebug($"Rate limit hit. Retry in {waitMs} milliseconds.");
-                return new Result<HttpResponseMessage>(new RequestException(RequestStatus.Retry, true, waitMs));
+                return new Outcome<HttpResponseMessage>(new RequestException(RequestStatus.Retry, true, waitMs));
 
             default:
                 try
@@ -91,12 +89,12 @@ public class ApiRequestService : IApiRequestService
                 catch (HttpRequestException ex)
                 {
                     _logger.LogError(ex, "Request failed");
-                    return new Result<HttpResponseMessage>(ex);
+                    return new Outcome<HttpResponseMessage>(ex);
                 }
                 break;
         }
 
-        return new Result<HttpResponseMessage>(new RequestException(RequestStatus.Failed));
+        return new Outcome<HttpResponseMessage>(new RequestException(RequestStatus.Failed));
 
     }
 }

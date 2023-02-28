@@ -1,4 +1,5 @@
-﻿namespace SpotifyStalker.Service;
+﻿
+namespace SpotifyStalker.Service;
 
 [ServiceLifetime(ServiceLifetime.Scoped)]
 [RegistrationTarget(typeof(IUserPlaylistsQueryService))]
@@ -32,25 +33,20 @@ public class UserPlaylistsQueryService : IUserPlaylistsQueryService
         var queryResult = await _apiQueryService
             .QueryAsync<UserPlaylistsModel>(viewModel.UserName, _settings.Limits.UserPlaylist);
 
-        return queryResult.Match
-        (
-            model =>
+        if(queryResult.IsFaulted)
+        {
+            viewModel.UserPlaylistResult = queryResult.Exception switch
             {
-                viewModel.UserPlaylistResult = RequestStatus.Success;
-                statusUpdateCallback("Registering playlists");
-                viewModel = _stalkModelTransformer.RegisterPlaylists(viewModel, model.Playlists);
-                stateHasChangedCallback();
-                return true;
-            },
-            exception =>
-            {
-                viewModel.UserPlaylistResult = exception switch
-                {
-                    RequestException x => x.RequestStatus,
-                    _ => RequestStatus.Failed
-                };
-                return false;
-            }
-        );
+                RequestException x => x.RequestStatus,
+                _ => RequestStatus.Failed
+            };
+            return false;
+        }
+
+        viewModel.UserPlaylistResult = RequestStatus.Success;
+        statusUpdateCallback("Registering playlists");
+        viewModel = _stalkModelTransformer.RegisterPlaylists(viewModel, queryResult.Value.Playlists);
+        stateHasChangedCallback();
+        return true;
     }
 }

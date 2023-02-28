@@ -37,20 +37,12 @@ public class PlaylistQueryService : IPlaylistQueryService
 
             incrementCountCallback();
 
-            playlistResult.Match
-            (
-                model =>
-                {
-                    // add the tracks from the playlist api query to the list of all tracks
-                    foreach (var playlistModelTrack in model.Items)
-                        viewModel = _stalkModelTransformer.RegisterTrack(viewModel, playlist.Value, playlistModelTrack.Track);
-                    return true;
-                },
-                exception =>
-                {
-                    return false;
-                }
-            );
+            if (playlistResult.IsFaulted)
+                return;
+
+            // add the tracks from the playlist api query to the list of all tracks
+            foreach (var playlistModelTrack in playlistResult.Value.Items)
+                viewModel = _stalkModelTransformer.RegisterTrack(viewModel, playlist.Value, playlistModelTrack.Track);
         }
     }
 }

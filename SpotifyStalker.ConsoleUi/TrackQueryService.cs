@@ -52,18 +52,13 @@ public class TrackQueryService
             var result = await _apiQueryService
                 .QueryAsync<AudioFeaturesModelCollection>(trackDictionary.Keys);
 
-            await result.Match
-            (
-                async success =>
-                {
-                    return await AddAudioFeaturesAsync(artist, trackDictionary, success);
-                },
-                exception =>
-                {
-                    _logger.LogInformation("No audio features fround for top tracks of {ArtistId}", artist.ArtistId);
-                    return Task.FromResult(true);
-                }
-            );
+            if(result.IsFaulted)
+            {
+                _logger.LogInformation("No audio features fround for top tracks of {ArtistId}", artist.ArtistId);
+                return;
+            }
+
+            await AddAudioFeaturesAsync(artist, trackDictionary, result.Value);
         } // end - artist loop
     }
 
@@ -115,31 +110,25 @@ public class TrackQueryService
     {
         var result = await _apiQueryService.QueryAsync<TrackSearchResultModel>(artist.ArtistId);
 
-        return result.Match
-        (
-            success =>
-            {
-                if(!success.Tracks.Any())
-                {
-                    _logger.LogInformation("No top tracks fround for {ArtistId}", artist.ArtistId);
-                    return new Dictionary<string, Spotify.Object.Track>();
-                }
-                var existingTrackIds = _dbContext.Tracks
-                    .Where(x => success.Tracks.Select(t => t.Id).Contains(x.Id))
-                    .Select(x => x.Id)
-                    .ToHashSet();
+        if(result.IsFaulted)
+        {
+            _logger.LogInformation("No top tracks fround for {ArtistId}", artist.ArtistId);
+            return new Dictionary<string, Spotify.Object.Track>();
+        }
 
-                return success.Tracks
-                    .Where(x => x != null)
-                    .Where(x => !existingTrackIds.Contains(x.Id))
-                    .ToDictionary(x => x.Id, x => x);
-            },
-            exception =>
-            {
-                _logger.LogInformation("No top tracks fround for {ArtistId}", artist.ArtistId);
-                return new Dictionary<string, Spotify.Object.Track>();
-            }
-        );
+        if (!result.Value.Tracks.Any())
+        {
+            _logger.LogInformation("No top tracks fround for {ArtistId}", artist.ArtistId);
+            return new Dictionary<string, Spotify.Object.Track>();
+        }
+        var existingTrackIds = _dbContext.Tracks
+            .Where(x => result.Value.Tracks.Select(t => t.Id).Contains(x.Id))
+            .Select(x => x.Id)
+            .ToHashSet();
 
+        return result.Value.Tracks
+            .Where(x => x != null)
+            .Where(x => !existingTrackIds.Contains(x.Id))
+            .ToDictionary(x => x.Id, x => x);
     }
 }

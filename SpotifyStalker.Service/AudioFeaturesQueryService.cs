@@ -1,4 +1,6 @@
-﻿namespace SpotifyStalker.Service;
+﻿using System.Reflection;
+
+namespace SpotifyStalker.Service;
 
 [ServiceLifetime(ServiceLifetime.Scoped)]
 [RegistrationTarget(typeof(IAudioFeaturesQueryService))]
@@ -35,24 +37,17 @@ public class AudioFeaturesQueryService : IAudioFeaturesQueryService
         {
             var (audioFeaturesResult, audioFeaturesQueriedCount) = await _audioFeaturesQueryService.QueryAsync();
 
-            audioFeaturesResult.Match
-            (
-                model =>
-                {
-                    foreach (var result in model.AudioFeaturesList)
-                    {
-                        incrementCountCallback(1);
-                        viewModel = _stalkModelTransformer.RegisterAudioFeature(viewModel, result);
-                    }
-                    return true;
-                },
-                exception =>
-                {
-                    incrementCountCallback(audioFeaturesQueriedCount);
-                    return false;
-                }
-            );
-            // loop through results
+            if(audioFeaturesResult.IsFaulted)
+            {
+                incrementCountCallback(audioFeaturesQueriedCount);
+                continue;
+            }
+
+            foreach (var result in audioFeaturesResult.Value.AudioFeaturesList)
+            {
+                incrementCountCallback(1);
+                viewModel = _stalkModelTransformer.RegisterAudioFeature(viewModel, result);
+            }
         }
     }
 }

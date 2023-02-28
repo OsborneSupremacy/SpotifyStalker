@@ -2,5 +2,5 @@
 
 public interface IApiRequestService
 {
-    Task<Result<T>> GetAsync<T>(string url);
+    Task<Outcome<T>> GetAsync<T>(string url);
 }

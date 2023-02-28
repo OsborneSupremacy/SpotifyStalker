@@ -32,7 +32,7 @@ public class ApiBatchQueryService<T> : IApiBatchQueryService<T> where T : IApiBa
 
     public bool QueueIsEmpty() => _queuedItems.IsEmpty;
 
-    public async Task<(Result<T>, int)> QueryAsync()
+    public async Task<(Outcome<T>, int)> QueryAsync()
     {
         int b = 0;
         var ids = new List<string>();
@@ -50,17 +50,6 @@ public class ApiBatchQueryService<T> : IApiBatchQueryService<T> where T : IApiBa
 
         var url = _apiRequestUrlBuilder.BuildBatch<T>(ids);
 
-        return (await _apiRequestService.GetAsync<T>(url))
-            .Match
-            (
-                success =>
-                {
-                    return (success, b);
-                },
-                exception =>
-                {
-                    return (new Result<T>(exception), b);
-                }
-            );
+        return (await _apiRequestService.GetAsync<T>(url), b);
     }
 }

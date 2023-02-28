@@ -1,4 +1,5 @@
-﻿namespace SpotifyStalker.Service;
+﻿
+namespace SpotifyStalker.Service;
 
 [ServiceLifetime(ServiceLifetime.Scoped)]
 [RegistrationTarget(typeof(IArtistQueryService))]
@@ -33,28 +34,22 @@ public class ArtistQueryService : IArtistQueryService
         {
             var (artistResult, artistItemsQueried) = await _artistBatchQueryService.QueryAsync();
 
-            artistResult.Match
-            (
-                model =>
-                {
-                    // loop through results, assigning artist genres to artists
-                    foreach (var result in model.Artists)
-                    {
-                        incrementCountCallback(1);
+            if(artistResult.IsFaulted)
+            {
+                incrementCountCallback(artistItemsQueried);
+                continue;
+            }
 
-                        var artist = viewModel.Artists.Items[result.Id];
+            // loop through results, assigning artist genres to artists
+            foreach (var result in artistResult.Value.Artists)
+            {
+                incrementCountCallback(1);
 
-                        artist.Genres = result.Genres;
-                        _stalkModelTransformer.RegisterGenre(viewModel, artist);
-                    }
-                    return true;
-                },
-                exception =>
-                {
-                    incrementCountCallback(artistItemsQueried);
-                    return false;
-                }
-            );
+                var artist = viewModel.Artists.Items[result.Id];
+
+                artist.Genres = result.Genres;
+                _stalkModelTransformer.RegisterGenre(viewModel, artist);
+            }
         }
     }
 }

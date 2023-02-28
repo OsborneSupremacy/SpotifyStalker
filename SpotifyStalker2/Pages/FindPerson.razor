@@ -116,24 +116,17 @@
         var result = await ApiQueryService
             .QueryAsync<UserPlaylistSearchResultModel>(ViewModel.Keyword);
 
-        return result.Match
-        (
-            model =>
-            {
-                ViewModel.SearchStatus = RequestStatus.Success;
-                ViewModel.Playlists = model
-                    .Playlists
-                    .Items
-                    .Where(x => !x.IsOwnedBySpotify())
-                    .ToList();
-                return true;
-            },
-            exception =>
-            {
-                return false;
-            }
-        );
+        if (result.IsFaulted)
+            return false;
 
+        ViewModel.SearchStatus = RequestStatus.Success;
+        ViewModel.Playlists = result.Value
+            .Playlists
+            .Items
+            .Where(x => !x.IsOwnedBySpotify())
+            .ToList();
+
+        return true;
     }
 
     public async Task FindRandomArtist() => await SearchForKeyWord(RandomProvider.GetArtist());
@@ -167,5 +160,4 @@
 
         NavigationManager.NavigateTo($"/stalk/{playlist.Owner.Id}");
     }
-
 }

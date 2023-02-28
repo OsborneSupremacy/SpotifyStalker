@@ -2,9 +2,7 @@
 global using System.Collections.Concurrent;
 global using System.Collections.Generic;
 global using System.Threading.Tasks;
-global using LanguageExt.Common;
 global using Microsoft.Extensions.Logging;
-global using Microsoft.Extensions.Options;
 global using Spotify.Interface;
 global using Spotify.Model;
 global using SpotifyStalker.Interface;
@@ -18,5 +16,5 @@ global using Spotify.Object;
 global using System.Linq;
 global using AutoMapper;
 global using OsborneSupremacy.Extensions.Net.DependencyInjection;
+global using OsborneSupremacy.Extensions.AspNet;
 global using Microsoft.Extensions.DependencyInjection;
-global using Spotify.Utility;

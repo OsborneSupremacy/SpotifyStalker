@@ -104,36 +104,26 @@ public class ArtistQueryService
             var result = await _apiQueryService.QueryAsync<ArtistSearchResultModel>(searchTerm, _spotifyApiSettings.Limits.Search.Limit, itemsQueried);
             itemsQueried += _spotifyApiSettings.Limits.Search.Limit;
 
-            await result.Match
-            (
-                async success =>
-                {
-                    // only need to read this info once, so do it on first iteration
-                    if (firstIteration)
-                    {
-                        GetTotalItems(success, resultCountUpdater);
-                        firstIteration = false;
-                    }
+            if (result.IsFaulted)
+                return;
 
-                    foreach (var item in success.Artists.Items)
-                    {
-                        // skip artists with 0 popularity or unknown genres. There are a ton of them in Spotify, and for our
-                        // purposes we don't want them.
-                        if (item.Popularity == 0 || !(item.Genres?.Any() ?? false)) continue;
+            if (firstIteration)
+            {
+                GetTotalItems(result.Value, resultCountUpdater);
+                firstIteration = false;
+            }
 
-                        // if artist is already in dictionary, don't need to do anything else
-                        if (!artists.TryAdd(item.Id, item)) continue;
+            foreach (var item in result.Value.Artists.Items)
+            {
+                // skip artists with 0 popularity or unknown genres. There are a ton of them in Spotify, and for our
+                // purposes we don't want them.
+                if (item.Popularity == 0 || !(item.Genres?.Any() ?? false)) continue;
 
-                        await saveToDatabase.Invoke(item);
-                    }
+                // if artist is already in dictionary, don't need to do anything else
+                if (!artists.TryAdd(item.Id, item)) continue;
 
-                    return true;
-                },
-                exception =>
-                {
-                    return Task.FromResult(true);
-                }
-            );
+                await saveToDatabase.Invoke(item);
+            }
         } // loop through items
     }
 
